@@ -2,7 +2,7 @@
   <div>
     <div v-if="media && media.name">
       <h1>{{media.episode_number}}: {{media.name}}</h1>
-      <button v-if="internalSeek !== 0" @click="playerSeek">Go to {{prettyTime(internalSeek)}}</button>
+      <button v-if="internalSeek !== 0 && internalSeek !== duration" @click="playerSeek">Go to {{prettyTime(internalSeek)}}</button>
       <umi-video v-if="streamData && streamData.format" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :seek="seek" />
       <p>{{media.description}}</p>
       <media-item v-if="nextEpisodeId !== ''" :id="nextEpisodeId" :seriesId="$route.params.seriesId" />
@@ -30,7 +30,8 @@
         streamData: {},
         internalSeek: 0,
         seek: 0,
-        nextEpisodeId: ''
+        nextEpisodeId: '',
+        duration: 0
       }
     },
     computed: {
@@ -48,10 +49,11 @@
         if (!$store.state.auth.username) return
 
         await $store.dispatch('getMediaInfo', $route.params.id)
-        const res = await api({route: 'info', params: {session_id: $store.state.auth.session_id, media_id: $route.params.id, fields: 'media.stream_data,media.playhead'}})
+        const res = await api({route: 'info', params: {session_id: $store.state.auth.session_id, media_id: $route.params.id, fields: 'media.stream_data,media.playhead,media.duration'}})
         this.streamData = res.data.data.stream_data
         this.seek = 0
         this.internalSeek = res.data.data.playhead
+        this.duration = res.data.data.duration
         await $store.dispatch('getMediaForCollection', this.media.collection_id)
         this.nextEpisodeId = Object.keys($store.state.media).find((key) => {
           const m = $store.state.media[key]

@@ -5,10 +5,10 @@
         <img src="./assets/umi.png" alt="umi logo" class="logo">
         <span class="relative logo-text">umi</span>
       </router-link>
-      <section class="absolute search-bar">
+      <section class="absolute search-bar" v-if="username">
         <input type="text" class="w-100 bn pa3 f3 white search-input" placeholder="Search...." v-model="searchInput" @input="inputChange">
       </section>
-      <section class="absolute right-1 username white f4">
+      <section class="absolute right-1 username white f4" v-if="username">
         {{ username }}
       </section>
     </header>
