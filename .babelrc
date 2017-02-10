@@ -5,9 +5,10 @@
   "plugins": [
     "syntax-dynamic-import",
     ["transform-runtime", {
-      "regenerator": false
+      "regenerator": false,
+      "polyfill": false
     }],
-    ["fast-async", {"useRuntimeModule": true}]
+    "fast-async"
   ],
   "comments": false,
   "env": {

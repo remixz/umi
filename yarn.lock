@@ -2819,7 +2819,7 @@ node-pre-gyp@^0.6.29:
     tar "~2.2.1"
     tar-pack "~3.3.0"
 
-nodent-runtime@>=3.0.3, nodent-runtime@^3.0.3:
+nodent-runtime@>=3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/nodent-runtime/-/nodent-runtime-3.0.3.tgz#49a25f4f4efb092c40d97be9e73de7e53a5f8361"
 
