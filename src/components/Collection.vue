@@ -1,6 +1,6 @@
 <template>
   <div>
-    <media-item v-for="id in media" :key="id" :id="id" :seriesId="seriesId" />
+    <media-item v-for="id in media" :key="id" :id="id" :seriesId="seriesId" size="medium" />
   </div>
 </template>
 

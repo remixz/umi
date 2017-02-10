@@ -8,8 +8,9 @@
       <section class="absolute search-bar" v-if="username">
         <input type="text" class="w-100 bn pa3 f3 white search-input" placeholder="Search...." v-model="searchInput" @input="inputChange">
       </section>
-      <section class="absolute right-1 username white f4" v-if="username">
-        {{ username }}
+      <section class="absolute right-1 top-1 username white f5" v-if="username">
+        {{ username }} <br>
+        <span class="underline pointer" @click="$store.commit('DELETE_AUTH')">Log out</span>
       </section>
     </header>
 
@@ -104,10 +105,6 @@ export default {
   .search-input::placeholder {
     color: white;
     opacity: 0.8;
-  }
-
-  .username {
-    top: 0.5rem;
   }
 
   .fade-enter-active, .fade-leave-active {

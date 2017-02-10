@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1> search: {{query}} </h1>
-    <div v-if="!loading">
+    <h1> Search: "{{query}}" </h1>
+    <div v-if="!loading" class="center">
       <series-item v-for="id in searchIds" :key="id" :id="id" />
       <h2 v-if="searchIds.length === 0">no results</h2>
     </div>

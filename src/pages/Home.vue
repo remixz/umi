@@ -2,8 +2,8 @@
   <div>
     <home-tabs />
     <div class="mt4">
-      <div v-if="queueIds.length > 0">
-        <series-item v-for="id in queueIds" :key="id" :id="id" />
+      <div v-if="data.length > 0">
+        <queue-item v-for="d in data" :key="d.queue_entry_id" :data="d" />
       </div>
       <h2 v-else>loading</h2>
     </div>
@@ -11,24 +11,28 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
   import {authCheck} from 'lib/auth'
-  import SeriesItem from 'components/SeriesItem'
+  import QueueItem from 'components/QueueItem'
   import HomeTabs from 'components/HomeTabs'
 
   export default {
     name: 'home',
-    computed: mapState(['queueIds']),
     mixins: [authCheck],
+    data () {
+      return {
+        data: []
+      }
+    },
     components: {
-      'series-item': SeriesItem,
+      'queue-item': QueueItem,
       'home-tabs': HomeTabs
     },
-    beforeMount () {
+    async beforeMount () {
       const {$store} = this
       if (!$store.state.auth.username) return
 
-      $store.dispatch('getQueueInfo')
+      const data = await $store.dispatch('getQueueInfo')
+      this.data = data
     }
   }
 </script>

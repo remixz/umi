@@ -1,11 +1,24 @@
 <template>
   <div>
-    <h3 v-if="expiredLink">your share link has expired, ask for a new link</h3>
+    <div v-if="expiredLink" class="w-100 bg-washed-red pa2 mv3 cf">
+      <div class="fl">
+        <span class="b">This room link has expired.</span>
+      </div>
+      <div class="fr">
+        <i class="fa fa-times pointer" aria-hidden="true" @click="expiredLink = false"></i>
+      </div>
+    </div>
     <div id="player"></div>
     <div class="mt2">
-      <button @click="wsCreateRoom" v-if="room === ''">create room</button>
-      <div v-else>
-        Send to friends: <input type="text" v-model="roomUrl">
+      <button class="f5 fw6 dib ba b--black-20 bg-blue white pointer ph3 pv2" @click="wsCreateRoom" v-if="room === ''">Watch with others</button>
+      <div v-else class="w-100 bg-washed-green pa2 mv3 cf">
+        <div class="fl">
+          <span class="b">Your room link:</span>
+        </div>
+        <div class="fr">
+          <span class="underline pointer" @click="wsDestroy">Leave this room</span>
+        </div>
+        <input type="text" v-model="roomUrl" class="w-100 mt2" @click="handleInputClick">
       </div>
     </div>
   </div>
@@ -36,6 +49,7 @@
     },
     mounted () {
       this.player = new Clappr.Player({
+        parent: this.$el.querySelector('#player'),
         width: '100%',
         height: 'auto',
         source: this.streamUrl,
@@ -54,7 +68,6 @@
         }
       })
 
-      this.player.attachTo(this.$el.querySelector('#player'))
       this.player.on(Clappr.Events.PLAYER_ENDED, () => {
         this.logTime(null, this.player.getDuration())
       })
@@ -84,6 +97,9 @@
       }
     },
     methods: {
+      handleInputClick ({target}) {
+        target.select()
+      },
       logTime (id, t) {
         const time = t || Math.round(this.player.getCurrentTime())
         if (time !== 0) {
@@ -205,6 +221,7 @@
       this.logTime()
       this.wsDestroy()
       this.player.destroy()
+      this.playerLoaded = false
     }
   }
 </script>

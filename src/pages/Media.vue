@@ -1,11 +1,31 @@
 <template>
   <div>
     <div v-if="media && media.name">
+      <div v-if="internalSeek !== 0 && internalSeek !== duration" class="w-100 bg-washed-green pa2 mv3 cf">
+        <div class="fl">
+          <span class="b underline pointer" @click="playerSeek">Resume watching ({{prettyTime(internalSeek)}})</span>
+        </div>
+        <div class="fr">
+          <i class="fa fa-times pointer" aria-hidden="true" @click="internalSeek = 0"></i>
+        </div>
+      </div>
       <umi-video v-if="streamData && streamData.format" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :seek="seek" />
-      <h1>Episode {{media.episode_number}}: {{media.name}}</h1>
-      <button v-if="internalSeek !== 0 && internalSeek !== duration" @click="playerSeek">Go to {{prettyTime(internalSeek)}}</button>
-      <p>{{media.description}}</p>
-      <media-item v-if="nextEpisodeId !== ''" :id="nextEpisodeId" :seriesId="$route.params.seriesId" />
+      <div v-else class="w-100" style="padding-bottom: 62.5%"></div>
+      <div class="cf">
+        <div class="fl w-80 pr2">
+          <h2>Episode {{media.episode_number}}: {{media.name}}</h2>
+          <p>{{media.description}}</p>
+
+          <h2>Episodes</h2>
+          <episode-scroller v-if="collectionMedia && collectionMedia.length > 0" :ids="collectionMedia" :selected="$route.params.id" />
+        </div>
+        <div class="fl w-20">
+          <div class="fr">
+            <h2>Series</h2>
+            <series-item v-if="seriesLoaded" :id="media.series_id" noMargin="true" />
+          </div>
+        </div>
+      </div>
     </div>
     <h2 v-else>loading</h2>
   </div>
@@ -17,6 +37,8 @@
   import prettyTime from 'lib/prettyTime'
   import Video from 'components/Video'
   import MediaItem from 'components/MediaItem'
+  import SeriesItem from 'components/SeriesItem'
+  import EpisodeScroller from 'components/EpisodeScroller'
   import WS from 'lib/websocket'
 
   export default {
@@ -24,7 +46,9 @@
     mixins: [authCheck],
     components: {
       'umi-video': Video,
-      'media-item': MediaItem
+      'media-item': MediaItem,
+      'series-item': SeriesItem,
+      'episode-scroller': EpisodeScroller
     },
     data () {
       return {
@@ -32,7 +56,8 @@
         internalSeek: 0,
         seek: 0,
         nextEpisodeId: '',
-        duration: 0
+        duration: 0,
+        seriesLoaded: false
       }
     },
     computed: {
@@ -42,6 +67,10 @@
       },
       mediaId () {
         return this.$route.params.id
+      },
+      collectionMedia () {
+        const {$store} = this
+        return this.media ? $store.state.collectionMedia[this.media.collection_id] : []
       }
     },
     methods: {
@@ -56,10 +85,8 @@
         this.internalSeek = res.data.data.playhead
         this.duration = res.data.data.duration
         await $store.dispatch('getMediaForCollection', this.media.collection_id)
-        this.nextEpisodeId = Object.keys($store.state.media).find((key) => {
-          const m = $store.state.media[key]
-          return m.collection_id === this.media.collection_id && parseInt(m.episode_number, 10) === parseInt(this.media.episode_number, 10) + 1
-        }) || ''
+        await $store.dispatch('getSeriesInfo', this.media.series_id)
+        this.seriesLoaded = true
       },
       prettyTime (time) {
         return prettyTime(time)
