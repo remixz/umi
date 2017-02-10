@@ -174,7 +174,7 @@
 
         socket.emit('play')
       },
-      wsOnPlay() {
+      wsOnPlay () {
         this.player.play()
       },
       wsHandlePause () {
@@ -192,7 +192,7 @@
         this._seekFunction = this.wsHandleSeek.bind(this, true)
         this.player.on(Clappr.Events.PLAYER_SEEK, this._seekFunction)
         if (emit) {
-          socket.emit('seek', time)          
+          socket.emit('seek', time)
         }
       },
       wsOnSeek (time) {
