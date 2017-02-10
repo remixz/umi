@@ -4,10 +4,6 @@
   ],
   "plugins": [
     "syntax-dynamic-import",
-    ["transform-runtime", {
-      "regenerator": false,
-      "polyfill": false
-    }],
     "fast-async"
   ],
   "comments": false,
