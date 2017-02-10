@@ -1,6 +1,6 @@
 <template>
   <router-link :to="`/series/${seriesId}/${id}`" class="link black">
-    <div :class="`media-item dib bg-near-white mr3 mb2 ${!selected ? 'hide-child' : ''} ${size}`">
+    <div :class="`media-item dib v-top h-100 bg-near-white mr3 mb2 ${!selected ? 'hide-child' : ''} ${size}`">
       <div class="relative">
         <img :src="data.screenshot_image.full_url" class="w-100 image-size">
         <div class="child absolute bg-black-40 top-0 image-size">
@@ -10,7 +10,7 @@
       <div class="pa2">
         <div v-if="collectionName">
           <strong>{{collectionName}}</strong> <br>
-          <small class="gray">Episode {{data.episode_number}} &mdash; {{data.name}}</small>
+          <small class="gray truncate db">Episode {{data.episode_number}} &mdash; {{data.name}}</small>
         </div>
         <div v-else>
           <strong>Episode {{data.episode_number}}</strong> <br>

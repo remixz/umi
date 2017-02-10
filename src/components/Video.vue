@@ -13,7 +13,7 @@
       <button class="f5 fw6 dib ba b--black-20 bg-blue white pointer ph3 pv2" @click="wsCreateRoom" v-if="room === ''">Watch with others</button>
       <div v-else class="w-100 bg-washed-green pa2 mv3 cf">
         <div class="fl">
-          <span class="b">Your room link:</span>
+          <span><strong>Connected!</strong> Your room link:</span>
         </div>
         <div class="fr">
           <span class="underline pointer" @click="wsDestroy">Leave this room</span>
