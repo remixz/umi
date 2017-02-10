@@ -193,6 +193,10 @@
         socket.off('pause', this.wsOnPause)
         socket.off('seek', this.wsOnSeek)
 
+        this.player.off(Clappr.Events.PLAYER_PLAY, this.wsHandlePlay)
+        this.player.off(Clappr.Events.PLAYER_PAUSE, this.wsHandlePause)
+        this.player.off(Clappr.Events.PLAYER_SEEK, this._seekFunction)
+
         socket.emit('leave-room')
         WS.room = ''
         this.room = ''
