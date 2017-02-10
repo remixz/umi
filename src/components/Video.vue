@@ -1,14 +1,7 @@
 <template>
   <div>
-    <div v-if="expiredLink" class="w-100 bg-washed-red pa2 mv3 cf">
-      <div class="fl">
-        <span class="b">This room link has expired.</span>
-      </div>
-      <div class="fr">
-        <i class="fa fa-times pointer" aria-hidden="true" @click="expiredLink = false"></i>
-      </div>
-    </div>
     <div id="player"></div>
+    <div v-if="!playerInit" class="w-100" style="padding-bottom: 62.5%"></div>
     <div class="mt2">
       <button class="f5 fw6 dib ba b--black-20 bg-blue white pointer ph3 pv2" @click="wsCreateRoom" v-if="room === ''">Watch with others</button>
       <div v-else class="w-100 bg-washed-green pa2 mv3 cf">
@@ -26,7 +19,7 @@
 
 <script>
   /* global Clappr, LevelSelector, ChromecastPlugin */
-  import uuid from 'uuid/v4'
+  import $script from 'scriptjs'
   import api, {LOCALE, VERSION} from 'lib/api'
   import WS from 'lib/websocket'
 
@@ -35,49 +28,54 @@
     props: ['data', 'poster', 'id', 'seek'],
     data () {
       return {
-        room: '',
-        expiredLink: false
+        playerInit: false
       }
     },
     computed: {
       streamUrl () {
         return this.data.streams[0].url
       },
+      room () {
+        return this.$store.state.roomId
+      },
       roomUrl () {
-        return window.location.origin + this.$route.path + '?room=' + this.room
+        return `${window.location.origin}/room/${this.room.replace('umi//', '')}`
       }
     },
     mounted () {
-      this.player = new Clappr.Player({
-        parent: this.$el.querySelector('#player'),
-        width: '100%',
-        height: 'auto',
-        source: this.streamUrl,
-        poster: this.poster,
-        disableVideoTagContextMenu: true,
-        plugins: [LevelSelector, ChromecastPlugin],
-        levelSelectorConfig: {
-          title: 'Quality',
-          labels: {
-            4: '1080p',
-            3: '720p',
-            2: '480p',
-            1: '360p',
-            0: '240p'
+      $script('//cdn.jsdelivr.net/g/clappr@0.2.65,clappr.chromecast-plugin@0.0.5,clappr.level-selector@0.1.10', () => {
+        this.playerInit = true
+        this.player = new Clappr.Player({
+          parent: this.$el.querySelector('#player'),
+          width: '100%',
+          height: 'auto',
+          source: this.streamUrl,
+          poster: this.poster,
+          disableVideoTagContextMenu: true,
+          plugins: [LevelSelector, ChromecastPlugin],
+          levelSelectorConfig: {
+            title: 'Quality',
+            labels: {
+              4: '1080p',
+              3: '720p',
+              2: '480p',
+              1: '360p',
+              0: '240p'
+            }
           }
+        })
+
+        this.player.on(Clappr.Events.PLAYER_ENDED, () => {
+          this.logTime(null, this.player.getDuration())
+        })
+        if (this.seek && this.seek !== 0) {
+          this.player.seek(this.seek)
+        }
+
+        if (this.$route.query.joinRoom) {
+          this.wsJoinRoom()
         }
       })
-
-      this.player.on(Clappr.Events.PLAYER_ENDED, () => {
-        this.logTime(null, this.player.getDuration())
-      })
-      if (this.seek && this.seek !== 0) {
-        this.player.seek(this.seek)
-      }
-
-      if (this.$route.query.room) {
-        this.wsJoinRoom(this.$route.query.room)
-      }
     },
     watch: {
       data () {
@@ -119,36 +117,23 @@
         }
       },
       wsCreateRoom () {
-        const {socket} = WS
-
-        const id = `umi//${uuid()}`
-        socket.emit('join-room', id)
-        this.room = id
-        WS.room = id
+        this.$store.dispatch('createRoom')
         this.wsRegisterEvents()
       },
-      wsJoinRoom (id) {
-        const {socket} = WS
+      wsJoinRoom () {
+        const time = parseInt(this.$route.query.wsTime, 10)
+        const playing = this.$route.query.wsPlaying === 'true'
 
-        socket.emit('join-room', id)
-        this.room = id
-        WS.room = id
+        if (time > 0) {
+          this.player.seek(time)
+        }
+
+        if (playing) {
+          this.player.play()
+        }
+
+        this.$router.replace({path: this.$route.path, query: {}})
         this.wsRegisterEvents()
-        socket.once('update-status', (obj) => {
-          if (obj.mediaId !== this.$route.params.id) {
-            this.expiredLink = true
-            this.wsDestroy()
-            return
-          }
-
-          if (obj.time !== 0) {
-            this.player.seek(obj.time)
-          }
-
-          if (obj.playing) {
-            this.player.play()
-          }
-        })
       },
       wsRegisterEvents () {
         const {socket} = WS
@@ -157,7 +142,7 @@
           socket.emit('update-status', {
             time: this.player.getCurrentTime(),
             playing: this.player.isPlaying(),
-            mediaId: this.$route.params.id
+            path: this.$route.path
           })
         })
         socket.on('play', this.wsOnPlay)
@@ -212,16 +197,14 @@
         this.player.off(Clappr.Events.PLAYER_PAUSE, this.wsHandlePause)
         this.player.off(Clappr.Events.PLAYER_SEEK, this._seekFunction)
 
-        socket.emit('leave-room')
-        WS.room = ''
-        this.room = ''
+        this.$store.dispatch('leaveRoom')
       }
     },
     beforeDestroy () {
       this.logTime()
       this.wsDestroy()
       this.player.destroy()
-      this.playerLoaded = false
+      this.playerInit = false
     }
   }
 </script>

@@ -3,12 +3,13 @@ import Router from 'vue-router'
 import Meta from 'vue-meta'
 import Analytics from 'vue-analytics'
 
-import Home from 'pages/Home'
-import History from 'pages/History'
-import Search from 'pages/Search'
-import Login from 'pages/Login'
-import Series from 'pages/Series'
-import Media from 'pages/Media'
+const Home = () => import('pages/home')
+const History = () => import('pages/History')
+const Search = () => import('pages/Search')
+const Login = () => import('pages/Login')
+const Series = () => import('pages/Series')
+const Media = () => import('pages/Media')
+const Room = () => import('pages/Room')
 
 Vue.use(Router)
 Vue.use(Meta)
@@ -56,6 +57,11 @@ export default new Router({
       path: '/series/:seriesId/:id',
       name: 'media',
       component: Media
+    },
+    {
+      path: '/room/:id',
+      name: 'room',
+      component: Room
     }
   ]
 })

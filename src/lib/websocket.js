@@ -4,7 +4,6 @@ const SERVER = process.env.NODE_ENV === 'production' ? 'https://umi-watch-api.no
 
 const WS = {
   connected: false,
-  room: '',
   init () {
     this.socket = io.connect(SERVER)
     this.socket.on('connect', () => {

@@ -71,6 +71,9 @@
       collectionMedia () {
         const {$store} = this
         return this.media ? $store.state.collectionMedia[this.media.collection_id] : []
+      },
+      room () {
+        return this.$store.state.roomId
       }
     },
     methods: {
@@ -96,7 +99,7 @@
         this.internalSeek = 0
       },
       wsOnChange (mediaId) {
-        if (WS.room !== '' && mediaId !== this.$route.params.id) {
+        if (this.room !== '' && mediaId !== this.$route.params.id) {
           this.$router.push(`/series/${this.$route.params.seriesId}/${mediaId}`)
         }
       }
@@ -104,7 +107,7 @@
     watch: {
       mediaId (id) {
         this.getMediaInfo()
-        if (WS.room !== '') {
+        if (this.room !== '') {
           WS.socket.emit('change', id)
         }
       }
@@ -115,6 +118,14 @@
     },
     beforeDestroy () {
       WS.socket.off('change', this.wsOnChange)
+    },
+    beforeRouteLeave (to, from, next) {
+      if (this.room !== '') {
+        const confirm = window.confirm(`You'll be leaving the room by leaving the player page. Are you sure you want to do this?`)
+        next(confirm)
+      } else {
+        next(true)
+      }
     }
   }
 </script>

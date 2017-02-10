@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import uuid from 'uuid/v4'
 
 import api, {ACCESS_TOKEN, DEVICE_TYPE, LOCALE, VERSION} from 'lib/api'
 import {getUuid} from 'lib/auth'
+import WS from 'lib/websocket'
 
 Vue.use(Vuex)
 
@@ -20,7 +22,8 @@ const store = new Vuex.Store({
     collectionMedia: {},
     media: {},
     searchIds: [],
-    searchQuery: ''
+    searchQuery: '',
+    roomId: ''
   },
 
   actions: {
@@ -252,6 +255,23 @@ const store = new Vuex.Store({
           reject(err)
         }
       })
+    },
+
+    createRoom ({commit}) {
+      const room = `umi//${uuid()}`
+      commit('UPDATE_ROOM', room)
+      WS.socket.emit('join-room', room)
+    },
+
+    joinRoom ({commit}, id) {
+      const room = `umi//${id}`
+      commit('UPDATE_ROOM', room)
+      WS.socket.emit('join-room', room)
+    },
+
+    leaveRoom ({commit}) {
+      commit('UPDATE_ROOM', '')
+      WS.socket.emit('leave-room')
     }
   },
 
@@ -293,6 +313,10 @@ const store = new Vuex.Store({
 
     ADD_MEDIA (state, obj) {
       if (obj && obj.media_id) Vue.set(state.media, obj.media_id, obj)
+    },
+
+    UPDATE_ROOM (state, str) {
+      state.roomId = str
     }
   }
 })

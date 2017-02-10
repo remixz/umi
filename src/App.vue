@@ -33,7 +33,8 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import debounce from 'debounce'
+
 export default {
   name: 'app',
   data () {
@@ -57,7 +58,7 @@ export default {
       this.$store.commit('SET_SEARCH_QUERY', e.target.value)
       this.goToSearch(this.searchInput, this.$route, this.$router)
     },
-    goToSearch: _.debounce((input, route, router) => {
+    goToSearch: debounce((input, route, router) => {
       const method = route.name === 'search' ? 'replace' : 'push'
       router[method](`/search?q=${input}`)
     }, 500)

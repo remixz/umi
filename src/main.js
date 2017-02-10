@@ -5,7 +5,6 @@ import store from './store'
 import { sync } from 'vuex-router-sync'
 import WS from 'lib/websocket'
 
-window.WS = WS
 sync(store, router)
 WS.init()
 

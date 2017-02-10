@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "axios": "^0.15.3",
-    "lodash": "^4.17.4",
+    "debounce": "^1.0.0",
+    "scriptjs": "^2.5.8",
     "socket.io-client": "^1.7.2",
     "uuid": "^3.0.1",
     "vue": "^2.1.10",
