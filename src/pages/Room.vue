@@ -27,7 +27,7 @@
       WS.socket.once('update-status', (obj) => {
         clearTimeout(this.timeout)
         this.$store.commit('UPDATE_CONNECTED', true)
-        if (obj.noPlayer) {
+        if (obj.name !== 'media') {
           this.$router.replace('/')
         } else {
           this.$router.replace({

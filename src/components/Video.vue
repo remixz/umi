@@ -147,7 +147,8 @@
         WS.socket.emit('update-status', {
           time: Math.round(this.player.getCurrentTime()),
           playing: this.player.isPlaying(),
-          path: this.$route.path
+          path: this.$route.path,
+          name: this.$route.name
         })
       },
       wsHandlePlay () {

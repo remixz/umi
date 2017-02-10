@@ -89,7 +89,7 @@ export default {
     }, 500),
     wsOnJoin () {
       WS.socket.emit('update-status', {
-        noPlayer: true
+        name: this.$route.name
       })
     },
     wsOnChange (path) {
