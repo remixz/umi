@@ -1,9 +1,14 @@
 {
   "presets": [
-    ["es2015", { "modules": false }],
-    "stage-2"
+    ["es2015", { "modules": false }]
   ],
-  "plugins": ["transform-runtime"],
+  "plugins": [
+    "syntax-dynamic-import",
+    ["transform-runtime", {
+      "regenerator": false
+    }],
+    ["fast-async", {"useRuntimeModule": true}]
+  ],
   "comments": false,
   "env": {
     "test": {
