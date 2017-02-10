@@ -262,6 +262,7 @@ const store = new Vuex.Store({
       const room = `umi//${uuid()}`
       commit('UPDATE_ROOM', room)
       WS.socket.emit('join-room', room)
+      commit('UPDATE_CONNECTED', true)
     },
 
     joinRoom ({commit}, id) {

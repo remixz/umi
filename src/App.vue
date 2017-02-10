@@ -1,6 +1,6 @@
 <template>
   <div class="sans-serif" id="app">
-    <div v-if="room !== ''" class="bg-green pa2 cf white">
+    <div v-if="connected" class="bg-green pa2 cf white">
       <div class="w-80 dib">
         <span><strong>Connected!</strong> Your room link:</span>
         <input type="text" class="w-60" v-model="roomUrl" @click="handleRoomClick">
@@ -99,6 +99,7 @@ export default {
     },
     handleDestroy () {
       WS.socket.off('change', this.wsOnChange)
+      this.$store.commit('UPDATE_CONNECTED', false)
       this.$store.dispatch('leaveRoom')
     }
   },

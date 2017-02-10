@@ -145,7 +145,7 @@
       },
       wsOnJoined () {
         WS.socket.emit('update-status', {
-          time: this.player.getCurrentTime(),
+          time: Math.round(this.player.getCurrentTime()),
           playing: this.player.isPlaying(),
           path: this.$route.path
         })
