@@ -1,6 +1,6 @@
-const micro = require('micro');
-const http = micro(() => '');
-const io = require('socket.io')(http)
+const http = require('http');
+const srv = http.createServer((req, res) => res.end('love arrow shoot!'))
+const io = require('socket.io')(srv)
 io.origins('*:*')
 
 function findRoom (rooms) {
@@ -14,12 +14,33 @@ io.on('connection', (socket) => {
 
     socket.join(room)
     socket.broadcast.to(room).emit('user-joined')
+    const ioRoom = io.sockets.adapter.rooms[room]
+    if (ioRoom) {
+      socket.broadcast.to(room).emit('room-count', ioRoom.length)
+      socket.emit('room-count', ioRoom.length)
+    }
   })
 
   socket.on('leave-room', () => {
     const room = findRoom(socket.rooms)
     socket.leave(room)
     socket.broadcast.to(room).emit('user-left')
+    const ioRoom = io.sockets.adapter.rooms[room]
+    if (ioRoom) {
+      socket.broadcast.to(room).emit('room-count', ioRoom.length)
+    }
+  })
+
+  socket.once('disconnecting', () => {
+    const room = findRoom(socket.rooms)
+    if (!room) return
+
+    socket.leave(room)
+    socket.broadcast.to(room).emit('user-left')
+    const ioRoom = io.sockets.adapter.rooms[room]
+    if (ioRoom) {
+      socket.broadcast.to(room).emit('room-count', ioRoom.length)
+    }
   })
 
   socket.on('update-status', (obj) => {
@@ -48,6 +69,6 @@ io.on('connection', (socket) => {
   })
 })
 
-http.listen(3001, () => {
+srv.listen(3001, () => {
   console.log('listening on 3001')
 })

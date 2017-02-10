@@ -24,7 +24,8 @@ const store = new Vuex.Store({
     searchIds: [],
     searchQuery: '',
     roomId: '',
-    roomConnected: false
+    roomConnected: false,
+    connectedCount: 0
   },
 
   actions: {
@@ -263,17 +264,25 @@ const store = new Vuex.Store({
       commit('UPDATE_ROOM', room)
       WS.socket.emit('join-room', room)
       commit('UPDATE_CONNECTED', true)
+      commit('UPDATE_CONNECTED_COUNT', 1)
+      WS.socket.on('room-count', (c) => {
+        commit('UPDATE_CONNECTED_COUNT', c)
+      })
     },
 
     joinRoom ({commit}, id) {
       const room = `umi//${id}`
       commit('UPDATE_ROOM', room)
       WS.socket.emit('join-room', room)
+      WS.socket.on('room-count', (c) => {
+        commit('UPDATE_CONNECTED_COUNT', c)
+      })
     },
 
     leaveRoom ({commit}) {
       commit('UPDATE_ROOM', '')
       WS.socket.emit('leave-room')
+      WS.socket.off('room-count')
     }
   },
 
@@ -323,6 +332,10 @@ const store = new Vuex.Store({
 
     UPDATE_CONNECTED (state, bool) {
       state.roomConnected = bool
+    },
+
+    UPDATE_CONNECTED_COUNT (state, int) {
+      state.connectedCount = int
     }
   }
 })

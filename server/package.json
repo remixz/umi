@@ -6,7 +6,6 @@
   "author": "Zach Bruggeman",
   "license": "MIT",
   "dependencies": {
-    "micro": "^7.0.3",
     "socket.io": "^1.7.2"
   },
   "scripts": {

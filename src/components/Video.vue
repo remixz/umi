@@ -144,6 +144,7 @@
         this.player.on(Clappr.Events.PLAYER_SEEK, this._seekFunction)
       },
       wsOnJoined () {
+        this.$store.commit('UPDATE_CONNECTED_COUNT', this.$store.state.connectedCount + 1)
         WS.socket.emit('update-status', {
           time: Math.round(this.player.getCurrentTime()),
           playing: this.player.isPlaying(),

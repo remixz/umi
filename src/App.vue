@@ -1,12 +1,13 @@
 <template>
   <div class="sans-serif" id="app">
     <div v-if="connected" class="bg-green pa2 cf white">
-      <div class="w-80 dib">
-        <span><strong>Connected!</strong> Your room link:</span>
-        <input type="text" class="w-60" v-model="roomUrl" @click="handleRoomClick">
+      <div class="w-80 dib ph3">
+        <span><strong>Connected to room!</strong> Share this link:</span>
+        <input type="text" class="w-60 bg-dark-green white input-reset bw0 pa2" v-model="roomUrl" @click="handleRoomClick">
       </div>
       <div class="fr">
-        <span class="underline pointer" @click="handleDestroy">Leave this room</span>
+        <span class="underline pointer" @click="handleDestroy">Leave this room</span> <br>
+        <span>Watching: {{$store.state.connectedCount}}</span>
       </div>
     </div>
     <header class="bg-blue relative shadow-1 header">
@@ -88,6 +89,7 @@ export default {
       router[method](`/search?q=${input}`)
     }, 500),
     wsOnJoin () {
+      this.$store.commit('UPDATE_CONNECTED_COUNT', this.$store.state.connectedCount + 1)
       WS.socket.emit('update-status', {
         name: this.$route.name
       })
