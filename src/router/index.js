@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Meta from 'vue-meta'
+import Analytics from 'vue-analytics'
+
 import Home from 'pages/Home'
 import History from 'pages/History'
 import Search from 'pages/Search'
@@ -10,6 +12,10 @@ import Media from 'pages/Media'
 
 Vue.use(Router)
 Vue.use(Meta)
+
+if (process.env.NODE_ENV === 'production') {
+  Vue.use(Analytics, {id: 'UA-46859303-4'})
+}
 
 export default new Router({
   mode: 'history',

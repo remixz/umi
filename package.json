@@ -15,6 +15,7 @@
     "socket.io-client": "^1.7.2",
     "uuid": "^3.0.1",
     "vue": "^2.1.10",
+    "vue-analytics": "^2.3.0",
     "vue-meta": "^0.5.3",
     "vue-router": "^2.2.0",
     "vuex": "^2.1.2",
