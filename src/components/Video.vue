@@ -119,10 +119,10 @@
         WS.room = id
         this.wsRegisterEvents()
         socket.once('update-status', (obj) => {
-          console.log(obj)
           if (obj.mediaId !== this.$route.params.id) {
             this.expiredLink = true
             this.wsDestroy()
+            return
           }
 
           if (obj.time !== 0) {
@@ -138,7 +138,6 @@
         const {socket} = WS
 
         socket.on('user-joined', () => {
-          console.log(this.$route.params.id)
           socket.emit('update-status', {
             time: this.player.getCurrentTime(),
             playing: this.player.isPlaying(),
