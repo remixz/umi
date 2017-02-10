@@ -67,6 +67,11 @@
       playerSeek () {
         this.seek = this.internalSeek
         this.internalSeek = 0
+      },
+      wsOnChange (mediaId) {
+        if (WS.room !== '' && mediaId !== this.$route.params.id) {
+          this.$router.push(`/series/${this.$route.params.seriesId}/${mediaId}`)
+        }
       }
     },
     watch: {
@@ -79,11 +84,10 @@
     },
     beforeMount () {
       this.getMediaInfo()
-      WS.socket.on('change', (mediaId) => {
-        if (WS.room !== '' && mediaId !== this.$route.params.id) {
-          this.$router.push(`/series/${this.$route.params.seriesId}/${mediaId}`)
-        }
-      })
+      WS.socket.on('change', this.wsOnChange)
+    },
+    beforeDestroy () {
+      WS.socket.off('change', this.wsOnChange)
     }
   }
 </script>

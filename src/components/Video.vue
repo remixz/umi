@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h3 v-if="expiredLink">your share link has expired, ask for a new link</h3>
     <div id="player"></div>
     <div class="mt2">
       <button @click="wsCreateRoom" v-if="room === ''">create room</button>
@@ -21,7 +22,8 @@
     props: ['data', 'poster', 'id', 'seek'],
     data () {
       return {
-        room: ''
+        room: '',
+        expiredLink: false
       }
     },
     computed: {
@@ -117,6 +119,12 @@
         WS.room = id
         this.wsRegisterEvents()
         socket.once('update-status', (obj) => {
+          console.log(obj)
+          if (obj.mediaId !== this.$route.params.id) {
+            this.expiredLink = true
+            this.wsDestroy()
+          }
+
           if (obj.time !== 0) {
             this.player.seek(obj.time)
           }
@@ -130,9 +138,11 @@
         const {socket} = WS
 
         socket.on('user-joined', () => {
+          console.log(this.$route.params.id)
           socket.emit('update-status', {
             time: this.player.getCurrentTime(),
-            playing: this.player.isPlaying()
+            playing: this.player.isPlaying(),
+            mediaId: this.$route.params.id
           })
         })
         socket.on('play', this.wsOnPlay)
@@ -185,6 +195,7 @@
 
         socket.emit('leave-room')
         WS.room = ''
+        this.room = ''
       }
     },
     beforeDestroy () {
