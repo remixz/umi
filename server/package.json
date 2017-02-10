@@ -1,0 +1,14 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "umi watch together server",
+  "main": "index.js",
+  "author": "Zach Bruggeman",
+  "license": "MIT",
+  "dependencies": {
+    "socket.io": "^1.7.2"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}

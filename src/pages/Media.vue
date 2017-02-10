@@ -1,9 +1,9 @@
 <template>
   <div>
     <div v-if="media && media.name">
-      <h1>{{media.episode_number}}: {{media.name}}</h1>
-      <button v-if="internalSeek !== 0 && internalSeek !== duration" @click="playerSeek">Go to {{prettyTime(internalSeek)}}</button>
       <umi-video v-if="streamData && streamData.format" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :seek="seek" />
+      <h1>Episode {{media.episode_number}}: {{media.name}}</h1>
+      <button v-if="internalSeek !== 0 && internalSeek !== duration" @click="playerSeek">Go to {{prettyTime(internalSeek)}}</button>
       <p>{{media.description}}</p>
       <media-item v-if="nextEpisodeId !== ''" :id="nextEpisodeId" :seriesId="$route.params.seriesId" />
     </div>
@@ -17,6 +17,7 @@
   import prettyTime from 'lib/prettyTime'
   import Video from 'components/Video'
   import MediaItem from 'components/MediaItem'
+  import WS from 'lib/websocket'
 
   export default {
     name: 'series',
@@ -69,12 +70,20 @@
       }
     },
     watch: {
-      mediaId () {
+      mediaId (id) {
         this.getMediaInfo()
+        if (WS.room !== '') {
+          WS.socket.emit('change', id)
+        }
       }
     },
     beforeMount () {
       this.getMediaInfo()
+      WS.socket.on('change', (mediaId) => {
+        if (WS.room !== '' && mediaId !== this.$route.params.id) {
+          this.$router.push(`/series/${this.$route.params.seriesId}/${mediaId}`)
+        }
+      })
     }
   }
 </script>

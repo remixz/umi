@@ -1,7 +1,7 @@
 <template>
   <div class="sans-serif" id="app">
     <header class="bg-blue relative shadow-1 header">
-      <router-link class="link white f3 dib tracked absolute bottom-0 left-2" to="/" title="Home">
+      <router-link class="no-underline white f3 dib tracked absolute bottom-0 left-2" to="/" title="Home">
         <img src="./assets/umi.png" alt="umi logo" class="logo">
         <span class="relative logo-text">umi</span>
       </router-link>
@@ -13,12 +13,21 @@
       </section>
     </header>
 
-    <main class="bg-white mw8 center pv1 ph3 mt3">
+    <main class="bg-white mw8 center pv1 ph3 mv3">
       <h1 class="tc" v-if="loading">loading</h1>
       <transition name="fade" mode="out-in" v-else>
         <router-view></router-view>
       </transition>
     </main>
+
+    <footer class="mw8 center relative">
+      <a href="https://www.netlify.com" target="_blank" class="absolute right-0">
+        <img src="https://www.netlify.com/img/global/badges/netlify-light.svg"/>
+      </a>
+      <p class="gray">
+        This site is not endorsed by or affiliated with Crunchyroll. <br /> Created by <a href="https://twitter.com/zachbruggeman" target="_blank">Zach Bruggeman</a>. <a href="https://github.com/remixz/umi" target="_blank">View source on GitHub</a>.
+      </p>
+    </footer>
   </div>
 </template>
 
@@ -65,7 +74,7 @@ export default {
   }
 
   main {
-    height: calc(100vh - 5rem);
+    min-height: calc(100vh - 5rem);
   }
 
   .header {

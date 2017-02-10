@@ -1,0 +1,47 @@
+const io = require('socket.io')(3001)
+io.origins('*:*')
+
+function findRoom (rooms) {
+  return Object.keys(rooms).find((k) => k.startsWith('umi//'))
+}
+
+io.on('connection', (socket) => {
+  socket.on('join-room', (room) => {
+    const currentRoom = findRoom(socket.rooms)
+    if (currentRoom) return
+
+    socket.join(room)
+    io.to(room).emit('user-joined')
+  })
+
+  socket.on('leave-room', () => {
+    const room = findRoom(socket.rooms)
+    socket.leave(room)
+    io.to(room).emit('user-left')
+  })
+
+  socket.on('update-status', (obj) => {
+    const room = findRoom(socket.rooms)
+    io.to(room).emit('update-status', obj)
+  })
+
+  socket.on('play', () => {
+    const room = findRoom(socket.rooms)
+    io.to(room).emit('play')
+  })
+
+  socket.on('pause', () => {
+    const room = findRoom(socket.rooms)
+    io.to(room).emit('pause')
+  })
+
+  socket.on('seek', (time) => {
+    const room = findRoom(socket.rooms)
+    io.to(room).emit('seek', time)
+  })
+
+  socket.on('change', (mediaId) => {
+    const room = findRoom(socket.rooms)
+    io.to(room).emit('change', mediaId)
+  })
+})

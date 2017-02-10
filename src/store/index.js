@@ -20,6 +20,7 @@ const store = new Vuex.Store({
     collectionMedia: {},
     media: {},
     queueIds: [],
+    historyIds: [],
     searchIds: [],
     searchQuery: ''
   },
@@ -98,6 +99,33 @@ const store = new Vuex.Store({
             commit('ADD_MEDIA', d.last_watched_media)
           })
           commit('SET_QUEUE_IDS', data.map((d) => d.series.series_id))
+          resolve()
+        } catch (err) {
+          reject(err)
+        }
+      })
+    },
+
+    getHistoryInfo ({commit, state}) {
+      const params = {
+        session_id: state.auth.session_id,
+        media_types: 'anime|drama'
+      }
+
+      if (state.historyIds.length > 0) return Promise.resolve()
+
+      return new Promise(async (resolve, reject) => {
+        try {
+          const resp = await api({route: 'recently_watched', params})
+          if (resp.data.error) throw resp
+
+          const data = resp.data.data
+          data.forEach((d) => {
+            commit('ADD_SERIES', d.series)
+            commit('ADD_COLLECTION', d.collection)
+            commit('ADD_MEDIA', d.media)
+          })
+          commit('SET_HISTORY_IDS', data.map((d) => d.media.media_id))
           resolve()
         } catch (err) {
           reject(err)
@@ -241,6 +269,10 @@ const store = new Vuex.Store({
 
     SET_QUEUE_IDS (state, arr) {
       state.queueIds = arr
+    },
+
+    SET_HISTORY_IDS (state, arr) {
+      state.historyIds = arr
     },
 
     SET_SEARCH_IDS (state, arr) {
