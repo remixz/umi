@@ -23,7 +23,8 @@ const store = new Vuex.Store({
     media: {},
     searchIds: [],
     searchQuery: '',
-    roomId: ''
+    roomId: '',
+    roomConnected: false
   },
 
   actions: {
@@ -317,6 +318,10 @@ const store = new Vuex.Store({
 
     UPDATE_ROOM (state, str) {
       state.roomId = str
+    },
+
+    UPDATE_CONNECTED (state, bool) {
+      state.roomConnected = bool
     }
   }
 })

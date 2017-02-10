@@ -1,5 +1,14 @@
 <template>
   <div class="sans-serif" id="app">
+    <div v-if="room !== ''" class="bg-green pa2 cf white">
+      <div class="w-80 dib">
+        <span><strong>Connected!</strong> Your room link:</span>
+        <input type="text" class="w-60" v-model="roomUrl" @click="handleRoomClick">
+      </div>
+      <div class="fr">
+        <span class="underline pointer" @click="handleDestroy">Leave this room</span>
+      </div>
+    </div>
     <header class="bg-blue relative shadow-1 header">
       <router-link class="no-underline white f3 dib tracked absolute bottom-0 left-2" to="/" title="Home">
         <img src="./assets/umi.png" alt="umi logo" class="logo">
@@ -34,6 +43,7 @@
 
 <script>
 import debounce from 'debounce'
+import WS from 'lib/websocket'
 
 export default {
   name: 'app',
@@ -51,9 +61,24 @@ export default {
     },
     searchInput () {
       return this.$store.state.searchQuery
+    },
+    connected () {
+      return this.$store.state.roomConnected
+    },
+    room () {
+      return this.$store.state.roomId
+    },
+    roomUrl () {
+      return `${window.location.origin}/room/${this.room.replace('umi//', '')}`
+    },
+    routeName () {
+      return this.$store.state.route.name
     }
   },
   methods: {
+    handleRoomClick ({target}) {
+      target.select()
+    },
     inputChange (e) {
       this.$store.commit('SET_SEARCH_QUERY', e.target.value)
       this.goToSearch(this.searchInput, this.$route, this.$router)
@@ -61,7 +86,40 @@ export default {
     goToSearch: debounce((input, route, router) => {
       const method = route.name === 'search' ? 'replace' : 'push'
       router[method](`/search?q=${input}`)
-    }, 500)
+    }, 500),
+    wsOnJoin () {
+      WS.socket.emit('update-status', {
+        noPlayer: true
+      })
+    },
+    wsOnChange (path) {
+      if (this.room !== '' && path !== this.$route.path) {
+        this.$router.push(path)
+      }
+    },
+    handleDestroy () {
+      WS.socket.off('change', this.wsOnChange)
+      this.$store.dispatch('leaveRoom')
+    }
+  },
+  watch: {
+    routeName (curr, prev) {
+      if (this.room !== '') {
+        if (prev === 'media' && curr !== 'media') {
+          WS.socket.on('user-joined', this.wsOnJoin)
+        } else {
+          WS.socket.off('user-joined', this.wsOnJoin)
+        }
+      }
+    },
+    room () {
+      if (this.room !== '') {
+        WS.socket.on('change', this.wsOnChange)
+        if (this.$route.name !== 'media') {
+          WS.socket.on('user-joined', this.wsOnJoin)
+        }
+      }
+    }
   },
   async beforeMount () {
     await this.$store.dispatch('startSession')

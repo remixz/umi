@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="`/series/${id}`" class="link">
+  <router-link :to="`/series/${id}`" class="link" v-if="data">
     <div :class="`dib ${!noMargin ? 'mr3' : ''} mb2 hide-child relative`">
       <img :src="data.portrait_image.thumb_url">
       <div class="child absolute absolute--fill bg-black-60 pa2">

@@ -26,14 +26,19 @@
       }, 5000)
       WS.socket.once('update-status', (obj) => {
         clearTimeout(this.timeout)
-        this.$router.replace({
-          path: obj.path,
-          query: {
-            joinRoom: true,
-            wsPlaying: obj.playing,
-            wsTime: obj.time
-          }
-        })
+        this.$store.commit('UPDATE_CONNECTED', true)
+        if (obj.noPlayer) {
+          this.$router.replace('/')
+        } else {
+          this.$router.replace({
+            path: obj.path,
+            query: {
+              joinRoom: true,
+              wsPlaying: obj.playing,
+              wsTime: obj.time
+            }
+          })
+        }
       })
     }
   }

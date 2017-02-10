@@ -4,15 +4,6 @@
     <div v-if="!playerInit" class="w-100" style="padding-bottom: 62.5%"></div>
     <div class="mt2">
       <button class="f5 fw6 dib ba b--black-20 bg-blue white pointer ph3 pv2" @click="wsCreateRoom" v-if="room === ''">Watch with others</button>
-      <div v-else class="w-100 bg-washed-green pa2 mv3 cf">
-        <div class="fl">
-          <span><strong>Connected!</strong> Your room link:</span>
-        </div>
-        <div class="fr">
-          <span class="underline pointer" @click="wsDestroy">Leave this room</span>
-        </div>
-        <input type="text" v-model="roomUrl" class="w-100 mt2" @click="handleInputClick">
-      </div>
     </div>
   </div>
 </template>
@@ -37,9 +28,6 @@
       },
       room () {
         return this.$store.state.roomId
-      },
-      roomUrl () {
-        return `${window.location.origin}/room/${this.room.replace('umi//', '')}`
       }
     },
     mounted () {
@@ -74,6 +62,8 @@
 
         if (this.$route.query.joinRoom) {
           this.wsJoinRoom()
+        } else if (this.room !== '') {
+          this.wsRegisterEvents()
         }
       })
     },
@@ -83,6 +73,11 @@
           source: this.streamUrl,
           poster: this.poster
         })
+      },
+      room (curr) {
+        if (curr === '') {
+          this.wsDestroy()
+        }
       },
       id (curr, old) {
         this.logTime(old)
@@ -138,13 +133,7 @@
       wsRegisterEvents () {
         const {socket} = WS
 
-        socket.on('user-joined', () => {
-          socket.emit('update-status', {
-            time: this.player.getCurrentTime(),
-            playing: this.player.isPlaying(),
-            path: this.$route.path
-          })
-        })
+        socket.on('user-joined', this.wsOnJoined)
         socket.on('play', this.wsOnPlay)
         socket.on('pause', this.wsOnPause)
         socket.on('seek', this.wsOnSeek)
@@ -153,6 +142,13 @@
         this.player.on(Clappr.Events.PLAYER_PAUSE, this.wsHandlePause)
         this._seekFunction = this.wsHandleSeek.bind(this, true)
         this.player.on(Clappr.Events.PLAYER_SEEK, this._seekFunction)
+      },
+      wsOnJoined () {
+        WS.socket.emit('update-status', {
+          time: this.player.getCurrentTime(),
+          playing: this.player.isPlaying(),
+          path: this.$route.path
+        })
       },
       wsHandlePlay () {
         const {socket} = WS
@@ -189,6 +185,7 @@
       wsDestroy () {
         const {socket} = WS
 
+        socket.off('user-joined', this.wsOnJoined)
         socket.off('play', this.wsOnPlay)
         socket.off('pause', this.wsOnPause)
         socket.off('seek', this.wsOnSeek)
@@ -196,13 +193,13 @@
         this.player.off(Clappr.Events.PLAYER_PLAY, this.wsHandlePlay)
         this.player.off(Clappr.Events.PLAYER_PAUSE, this.wsHandlePause)
         this.player.off(Clappr.Events.PLAYER_SEEK, this._seekFunction)
-
-        this.$store.dispatch('leaveRoom')
       }
     },
     beforeDestroy () {
       this.logTime()
-      this.wsDestroy()
+      if (this.room !== '') {
+        WS.socket.emit('pause')
+      }
       this.player.destroy()
       this.playerInit = false
     }

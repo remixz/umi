@@ -97,34 +97,20 @@
       playerSeek () {
         this.seek = this.internalSeek
         this.internalSeek = 0
-      },
-      wsOnChange (mediaId) {
-        if (this.room !== '' && mediaId !== this.$route.params.id) {
-          this.$router.push(`/series/${this.$route.params.seriesId}/${mediaId}`)
-        }
       }
     },
     watch: {
       mediaId (id) {
         this.getMediaInfo()
         if (this.room !== '') {
-          WS.socket.emit('change', id)
+          WS.socket.emit('change', this.$route.path)
         }
       }
     },
     beforeMount () {
       this.getMediaInfo()
-      WS.socket.on('change', this.wsOnChange)
-    },
-    beforeDestroy () {
-      WS.socket.off('change', this.wsOnChange)
-    },
-    beforeRouteLeave (to, from, next) {
       if (this.room !== '') {
-        const confirm = window.confirm(`You'll be leaving the room by leaving the player page. Are you sure you want to do this?`)
-        next(confirm)
-      } else {
-        next(true)
+        WS.socket.emit('change', this.$route.path)
       }
     }
   }
