@@ -1,4 +1,6 @@
-const io = require('socket.io')(3001)
+const micro = require('micro');
+const http = micro(() => '');
+const io = require('socket.io')(http)
 io.origins('*:*')
 
 function findRoom (rooms) {
@@ -44,4 +46,8 @@ io.on('connection', (socket) => {
     const room = findRoom(socket.rooms)
     io.to(room).emit('change', mediaId)
   })
+})
+
+http.listen(3001, () => {
+  console.log('listening on 3001')
 })
