@@ -3,13 +3,13 @@ import Router from 'vue-router'
 import Meta from 'vue-meta'
 import Analytics from 'vue-analytics'
 
-const Home = () => import('pages/home')
-const History = () => import('pages/History')
-const Search = () => import('pages/Search')
-const Login = () => import('pages/Login')
-const Series = () => import('pages/Series')
-const Media = () => import('pages/Media')
-const Room = () => import('pages/Room')
+const Home = () => import('../pages/home')
+const History = () => import('../pages/History')
+const Search = () => import('../pages/Search')
+const Login = () => import('../pages/Login')
+const Series = () => import('../pages/Series')
+const Media = () => import('../pages/Media')
+const Room = () => import('../pages/Room')
 
 Vue.use(Router)
 Vue.use(Meta)
