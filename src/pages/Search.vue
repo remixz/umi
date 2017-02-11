@@ -16,6 +16,11 @@
   export default {
     name: 'search',
     mixins: [authCheck],
+    metaInfo () {
+      return {
+        title: `Search: "${this.query}"`
+      }
+    },
     components: {
       'series-item': SeriesItem
     },

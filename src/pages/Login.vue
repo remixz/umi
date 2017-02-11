@@ -39,6 +39,9 @@
 <script>
   export default {
     name: 'login',
+    metaInfo: {
+      title: 'Login'
+    },
     data () {
       return {
         username: '',

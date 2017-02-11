@@ -54,7 +54,8 @@ export default {
     }
   },
   metaInfo: {
-    title: `Umi`
+    titleTemplate: '%s - Umi',
+    title: 'Loading...'
   },
   computed: {
     username () {
@@ -135,7 +136,9 @@ export default {
   body {
     background: #f4f4f4;
   }
+</style>
 
+<style scoped>
   main {
     width: 64rem;
     min-height: calc(100vh - 5rem);

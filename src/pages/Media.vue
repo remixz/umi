@@ -44,6 +44,11 @@
   export default {
     name: 'series',
     mixins: [authCheck],
+    metaInfo () {
+      return {
+        title: this.series ? `Episode ${this.media.episode_number}: ${this.media.name} — ${this.series.name}` : 'Loading...'
+      }
+    },
     components: {
       'umi-video': Video,
       'media-item': MediaItem,
@@ -74,6 +79,9 @@
       },
       room () {
         return this.$store.state.roomId
+      },
+      series () {
+        return this.media ? this.$store.state.series[this.media.series_id] : null
       }
     },
     methods: {

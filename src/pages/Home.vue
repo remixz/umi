@@ -18,6 +18,9 @@
   export default {
     name: 'home',
     mixins: [authCheck],
+    metaInfo: {
+      title: 'Queue'
+    },
     data () {
       return {
         data: []

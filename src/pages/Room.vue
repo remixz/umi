@@ -14,6 +14,9 @@
   export default {
     name: 'room',
     mixins: [authCheck],
+    metaInfo: {
+      title: 'Room'
+    },
     data () {
       return {
         expired: false

@@ -43,6 +43,11 @@
   export default {
     name: 'series',
     mixins: [authCheck],
+    metaInfo () {
+      return {
+        title: this.series ? this.series.name : 'Loading...'
+      }
+    },
     components: {
       collection: Collection,
     },
@@ -70,7 +75,7 @@
         if (this.selectedCollection === target.dataset.id) return
 
         this.selectedCollection = target.dataset.id
-        setImmediate(() => {
+        this.$nextTick(() => {
           target.scrollIntoView()
         })
       },

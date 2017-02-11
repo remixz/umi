@@ -17,6 +17,9 @@
 
   export default {
     name: 'home',
+    metaInfo: {
+      title: 'History'
+    },
     data () {
       return {
         data: []

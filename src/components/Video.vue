@@ -56,6 +56,9 @@
         this.player.on(Clappr.Events.PLAYER_ENDED, () => {
           this.logTime(null, this.player.getDuration())
         })
+        this.player.on(Clappr.Events.PLAYER_PAUSE, () => {
+          this.logTime()
+        })
         if (this.seek && this.seek !== 0) {
           this.player.seek(this.seek)
         }
@@ -214,7 +217,7 @@
       position: relative;
       width: 100%;
       height: auto;
-      margin: 0;    
+      margin: 0;
   }
 
   /* Fix the video container to take up 100% width and to calculate its height based on its children. */
