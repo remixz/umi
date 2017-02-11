@@ -9,9 +9,11 @@
 
 <script>
   import WS from 'lib/websocket'
+  import {authCheck} from 'lib/auth'
 
   export default {
     name: 'room',
+    mixins: [authCheck],
     data () {
       return {
         expired: false
