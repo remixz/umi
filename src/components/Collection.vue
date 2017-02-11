@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <media-item v-for="id in media" :key="id" :id="id" :seriesId="seriesId" size="medium" />
+  <div v-if="!hide">
+    <media-item v-for="id in sortedMedia" :key="id" :id="id" :seriesId="seriesId" size="medium" />
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 
   export default {
     name: 'collection',
-    props: ['id', 'seriesId'],
+    props: ['id', 'seriesId', 'hide', 'sort'],
     components: {
       'media-item': MediaItem
     },
@@ -17,6 +17,9 @@
       media () {
         const {$store, id} = this
         return $store.state.collectionMedia[id]
+      },
+      sortedMedia () {
+        return this.sort === 'old' ? this.media : Array.from(this.media).reverse()
       }
     },
     async beforeMount () {

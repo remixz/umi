@@ -1,17 +1,33 @@
 <template>
   <div>
     <div v-if="series && series.name">
-      <h1>{{series.name}}</h1>
-      <p>{{series.description}}</p>
-      <div v-if="collections">
-        <div v-if="collections.length === 1">
-          <collection :id="collections[0]" :seriesId="series.series_id" />
+      <div class="cf">
+        <div class="w-20 fl pt2">
+          <img :src="series.portrait_image.full_url" >
         </div>
-        <div v-else>
-          <div v-for="id in collections" :key="id">
-            <h2>{{$store.state.collections[id].name}}</h2>
-            <collection :id="id" :seriesId="series.series_id" />
+        <div class="w-80 fl pl3">
+          <h1>{{series.name}}</h1>
+          <p>{{series.description}}</p>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="absolute right-0 bottom-0">
+          <div :class="`b ph3 pv2 bg-white pointer f6 dib ${sort === 'old' ? 'bb bw1 b--blue' : ''}`" data-sort="old" @click="sortCollection">Oldest</div>
+          <div :class="`b ph3 pv2 bg-white pointer f6 dib ${sort === 'new' ? 'bb bw1 b--blue' : ''}`" data-sort="new" @click="sortCollection">Newest</div>
+        </div>
+      </div>
+
+      <div v-if="collections">
+        <div v-for="id in sortedCollections" :key="id">
+          <div class="cf bg-light-gray pa3 mv2 pointer" :data-id="id" @click="selectCollection">
+            <div class="fl">
+              <strong>{{$store.state.collections[id].name}}</strong>
+            </div>
+            <div class="fr">
+              <i :class="`fa fa-caret-${selectedCollection === id ? 'up' : 'down'}`" aria-hidden="true"></i>
+            </div>
           </div>
+          <collection :id="id" :seriesId="series.series_id" :hide="selectedCollection !== id" :sort="sort" class="center" style="width: 948px" />
         </div>
       </div>
       <p v-else>loading</p>
@@ -28,7 +44,13 @@
     name: 'series',
     mixins: [authCheck],
     components: {
-      collection: Collection
+      collection: Collection,
+    },
+    data () {
+      return {
+        selectedCollection: '',
+        sort: 'old'
+      }
     },
     computed: {
       series () {
@@ -38,6 +60,23 @@
       collections () {
         const {$store, $route} = this
         return $store.state.seriesCollections[$route.params.id]
+      },
+      sortedCollections () {
+        return this.sort === 'old' ? this.collections : Array.from(this.collections).reverse()
+      }
+    },
+    methods: {
+      selectCollection ({target}) {
+        if (this.selectedCollection === target.dataset.id) return
+
+        this.selectedCollection = target.dataset.id
+        setImmediate(() => {
+          target.scrollIntoView()
+        })
+      },
+      sortCollection ({target}) {
+        this.sort = target.dataset.sort
+        this.selectedCollection = this.sortedCollections[0]
       }
     },
     async beforeMount () {
@@ -46,6 +85,7 @@
 
       await $store.dispatch('getSeriesInfo', $route.params.id)
       await $store.dispatch('getCollectionsForSeries', this.series.series_id)
+      this.selectedCollection = this.collections[0]
     }
   }
 </script>

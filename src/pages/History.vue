@@ -2,7 +2,7 @@
   <div>
     <home-tabs />
     <div class="mt4">
-      <div v-if="data.length > 0">
+      <div v-if="data.length > 0" style="width: 948px" class="center">
         <media-item v-for="d in data" :key="d.media.media_id" :id="d.media.media_id" :seriesId="d.series.series_id" :collectionName="d.collection.name" size="medium" />
       </div>
       <h2 class="tc" v-else>loading</h2>

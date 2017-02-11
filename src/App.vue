@@ -24,7 +24,7 @@
       </section>
     </header>
 
-    <main class="bg-white mw8 center pv1 ph3 mv3">
+    <main class="bg-white center pv1 ph3 mv3">
       <h1 class="tc" v-if="loading">loading</h1>
       <transition name="fade" mode="out-in" v-else>
         <router-view></router-view>
@@ -137,6 +137,7 @@ export default {
   }
 
   main {
+    width: 64rem;
     min-height: calc(100vh - 5rem);
   }
 
