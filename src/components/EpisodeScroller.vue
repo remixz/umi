@@ -1,6 +1,6 @@
 <template>
   <div class="overflow-x-scroll episode-scroller" style="white-space: nowrap;">
-    <media-item v-for="id in ids" :key="id" :id="id" :data-id="id" :seriesId="$route.params.seriesId" :selected="id === selected" size="small" />
+    <media-item v-for="id in ids" :key="id" :id="id" :data-id="id" :selected="id === selected" size="small" />
   </div>
 </template>
 

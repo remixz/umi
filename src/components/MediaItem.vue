@@ -1,15 +1,18 @@
 <template>
-  <router-link :to="`/series/${seriesId}/${id}`" class="link black">
-    <div :class="`media-item dib v-top h-100 bg-near-white mr3 mb2 ${!selected ? 'hide-child' : ''} ${size}`" @click="$emit('click')">
+  <router-link :to="`/series/${data.series_id}/${id}`" class="link black">
+    <div :class="`media-item dib v-top h-100 bg-near-white mr3 mb2 bb bw2 b--light-gray ${!selected ? 'hide-child' : ''} ${size}`" @click="$emit('click')">
       <div :class="`relative ${size === 'inline-small' ? 'dib' : ''}`">
         <img :src="data.screenshot_image.full_url" class="w-100 image-size">
+        <div class="bg-gray playhead" style="margin-top: -4px;">
+          <div class="bg-blue playhead" :style="`width: ${(data.playhead / data.duration) * 100}%`"></div>
+        </div>
         <div class="child absolute bg-black-40 top-0 image-size">
           <i class="fa fa-play white tc play-icon" aria-hidden="true"></i>
         </div>
       </div>
       <div :class="`pa2 ${size === 'inline-small' ? 'dib v-top' : ''}`">
         <div v-if="collectionName">
-          <strong>{{collectionName}}</strong> <br>
+          <strong class="truncate db">{{collectionName}}</strong> <br>
           <small class="gray truncate db">Episode {{data.episode_number}} &mdash; {{data.name}}</small>
         </div>
         <div v-else>
@@ -25,7 +28,7 @@
 <script>
   export default {
     name: 'media-item',
-    props: ['seriesId', 'id', 'collectionName', 'size', 'selected'],
+    props: ['id', 'collectionName', 'size', 'selected'],
     computed: {
       data () {
         return this.$store.state.media[this.id]
@@ -35,6 +38,10 @@
 </script>
 
 <style scoped>
+  .playhead {
+    height: 4px;
+  }
+
   .media-item.medium {
     width: 300px;
   }

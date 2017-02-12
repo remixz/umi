@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="media && media.name">
-      <div v-if="internalSeek !== 0 && internalSeek !== duration" class="w-100 bg-washed-green pa2 mv3 cf">
+      <div v-if="internalSeek !== 0 && internalSeek !== media.duration" class="w-100 bg-washed-green pa2 mv3 cf">
         <div class="fl">
           <span class="b underline pointer" @click="playerSeek"><i class="fa fa-play-circle" aria-hidden="true"></i> Resume watching at {{prettyTime(internalSeek)}}?</span>
         </div>
@@ -36,7 +36,7 @@
         </div>
       </div>
     </div>
-    <h2 v-else>loading</h2>
+    <h2 class="tc" v-else>Loading video...</h2>
   </div>
 </template>
 
@@ -70,7 +70,6 @@
         internalSeek: 0,
         seek: 0,
         nextEpisode: false,
-        duration: 0,
         seriesLoaded: false
       }
     },
@@ -95,6 +94,7 @@
       nextEpisodeId () {
         if (this.seriesLoaded) {
           return Object.keys(this.$store.state.media).find((key) => {
+            if (!this.media) return false
             const m = this.$store.state.media[key]
             return m.collection_id === this.media.collection_id && parseInt(m.episode_number, 10) === parseInt(this.media.episode_number, 10) + 1
           }) || ''
@@ -109,11 +109,10 @@
         if (!$store.state.auth.username) return
 
         await $store.dispatch('getMediaInfo', $route.params.id)
-        const res = await api({route: 'info', params: {session_id: $store.state.auth.session_id, media_id: $route.params.id, fields: 'media.stream_data,media.playhead,media.duration'}})
+        const res = await api({route: 'info', params: {session_id: $store.state.auth.session_id, media_id: $route.params.id, fields: 'media.stream_data'}})
         this.streamData = res.data.data.stream_data
         this.seek = 0
-        this.internalSeek = res.data.data.playhead
-        this.duration = res.data.data.duration
+        this.internalSeek = this.media.playhead
         await $store.dispatch('getMediaForCollection', this.media.collection_id)
         await $store.dispatch('getSeriesInfo', this.media.series_id)
         this.seriesLoaded = true

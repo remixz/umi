@@ -19,7 +19,7 @@
 
       <div v-if="collections">
         <div v-for="id in sortedCollections" :key="id">
-          <div class="cf bg-light-gray pa3 mv2 pointer" :data-id="id" @click="selectCollection">
+          <div class="cf bg-light-gray pa3 mv2 pointer bb bw2 b--black-10" :data-id="id" @click="selectCollection">
             <div class="fl">
               <strong>{{$store.state.collections[id].name}}</strong>
             </div>
@@ -27,12 +27,11 @@
               <i :class="`fa fa-caret-${selectedCollection === id ? 'up' : 'down'}`" aria-hidden="true"></i>
             </div>
           </div>
-          <collection :id="id" :seriesId="series.series_id" :hide="selectedCollection !== id" :sort="sort" class="center" style="width: 948px" />
+          <collection :id="id" :hide="selectedCollection !== id" :sort="sort" class="center" style="width: 948px" />
         </div>
       </div>
-      <p v-else>loading</p>
     </div>
-    <h2 v-else>loading</h2>
+    <h2 class="tc" v-else>Loading series...</h2>
   </div>
 </template>
 

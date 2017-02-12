@@ -6,6 +6,8 @@ import api, {ACCESS_TOKEN, DEVICE_TYPE, LOCALE, VERSION} from 'lib/api'
 import {getUuid} from 'lib/auth'
 import WS from 'lib/websocket'
 
+const MEDIA_FIELDS = 'media.media_id,media.collection_id,media.series_id,media.type,media.episode_number,media.name,media.description,media.screenshot_image,media.created,media.duration,media.playhead'
+
 Vue.use(Vuex)
 
 // use Vue.set for adding series/collections/media
@@ -88,7 +90,8 @@ const store = new Vuex.Store({
     getQueueInfo ({commit, state}) {
       const params = {
         session_id: state.auth.session_id,
-        media_types: 'anime|drama'
+        media_types: 'anime|drama',
+        fields: MEDIA_FIELDS
       }
 
       return new Promise(async (resolve, reject) => {
@@ -112,7 +115,8 @@ const store = new Vuex.Store({
     getHistoryInfo ({commit, state}) {
       const params = {
         session_id: state.auth.session_id,
-        media_types: 'anime|drama'
+        media_types: 'anime|drama',
+        fields: MEDIA_FIELDS
       }
 
       return new Promise(async (resolve, reject) => {
@@ -215,7 +219,8 @@ const store = new Vuex.Store({
         collection_id: id,
         include_clips: 1,
         limit: 5000,
-        offset: 0
+        offset: 0,
+        fields: MEDIA_FIELDS
       }
 
       if (state.collectionMedia[id]) return Promise.resolve()
@@ -240,7 +245,8 @@ const store = new Vuex.Store({
     getMediaInfo ({commit, state}, id) {
       const params = {
         session_id: state.auth.session_id,
-        media_id: id
+        media_id: id,
+        fields: MEDIA_FIELDS
       }
 
       if (state.media[id]) return Promise.resolve()

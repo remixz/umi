@@ -1,6 +1,6 @@
 <template>
   <div v-if="!hide">
-    <media-item v-for="id in sortedMedia" :key="id" :id="id" :seriesId="seriesId" size="medium" />
+    <media-item v-for="id in sortedMedia" :key="id" :id="id" size="medium" />
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 
   export default {
     name: 'collection',
-    props: ['id', 'seriesId', 'hide', 'sort'],
+    props: ['id', 'hide', 'sort'],
     components: {
       'media-item': MediaItem
     },

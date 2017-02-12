@@ -25,8 +25,7 @@
     </header>
 
     <main class="bg-white center pv1 ph3 mv3">
-      <h1 class="tc" v-if="loading">loading</h1>
-      <transition name="fade" mode="out-in" v-else>
+      <transition name="fade" mode="out-in" v-if="!loading">
         <router-view></router-view>
       </transition>
     </main>
