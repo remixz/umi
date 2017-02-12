@@ -3,13 +3,22 @@
     <div v-if="media && media.name">
       <div v-if="internalSeek !== 0 && internalSeek !== duration" class="w-100 bg-washed-green pa2 mv3 cf">
         <div class="fl">
-          <span class="b underline pointer" @click="playerSeek">Resume watching ({{prettyTime(internalSeek)}})</span>
+          <span class="b underline pointer" @click="playerSeek"><i class="fa fa-play-circle" aria-hidden="true"></i> Resume watching at {{prettyTime(internalSeek)}}?</span>
         </div>
         <div class="fr">
           <i class="fa fa-times pointer" aria-hidden="true" @click="internalSeek = 0"></i>
         </div>
       </div>
-      <umi-video v-if="streamData && streamData.format" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :seek="seek" />
+      <div v-if="nextEpisode && nextEpisodeId !== ''" class="w-50 center bg-near-white pa2 pb0 cf mb3">
+        <div class="fl">
+          <strong class="mb2 db">Watch next episode:</strong>
+          <media-item :seriesId="$route.params.seriesId" :id="nextEpisodeId" size="inline-small" @click="nextEpisode = false" />
+        </div>
+        <div class="fr">
+          <i class="fa fa-times pointer" aria-hidden="true" @click="nextEpisode = false"></i>
+        </div>
+      </div>
+      <umi-video v-if="streamData && streamData.format" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :seek="seek" @play="internalSeek = 0" @ended="nextEpisode = true" />
       <div v-else class="w-100" style="padding-bottom: 62.5%"></div>
       <div class="cf">
         <div class="fl w-80 pr2">
@@ -60,7 +69,7 @@
         streamData: {},
         internalSeek: 0,
         seek: 0,
-        nextEpisodeId: '',
+        nextEpisode: false,
         duration: 0,
         seriesLoaded: false
       }
@@ -82,6 +91,16 @@
       },
       series () {
         return this.media ? this.$store.state.series[this.media.series_id] : null
+      },
+      nextEpisodeId () {
+        if (this.seriesLoaded) {
+          return Object.keys(this.$store.state.media).find((key) => {
+            const m = this.$store.state.media[key]
+            return m.collection_id === this.media.collection_id && parseInt(m.episode_number, 10) === parseInt(this.media.episode_number, 10) + 1
+          }) || ''
+        } else {
+          return ''
+        }
       }
     },
     methods: {

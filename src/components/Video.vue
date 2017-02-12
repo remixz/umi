@@ -3,7 +3,7 @@
     <div id="player"></div>
     <div v-if="!playerInit" class="w-100" style="padding-bottom: 62.5%"></div>
     <div class="mt2">
-      <button class="f5 fw6 dib ba b--black-20 bg-blue white pointer ph3 pv2" @click="wsCreateRoom" v-if="room === ''">Watch with others</button>
+      <button class="f5 fw6 dib ba b--black-20 bg-blue white pointer ph3 pv2" @click="wsCreateRoom" v-if="room === ''"><i class="fa fa-globe" aria-hidden="true"></i> Watch with others</button>
     </div>
   </div>
 </template>
@@ -55,6 +55,10 @@
 
         this.player.on(Clappr.Events.PLAYER_ENDED, () => {
           this.logTime(null, this.player.getDuration())
+          this.$emit('ended')
+        })
+        this.player.on(Clappr.Events.PLAYER_PLAY, () => {
+          this.$emit('play')
         })
         this.player.on(Clappr.Events.PLAYER_PAUSE, () => {
           this.logTime()
