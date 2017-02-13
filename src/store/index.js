@@ -7,6 +7,7 @@ import {getUuid} from 'lib/auth'
 import WS from 'lib/websocket'
 
 const MEDIA_FIELDS = 'media.media_id,media.collection_id,media.series_id,media.type,media.episode_number,media.name,media.description,media.screenshot_image,media.created,media.duration,media.playhead'
+const SERIES_FIELDS = 'series.series_id,series.name,series.portrait_image,series.description,series.in_queue'
 
 Vue.use(Vuex)
 
@@ -91,7 +92,7 @@ const store = new Vuex.Store({
       const params = {
         session_id: state.auth.session_id,
         media_types: 'anime|drama',
-        fields: MEDIA_FIELDS
+        fields: [MEDIA_FIELDS, SERIES_FIELDS].join(',')
       }
 
       return new Promise(async (resolve, reject) => {
@@ -116,7 +117,7 @@ const store = new Vuex.Store({
       const params = {
         session_id: state.auth.session_id,
         media_types: 'anime|drama',
-        fields: MEDIA_FIELDS
+        fields: [MEDIA_FIELDS, SERIES_FIELDS].join(',')
       }
 
       return new Promise(async (resolve, reject) => {
@@ -144,6 +145,7 @@ const store = new Vuex.Store({
         limit: 50,
         offset: 0,
         media_types: 'anime|drama',
+        fields: SERIES_FIELDS,
         q
       }
 
@@ -167,7 +169,8 @@ const store = new Vuex.Store({
     getSeriesInfo ({commit, state}, id) {
       const params = {
         session_id: state.auth.session_id,
-        series_id: id
+        series_id: id,
+        fields: SERIES_FIELDS
       }
 
       if (state.series[id]) return Promise.resolve()
@@ -179,6 +182,27 @@ const store = new Vuex.Store({
 
           const data = resp.data.data
           commit('ADD_SERIES', data)
+          resolve()
+        } catch (err) {
+          reject(err)
+        }
+      })
+    },
+
+    updateSeriesQueue({commit, state}, {id, queueStatus}) {
+      const form = new FormData()
+      form.append('session_id', state.auth.session_id)
+      form.append('locale', LOCALE)
+      form.append('version', VERSION)
+      form.append('series_id', id)
+
+      commit('UPDATE_SERIES_QUEUE', {id, queueStatus})
+
+      return new Promise(async (resolve, reject) => {
+        try {
+          const resp = await api({method: 'post', route: queueStatus ? 'add_to_queue' : 'remove_from_queue', data: form})
+          if (resp.data.error) throw resp
+
           resolve()
         } catch (err) {
           reject(err)
@@ -342,6 +366,10 @@ const store = new Vuex.Store({
 
     UPDATE_CONNECTED_COUNT (state, int) {
       state.connectedCount = int
+    },
+
+    UPDATE_SERIES_QUEUE (state, {id, queueStatus}) {
+      Vue.set(state.series[id], 'in_queue', queueStatus)
     }
   }
 })

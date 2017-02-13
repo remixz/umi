@@ -2,7 +2,7 @@
   <div>
     <home-tabs />
     <div class="mt4">
-      <div v-if="data.length > 0" style="width: 948px" class="center">
+      <div v-if="loaded" style="width: 948px" class="center">
         <media-item v-for="d in data" :key="d.media.media_id" :id="d.media.media_id" :collectionName="d.collection.name" size="medium" />
       </div>
       <div v-else style="width: 948px" class="center">
@@ -31,7 +31,8 @@
     },
     data () {
       return {
-        data: []
+        data: [],
+        loaded: false
       }
     },
     mixins: [authCheck],
@@ -44,6 +45,7 @@
       if (!$store.state.auth.username) return
 
       const data = await $store.dispatch('getHistoryInfo')
+      this.loaded = true
       this.data = data
     }
   }

@@ -8,6 +8,8 @@
         <div class="w-80 fl pl3">
           <h1>{{series.name}}</h1>
           <p>{{series.description}}</p>
+          <queue-button :id="series.series_id" />
+          <a class="link f6 fw6 dib ba b--black-20 bg-blue white pointer ph2 pv1" target="_blank" :href="`https://myanimelist.net/search/all?q=${encodeURIComponent(series.name)}`">Find on MyAnimeList</a>
         </div>
       </div>
       <div class="relative">
@@ -37,6 +39,7 @@
 
 <script>
   import Collection from 'components/Collection'
+  import QueueButton from 'components/QueueButton'
   import {authCheck} from 'lib/auth'
 
   export default {
@@ -49,6 +52,7 @@
     },
     components: {
       collection: Collection,
+      'queue-button': QueueButton
     },
     data () {
       return {

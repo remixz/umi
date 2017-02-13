@@ -2,7 +2,7 @@
   <div>
     <home-tabs />
     <div class="mt4">
-      <div v-if="data.length > 0">
+      <div v-if="loaded">
         <queue-item v-for="d in data" :key="d.queue_entry_id" :data="d" />
       </div>
       <div v-else>
@@ -33,7 +33,8 @@
     },
     data () {
       return {
-        data: []
+        data: [],
+        loaded: false
       }
     },
     components: {
@@ -45,6 +46,7 @@
       if (!$store.state.auth.username) return
 
       const data = await $store.dispatch('getQueueInfo')
+      this.loaded = true
       this.data = data
     }
   }
