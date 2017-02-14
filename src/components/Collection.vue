@@ -19,7 +19,9 @@
         return $store.state.collectionMedia[id]
       },
       sortedMedia () {
-        return this.sort === 'old' ? this.media : Array.from(this.media).reverse()
+        return this.media ? (
+          this.sort === 'old' ? this.media : Array.from(this.media).reverse()
+        ) : []
       }
     },
     async beforeMount () {
