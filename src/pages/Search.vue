@@ -5,7 +5,7 @@
       <series-item v-for="id in searchIds" :key="id" :id="id" />
       <h2 v-if="searchIds.length === 0">no results</h2>
     </div>
-    <h2 v-else>loading</h2>
+    <h2 class="tc" v-else>Loading...</h2>
   </div>
 </template>
 
