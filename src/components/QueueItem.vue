@@ -49,7 +49,7 @@
     props: ['data'],
     methods: {
       parseTimeDiff (date) {
-        return distance(new Date(date));
+        return distance(new Date(date))
       }
     }
   }

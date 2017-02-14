@@ -189,7 +189,7 @@ const store = new Vuex.Store({
       })
     },
 
-    updateSeriesQueue({commit, state}, {id, queueStatus}) {
+    updateSeriesQueue ({commit, state}, {id, queueStatus}) {
       const form = new FormData()
       form.append('session_id', state.auth.session_id)
       form.append('locale', LOCALE)
@@ -321,11 +321,6 @@ const store = new Vuex.Store({
       const updated = Object.assign({}, state.auth, obj)
       localStorage.setItem('auth', JSON.stringify(updated))
       Vue.set(state, 'auth', updated)
-    },
-
-    DELETE_AUTH (state) {
-      localStorage.removeItem('auth')
-      location.pathname = '/'
     },
 
     SET_SEARCH_IDS (state, arr) {

@@ -23,7 +23,7 @@
         <div v-for="id in sortedCollections" :key="id">
           <div class="cf bg-light-gray pa3 mv2 pointer bb bw2 b--black-10" :data-id="id" @click="selectCollection">
             <div class="fl">
-              <strong>{{$store.state.collections[id].name}}</strong>
+              <strong>{{collectionData[id].name}}</strong>
             </div>
             <div class="fr">
               <i :class="`fa fa-caret-${selectedCollection === id ? 'up' : 'down'}`" aria-hidden="true"></i>
@@ -71,6 +71,9 @@
       },
       sortedCollections () {
         return this.sort === 'old' ? this.collections : Array.from(this.collections).reverse()
+      },
+      collectionData () {
+        return this.$store.state.collections
       }
     },
     methods: {

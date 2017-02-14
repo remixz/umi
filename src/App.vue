@@ -7,7 +7,7 @@
       </div>
       <div class="fr">
         <span class="underline pointer" @click="handleDestroy">Leave this room</span> <br>
-        <span>Watching: {{$store.state.connectedCount}}</span>
+        <span>Watching: {{connectedCount}}</span>
       </div>
     </div>
     <header class="bg-blue relative shadow-1 header">
@@ -20,7 +20,7 @@
       </section>
       <section class="absolute right-1 top-1 username white f5" v-if="username">
         {{ username }} <br>
-        <span class="underline pointer" @click="$store.commit('DELETE_AUTH')">Log out</span>
+        <span class="underline pointer" @click="logout">Log out</span>
       </section>
     </header>
 
@@ -66,6 +66,9 @@ export default {
     connected () {
       return this.$store.state.roomConnected
     },
+    connectedCount () {
+      this.$store.state.connectedCount
+    },
     room () {
       return this.$store.state.roomId
     },
@@ -103,6 +106,10 @@ export default {
       WS.socket.off('change', this.wsOnChange)
       this.$store.commit('UPDATE_CONNECTED', false)
       this.$store.dispatch('leaveRoom')
+    },
+    logout () {
+      localStorage.removeItem('auth')
+      location.pathname = '/'
     }
   },
   watch: {
