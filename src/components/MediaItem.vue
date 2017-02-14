@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="`/series/${data.series_id}/${id}`" class="link black">
+  <router-link :to="`/series/${data.series_id}/${id}`" class="link black" v-if="data.available">
     <div :class="`media-item dib v-top h-100 bg-near-white mr3 mb2 bb bw2 b--light-gray ${!selected ? 'hide-child' : ''} ${size}`" @click="$emit('click')">
       <div :class="`relative ${size === 'inline-small' ? 'dib' : ''}`">
         <img :src="data.screenshot_image.full_url" class="w-100 image-size">

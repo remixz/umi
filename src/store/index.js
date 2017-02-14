@@ -6,8 +6,8 @@ import api, {ACCESS_TOKEN, DEVICE_TYPE, LOCALE, VERSION} from 'lib/api'
 import {getUuid} from 'lib/auth'
 import WS from 'lib/websocket'
 
-const MEDIA_FIELDS = 'media.media_id,media.collection_id,media.series_id,media.type,media.episode_number,media.name,media.description,media.screenshot_image,media.created,media.duration,media.playhead'
-const SERIES_FIELDS = 'series.series_id,series.name,series.portrait_image,series.description,series.in_queue'
+const MEDIA_FIELDS = 'media.media_id,media.available,media.available_time,media.collection_id,media.series_id,media.type,media.episode_number,media.name,media.description,media.screenshot_image,media.created,media.duration,media.playhead'
+const SERIES_FIELDS = 'series.series_id,series.name,series.portrait_image,series.landscape_image,series.description,series.in_queue'
 
 Vue.use(Vuex)
 
