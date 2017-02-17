@@ -67,7 +67,7 @@ export default {
       return this.$store.state.roomConnected
     },
     connectedCount () {
-      this.$store.state.connectedCount
+      return this.$store.state.connectedCount
     },
     room () {
       return this.$store.state.roomId
