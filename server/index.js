@@ -48,19 +48,9 @@ io.on('connection', (socket) => {
     socket.broadcast.to(room).emit('update-status', obj)
   })
 
-  socket.on('play', () => {
+  socket.on('player-event', (obj) => {
     const room = findRoom(socket.rooms)
-    socket.broadcast.to(room).emit('play')
-  })
-
-  socket.on('pause', () => {
-    const room = findRoom(socket.rooms)
-    socket.broadcast.to(room).emit('pause')
-  })
-
-  socket.on('seek', (time) => {
-    const room = findRoom(socket.rooms)
-    socket.broadcast.to(room).emit('seek', time)
+    socket.broadcast.to(room).emit('player-event', obj)
   })
 
   socket.on('change', (mediaId) => {

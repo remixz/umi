@@ -19,7 +19,9 @@
     props: ['data', 'poster', 'id', 'seek'],
     data () {
       return {
-        playerInit: false
+        playerInit: false,
+        events: [],
+        lastEvent: null
       }
     },
     computed: {
@@ -94,6 +96,19 @@
           this.player.seek(this.seek)
           this.player.play()
         }
+      },
+      events () {
+        if (this.events.length <= 0) return
+        const {socket} = WS
+        const event = this.events[0]
+
+        if (event.id !== socket.id) {
+          this.lastEvent = event
+          this.player[event.method](...event.args)
+        } else {
+          socket.emit('player-event', event)
+        }
+        this.events.shift()
       }
     },
     methods: {
@@ -102,7 +117,7 @@
       },
       logTime (id, t) {
         const time = t || Math.round(this.player.getCurrentTime())
-        if (time !== 0) {
+        if (time !== 0 && process.env.NODE_ENV === 'production') {
           const data = new FormData()
           data.append('session_id', this.$store.state.auth.session_id)
           data.append('event', 'playback_status')
@@ -141,14 +156,14 @@
         const {socket} = WS
 
         socket.on('user-joined', this.wsOnJoined)
-        socket.on('play', this.wsOnPlay)
-        socket.on('pause', this.wsOnPause)
-        socket.on('seek', this.wsOnSeek)
+        socket.on('player-event', this.wsOnEvent)
 
+        this.wsHandlePlay = this.wsHandleEvent.bind(this, 'play')
+        this.wsHandlePause = this.wsHandleEvent.bind(this, 'pause')
+        this.wsHandleSeek = this.wsHandleEvent.bind(this, 'seek')
         this.player.on(Clappr.Events.PLAYER_PLAY, this.wsHandlePlay)
         this.player.on(Clappr.Events.PLAYER_PAUSE, this.wsHandlePause)
-        this._seekFunction = this.wsHandleSeek.bind(this, true)
-        this.player.on(Clappr.Events.PLAYER_SEEK, this._seekFunction)
+        this.player.on(Clappr.Events.PLAYER_SEEK, this.wsHandleSeek)
       },
       wsOnJoined () {
         this.$store.commit('UPDATE_CONNECTED_COUNT', this.$store.state.connectedCount + 1)
@@ -159,55 +174,39 @@
           name: this.$route.name
         })
       },
-      wsHandlePlay () {
+      wsOnEvent (ev) {
+        this.events.push(ev)
+      },
+      wsHandleEvent (method, ...args) {
         const {socket} = WS
-
-        socket.emit('play')
-      },
-      wsOnPlay () {
-        this.player.play()
-      },
-      wsHandlePause () {
-        const {socket} = WS
-
-        socket.emit('pause')
-      },
-      wsOnPause () {
-        this.player.pause()
-      },
-      wsHandleSeek (emit, time) {
-        const {socket} = WS
-
-        this.player.off(Clappr.Events.PLAYER_SEEK, this._seekFunction)
-        this._seekFunction = this.wsHandleSeek.bind(this, true)
-        this.player.on(Clappr.Events.PLAYER_SEEK, this._seekFunction)
-        if (emit) {
-          socket.emit('seek', time)
+        if (this.lastEvent) {
+          this.lastEvent = null
+          return
         }
-      },
-      wsOnSeek (time) {
-        this.player.off(Clappr.Events.PLAYER_SEEK, this._seekFunction)
-        this._seekFunction = this.wsHandleSeek.bind(this, false)
-        this.player.on(Clappr.Events.PLAYER_SEEK, this._seekFunction)
-        this.player.seek(time)
+
+        this.events.push({
+          id: socket.id, method, args
+        })
       },
       wsDestroy () {
         const {socket} = WS
 
         socket.off('user-joined', this.wsOnJoined)
-        socket.off('play', this.wsOnPlay)
-        socket.off('pause', this.wsOnPause)
-        socket.off('seek', this.wsOnSeek)
+        socket.off('player-event', this.wsOnEvent)
 
         this.player.off(Clappr.Events.PLAYER_PLAY, this.wsHandlePlay)
         this.player.off(Clappr.Events.PLAYER_PAUSE, this.wsHandlePause)
-        this.player.off(Clappr.Events.PLAYER_SEEK, this._seekFunction)
+        this.player.off(Clappr.Events.PLAYER_SEEK, this.wsHandleSeek)
       }
     },
     beforeDestroy () {
       this.logTime()
       if (this.room !== '') {
-        WS.socket.emit('pause')
+        WS.socket.emit('player-event', {
+          id: WS.socket.id,
+          method: 'pause',
+          args: []
+        })
       }
       this.player.destroy()
       this.playerInit = false
