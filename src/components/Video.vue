@@ -1,9 +1,10 @@
 <template>
-  <div>
-    <div id="player"></div>
-    <div v-if="!playerInit" class="w-100" style="padding-bottom: 62.5%"></div>
-    <div class="mt2">
-      <button class="f5 fw6 dib ba b--black-20 bg-blue white pointer ph3 pv2" @click="wsCreateRoom" v-if="room === ''"><i class="fa fa-globe" aria-hidden="true"></i> Watch with others</button>
+  <div class="pv2">
+    <div id="player" :class="`absolute top-0 left-0 z-9999${lights ? ' shadow-2' : ''}`"></div>
+    <div v-if="!playerInit" class="w-100 bg-light-gray absolute top-0 left-0" style="padding-bottom: 576px"></div>
+    <div class="absolute controls z-9999">
+      <button :class="`f5 fw6 dib ba b--black-20 ${lights ? 'bg-dark-gray' : 'bg-blue'} white pointer ph3 pv2`" @click="$store.commit('UPDATE_LIGHTS', !lights)"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Toggle lights</button>
+      <button :class="`f5 fw6 dib ba b--black-20 ${lights ? 'bg-dark-gray' : 'bg-blue'} white pointer ph3 pv2`" @click="wsCreateRoom" v-if="room === ''"><i class="fa fa-globe" aria-hidden="true"></i> Watch with others</button>
     </div>
   </div>
 </template>
@@ -30,6 +31,9 @@
       },
       room () {
         return this.$store.state.roomId
+      },
+      lights () {
+        return this.$store.state.lights
       }
     },
     mounted () {
@@ -37,8 +41,8 @@
         this.playerInit = true
         this.player = new Clappr.Player({
           parent: this.$el.querySelector('#player'),
-          width: '100%',
-          height: 'auto',
+          width: '1024px',
+          height: '576px',
           source: this.streamUrl,
           poster: this.poster,
           disableVideoTagContextMenu: true,
@@ -214,35 +218,8 @@
   }
 </script>
 
-<style>
-  /* Fix the player container to take up 100% width and to calculate its height based on its children. */
-  [data-player] {
-      position: relative;
-      width: 100%;
-      height: auto;
-      margin: 0;
-  }
-
-  /* Fix the video container to take up 100% width and to calculate its height based on its children. */
-  [data-player] .container[data-container] {
-      width: 100%;
-      height: auto;
-      position: relative;
-  }
-
-  /* Fix the media-control element to take up the entire size of the player. */
-  [data-player] .media-control[data-media-control] {
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-  }
-
-  /* Fix the video element to take up 100% width and to calculate its height based on its natural aspect ratio. */
-  [data-player] video {
-      position: relative;
-      display: block;
-      width: 100%;
-      height: auto;
+<style scoped>
+  .controls {
+    top: 588px;
   }
 </style>

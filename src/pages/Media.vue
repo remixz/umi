@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="media && media.name">
-      <div v-if="internalSeek !== 0 && internalSeek !== media.duration" class="w-100 bg-washed-green pa2 mv3 cf">
+      <div v-if="internalSeek !== 0 && internalSeek !== media.duration" class="w-100 bg-washed-green pa2 cf absolute top-0 left-0 z-max">
         <div class="fl">
           <span class="b underline pointer" @click="playerSeek"><i class="fa fa-play-circle" aria-hidden="true"></i> Resume watching at {{prettyTime(internalSeek)}}?</span>
         </div>
@@ -9,18 +9,19 @@
           <i class="fa fa-times pointer" aria-hidden="true" @click="internalSeek = 0"></i>
         </div>
       </div>
-      <div v-if="nextEpisode && nextEpisodeId !== ''" class="w-50 center bg-near-white pa2 pb0 cf mb3">
+      <div v-if="nextEpisode && nextEpisodeId !== ''" class="bg-black-60 absolute absolute--fill z-max" style="height: 576px"></div>
+      <div v-if="nextEpisode && nextEpisodeId !== ''" class="w-50 center bg-near-white pa2 pb0 cf mb3 absolute z-max left-0 right-0 shadow-1" style="top: 220px; height: 138px">
         <div class="fl">
           <strong class="mb2 db">Watch next episode:</strong>
-          <media-item :seriesId="$route.params.seriesId" :id="nextEpisodeId" size="inline-small" @click="nextEpisode = false" />
+          <media-item :seriesId="$route.params.seriesId" :id="nextEpisodeId" size="inline-small" :noBorder="true" @click="nextEpisode = false" />
         </div>
         <div class="fr">
           <i class="fa fa-times pointer" aria-hidden="true" @click="nextEpisode = false"></i>
         </div>
       </div>
       <umi-video v-if="streamData && streamData.format" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :seek="seek" @play="internalSeek = 0" @ended="nextEpisode = true" />
-      <div v-else class="w-100" style="padding-bottom: 62.5%"></div>
-      <div class="cf">
+      <div v-else class="w-100 bg-light-gray absolute top-0 left-0" style="padding-bottom: 576px"></div>
+      <div class="cf media-info">
         <div class="fl w-80 pr2">
           <h2>Episode {{media.episode_number}}: {{media.name}}</h2>
           <p>{{media.description}}</p>
@@ -138,6 +139,15 @@
       if (this.room !== '') {
         WS.socket.emit('change', this.$route.path)
       }
+    },
+    beforeDestroy () {
+      this.$store.commit('UPDATE_LIGHTS', false)
     }
   }
 </script>
+
+<style scoped>
+  .media-info {
+    padding-top: 595px;
+  }
+</style>

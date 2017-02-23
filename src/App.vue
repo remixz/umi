@@ -1,16 +1,16 @@
 <template>
   <div class="sans-serif" id="app">
-    <div v-if="connected" class="bg-green pa2 cf white">
+    <div v-if="connected" :class="`${lights ? 'bg-dark-gray' : 'bg-green'} white pa2 cf z-5 absolute w-100 top-0`">
       <div class="w-80 dib ph3">
         <span><strong>Connected to room!</strong> Share this link:</span>
-        <input type="text" class="w-60 bg-dark-green white input-reset bw0 pa2" v-model="roomUrl" @click="handleRoomClick">
+        <input type="text" :class="`w-60 ${lights ? 'bg-near-black' : 'bg-dark-green'} white input-reset bw0 pa2`" v-model="roomUrl" @click="handleRoomClick">
       </div>
       <div class="fr">
         <span class="underline pointer" @click="handleDestroy">Leave this room</span> <br>
         <span>Watching: {{connectedCount}}</span>
       </div>
     </div>
-    <header class="bg-blue relative shadow-1 header">
+    <header :class="`bg-blue relative shadow-1 header${connected ? ' connected' : ''}`">
       <router-link class="no-underline white f3 dib tracked absolute bottom-0 left-2" to="/" title="Home">
         <img src="./assets/umi.png" alt="umi logo" class="logo">
         <span class="relative logo-text">umi</span>
@@ -24,7 +24,7 @@
       </section>
     </header>
 
-    <main class="bg-white center pv1 ph3 mv3">
+    <main class="bg-white center pv1 ph3 mv3 relative">
       <transition name="fade" mode="out-in" v-if="!loading">
         <router-view></router-view>
       </transition>
@@ -38,6 +38,8 @@
         This site is not endorsed by or affiliated with Crunchyroll. <br /> Created by <a href="https://twitter.com/zachbruggeman" target="_blank">Zach Bruggeman</a>. <a href="https://github.com/remixz/umi" target="_blank">View source on GitHub</a>.
       </p>
     </footer>
+
+    <div :class="`fixed absolute--fill z-4 ${lights ? 'bg-black-90' : 'dn'}`"></div>
   </div>
 </template>
 
@@ -77,6 +79,9 @@ export default {
     },
     routeName () {
       return this.$store.state.route.name
+    },
+    lights () {
+      return this.$store.state.lights
     }
   },
   methods: {
@@ -153,6 +158,10 @@ export default {
   .header {
     width: 100%;
     height: 4rem;
+  }
+
+  .header.connected {
+    margin-top: 52px;
   }
 
   .logo {

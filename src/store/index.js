@@ -28,7 +28,8 @@ const store = new Vuex.Store({
     searchQuery: '',
     roomId: '',
     roomConnected: false,
-    connectedCount: 0
+    connectedCount: 0,
+    lights: false
   },
 
   actions: {
@@ -365,6 +366,10 @@ const store = new Vuex.Store({
 
     UPDATE_SERIES_QUEUE (state, {id, queueStatus}) {
       Vue.set(state.series[id], 'in_queue', queueStatus)
+    },
+
+    UPDATE_LIGHTS (state, bool) {
+      state.lights = bool
     }
   }
 })
