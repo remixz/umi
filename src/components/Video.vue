@@ -109,21 +109,23 @@
       },
       events () {
         if (this.events.length <= 0) return
-        const {socket} = WS
-        const event = this.events[0]
+        while (this.events.length > 0) {
+          const {socket} = WS
+          const event = this.events[0]
 
-        if (event.id !== socket.id) {
-          const playing = this.player.isPlaying()
-          if ((event.method === 'play' && playing) || (event.method === 'pause' && !playing)) {
-            return
+          if (event.id !== socket.id) {
+            const playing = this.player.isPlaying()
+            if (event.method === 'pause' && !playing) {
+              return
+            }
+
+            this.lastEvent = event
+            this.player[event.method](...event.args)
+          } else {
+            socket.emit('player-event', event)
           }
-
-          this.lastEvent = event
-          this.player[event.method](...event.args)
-        } else {
-          socket.emit('player-event', event)
+          this.events.shift()
         }
-        this.events.shift()
       }
     },
     methods: {
@@ -227,6 +229,7 @@
       wsHandleEvent (method, ...args) {
         const {socket} = WS
         if (this.lastEvent) {
+          if (this.player.isPlaying() && method === 'seek') return
           this.lastEvent = null
           return
         }
