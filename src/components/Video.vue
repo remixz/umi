@@ -2,11 +2,10 @@
   <div class="pv2">
     <div id="player" :class="`absolute top-0 left-0 z-9999${lights ? ' shadow-2' : ''}`"></div>
     <div v-if="!playerInit" class="w-100 bg-light-gray absolute top-0 left-0" style="padding-bottom: 576px"></div>
-    <div class="reaction-canvas absolute top-0 left-0 z-max"></div>
     <div class="absolute controls z-9999">
       <button :class="`f5 fw6 dib ba b--black-20 ${lights ? 'bg-dark-gray' : 'bg-blue'} white pointer ph3 pv2`" @click="$store.commit('UPDATE_LIGHTS', !lights)"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Toggle lights</button>
       <button :class="`f5 fw6 dib ba b--black-20 ${lights ? 'bg-dark-gray' : 'bg-blue'} white pointer ph3 pv2`" @click="wsCreateRoom" v-if="room === ''"><i class="fa fa-globe" aria-hidden="true"></i> Watch with others</button>
-      <reactotron v-if="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden" @emoji="handleEmoji" />
+      <reactotron v-show="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron" @emoji="handleEmoji" />
     </div>
   </div>
 </template>
@@ -44,6 +43,7 @@
     },
     mounted () {
       $script('//cdn.jsdelivr.net/g/clappr@0.2.65,clappr.chromecast-plugin@0.0.5,clappr.level-selector@0.1.10', () => {
+        const self = this
         this.playerInit = true
         this.player = new Clappr.Player({
           parent: this.$el.querySelector('#player'),
@@ -62,9 +62,24 @@
               1: '360p',
               0: '240p'
             }
+          },
+          events: {
+            onReady () {
+              const container = document.createElement('div')
+              self.reactions = document.createElement('div')
+              self.reactions.className = 'reaction-canvas absolute absolute--fill z-9999 tl'
+              self.tron = self.$el.querySelector('.reactotron').cloneNode(true)
+              self.tron.style.cssText = ''
+              self.tron.className = `${self.tron.className} z-max player-tron`
+              Array.from(self.tron.querySelectorAll('img')).forEach((e) => e.onclick = self.handleEmoji.bind(self, e.id, true))
+              container.appendChild(self.reactions)
+              container.appendChild(self.tron)
+              this.core.el.appendChild(container)
+            }
           }
         })
 
+        this.playback = this.player.core.getCurrentContainer().playback
         this.player.on(Clappr.Events.PLAYER_ENDED, () => {
           this.logTime(null, this.player.getDuration())
           this.$emit('ended')
@@ -92,6 +107,10 @@
           source: this.streamUrl,
           poster: this.poster
         })
+        this.playback = this.player.core.getCurrentContainer().playback
+        if (this.room !== '') {
+          this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.wsHandlePlay)
+        }
       },
       room (curr) {
         if (curr === '') {
@@ -150,7 +169,20 @@
           })
         }
       },
-      handleEmoji (name) {
+      handleFullscreen (full) {
+        const method = full ? 'add' : 'remove'
+        this.tron.classList[method]('full')
+      },
+      handleShowControls () {
+        this.tron.classList.add('show')
+      },
+      handleHideControls () {
+        this.tron.classList.remove('show')
+      },
+      handleEmoji (name, show) {
+        if (show) {
+          this.player.core.showMediaControl()
+        }
         WS.socket.emit('emoji', name)
         this.displayEmoji(name)
       },
@@ -158,13 +190,13 @@
         const selected = emoji.find((e) => e.name === name)
         if (!selected) return
 
-        const canvas = this.$el.querySelector('.reaction-canvas')
+        const core = this.player.core.el
         const el = document.createElement('img')
-        const rand = anime.random(0, 550)
+        const rand = anime.random(0, core.clientHeight - 25)
         el.className = 'emoji absolute'
-        el.style.transform = `translateX(1025px) translateY(${rand}px)`
+        el.style.transform = `translateX(${core.clientWidth + 50}px) translateY(${rand}px)`
         el.src = selected.image ? selected.image : `https://cdn.frankerfacez.com/emoticon/${selected.id}/1`
-        canvas.appendChild(el)
+        this.reactions.appendChild(el)
 
         anime({
           targets: el,
@@ -176,8 +208,8 @@
           ],
           easing: 'linear',
           duration: 1750,
-          complete () {
-            canvas.removeChild(el)
+          complete: () => {
+            this.reactions.removeChild(el)
           }
         })
       },
@@ -210,9 +242,12 @@
         this.wsHandlePlay = this.wsHandleEvent.bind(this, 'play')
         this.wsHandlePause = this.wsHandleEvent.bind(this, 'pause')
         this.wsHandleSeek = this.wsHandleEvent.bind(this, 'seek')
-        this.player.on(Clappr.Events.PLAYER_PLAY, this.wsHandlePlay)
+        this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.wsHandlePlay)
         this.player.on(Clappr.Events.PLAYER_PAUSE, this.wsHandlePause)
         this.player.on(Clappr.Events.PLAYER_SEEK, this.wsHandleSeek)
+        this.player.on(Clappr.Events.PLAYER_FULLSCREEN, this.handleFullscreen)
+        this.player.core.mediaControl.on(Clappr.Events.MEDIACONTROL_SHOW, this.handleShowControls)
+        this.player.core.mediaControl.on(Clappr.Events.MEDIACONTROL_HIDE, this.handleHideControls)
       },
       wsOnJoined () {
         this.$store.commit('UPDATE_CONNECTED_COUNT', this.$store.state.connectedCount + 1)
@@ -229,7 +264,6 @@
       wsHandleEvent (method, ...args) {
         const {socket} = WS
         if (this.lastEvent) {
-          if (this.player.isPlaying() && method === 'seek') return
           this.lastEvent = null
           return
         }
@@ -245,9 +279,12 @@
         socket.off('player-event', this.wsOnEvent)
         socket.off('emoji', this.displayEmoji)
 
-        this.player.off(Clappr.Events.PLAYER_PLAY, this.wsHandlePlay)
+        this.playback.off(Clappr.Events.PLAYBACK_PLAY_INTENT, this.wsHandlePlay)
         this.player.off(Clappr.Events.PLAYER_PAUSE, this.wsHandlePause)
         this.player.off(Clappr.Events.PLAYER_SEEK, this.wsHandleSeek)
+        this.player.off(Clappr.Events.PLAYER_FULLSCREEN, this.handleFullscreen)
+        this.player.core.mediaControl.off(Clappr.Events.MEDIACONTROL_SHOW, this.handleShowControls)
+        this.player.core.mediaControl.off(Clappr.Events.MEDIACONTROL_HIDE, this.handleHideControls)
       }
     },
     beforeDestroy () {
@@ -265,15 +302,34 @@
   }
 </script>
 
+<style>
+  .reaction-canvas {
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .player-tron {
+    transform: translateY(-40px);
+    transition: transform 0.4s ease-out;
+    padding-top: 5px !important;
+    background: linear-gradient(rgba(0, 0, 0, .4), transparent);
+    display: none !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .player-tron.full {
+    display: block !important;
+  }
+  .player-tron.show {
+    transform: translateY(0);
+  }
+</style>
+
 <style scoped>
   .controls {
     top: 588px;
-  }
-
-  .reaction-canvas {
-    width: 1024px;
-    height: 576px;
-    overflow: hidden;
-    pointer-events: none;
   }
 </style>
