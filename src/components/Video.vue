@@ -18,7 +18,7 @@
   import api, {LOCALE, VERSION} from 'lib/api'
   import WS from 'lib/websocket'
   import emoji from 'lib/emoji'
-  import Reactotron from './reactotron'
+  import Reactotron from './Reactotron'
 
   export default {
     name: 'video',
