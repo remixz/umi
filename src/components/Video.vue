@@ -107,6 +107,11 @@
         const event = this.events[0]
 
         if (event.id !== socket.id) {
+          const playing = this.player.isPlaying()
+          if ((event.method === 'play' && playing) || (event.method === 'pause' && !playing)) {
+            return
+          }
+
           this.lastEvent = event
           this.player[event.method](...event.args)
         } else {
