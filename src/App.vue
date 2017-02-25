@@ -147,6 +147,34 @@ export default {
   body {
     background: #f4f4f4;
   }
+
+  .emoji {
+    height: 28px;
+    user-select: none;
+  }
+
+  .tooltip {
+    display: none;
+    opacity: 0;
+    transition: opacity .15s;
+    pointer-events: none;
+    padding: 4px;
+    z-index: 10000;
+  }
+
+  .tooltip .tooltip-content {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 5px 10px 4px;
+  }
+
+  .tooltip.tooltip-open-transitionend {
+    display: block;
+  }
+
+  .tooltip.tooltip-after-open {
+    opacity: 1;
+  }
 </style>
 
 <style scoped>

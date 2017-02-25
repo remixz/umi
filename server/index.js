@@ -57,6 +57,11 @@ io.on('connection', (socket) => {
     const room = findRoom(socket.rooms)
     socket.broadcast.to(room).emit('change', mediaId)
   })
+
+  socket.on('emoji', (name) => {
+    const room = findRoom(socket.rooms)
+    socket.broadcast.to(room).emit('emoji', name)
+  })
 })
 
 srv.listen(3001, () => {

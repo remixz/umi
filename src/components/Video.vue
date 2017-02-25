@@ -2,9 +2,11 @@
   <div class="pv2">
     <div id="player" :class="`absolute top-0 left-0 z-9999${lights ? ' shadow-2' : ''}`"></div>
     <div v-if="!playerInit" class="w-100 bg-light-gray absolute top-0 left-0" style="padding-bottom: 576px"></div>
+    <div class="reaction-canvas absolute top-0 left-0 z-max"></div>
     <div class="absolute controls z-9999">
       <button :class="`f5 fw6 dib ba b--black-20 ${lights ? 'bg-dark-gray' : 'bg-blue'} white pointer ph3 pv2`" @click="$store.commit('UPDATE_LIGHTS', !lights)"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Toggle lights</button>
       <button :class="`f5 fw6 dib ba b--black-20 ${lights ? 'bg-dark-gray' : 'bg-blue'} white pointer ph3 pv2`" @click="wsCreateRoom" v-if="room === ''"><i class="fa fa-globe" aria-hidden="true"></i> Watch with others</button>
+      <reactotron v-if="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden" @emoji="handleEmoji" />
     </div>
   </div>
 </template>
@@ -12,12 +14,16 @@
 <script>
   /* global Clappr, LevelSelector, ChromecastPlugin */
   import $script from 'scriptjs'
+  import anime from 'animejs'
   import api, {LOCALE, VERSION} from 'lib/api'
   import WS from 'lib/websocket'
+  import emoji from 'lib/emoji'
+  import Reactotron from './reactotron'
 
   export default {
     name: 'video',
     props: ['data', 'poster', 'id', 'seek'],
+    components: {Reactotron},
     data () {
       return {
         playerInit: false,
@@ -142,6 +148,37 @@
           })
         }
       },
+      handleEmoji (name) {
+        WS.socket.emit('emoji', name)
+        this.displayEmoji(name)
+      },
+      displayEmoji (name) {
+        const selected = emoji.find((e) => e.name === name)
+        if (!selected) return
+
+        const canvas = this.$el.querySelector('.reaction-canvas')
+        const el = document.createElement('img')
+        const rand = anime.random(0, 550)
+        el.className = 'emoji absolute'
+        el.style.transform = `translateX(1025px) translateY(${rand}px)`
+        el.src = selected.image ? selected.image : `https://cdn.frankerfacez.com/emoticon/${selected.id}/1`
+        canvas.appendChild(el)
+
+        anime({
+          targets: el,
+          translateX: -35,
+          translateY: [
+            {value: `+=${Math.random() > 0.5 ? -15 : 15}`, easing: 'easeInOutSine'},
+            {value: `+=${Math.random() > 0.5 ? -15 : 15}`, easing: 'easeInOutSine'},
+            {value: `+=${Math.random() > 0.5 ? -15 : 15}`, easing: 'easeInOutSine'},
+          ],
+          easing: 'linear',
+          duration: 1750,
+          complete () {
+            canvas.removeChild(el)
+          }
+        })
+      },
       wsCreateRoom () {
         this.$store.dispatch('createRoom')
         this.wsRegisterEvents()
@@ -166,6 +203,7 @@
 
         socket.on('user-joined', this.wsOnJoined)
         socket.on('player-event', this.wsOnEvent)
+        socket.on('emoji', this.displayEmoji)
 
         this.wsHandlePlay = this.wsHandleEvent.bind(this, 'play')
         this.wsHandlePause = this.wsHandleEvent.bind(this, 'pause')
@@ -202,6 +240,7 @@
 
         socket.off('user-joined', this.wsOnJoined)
         socket.off('player-event', this.wsOnEvent)
+        socket.off('emoji', this.displayEmoji)
 
         this.player.off(Clappr.Events.PLAYER_PLAY, this.wsHandlePlay)
         this.player.off(Clappr.Events.PLAYER_PAUSE, this.wsHandlePause)
@@ -226,5 +265,12 @@
 <style scoped>
   .controls {
     top: 588px;
+  }
+
+  .reaction-canvas {
+    width: 1024px;
+    height: 576px;
+    overflow: hidden;
+    pointer-events: none;
   }
 </style>

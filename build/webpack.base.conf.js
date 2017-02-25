@@ -27,6 +27,7 @@ module.exports = {
     alias: {
       'src': resolve('src'),
       'assets': resolve('src/assets'),
+      'emoji': resolve('src/assets/emoji'),
       'components': resolve('src/components'),
       'pages': resolve('src/pages'),
       'lib': resolve('src/lib')
