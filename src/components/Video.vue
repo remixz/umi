@@ -219,7 +219,7 @@
       },
       wsJoinRoom () {
         const time = parseInt(this.$route.query.wsTime, 10)
-        const playing = this.$route.query.wsPlaying === 'true'
+        const playing = this.$route.query.wsPlaying
 
         if (time > 0) {
           this.player.seek(time)
