@@ -22,6 +22,7 @@ const emoji = [
   { name: 'ShinobuThump', id: '114429' },
   { name: 'MeguminHappy', id: '85103' },
   { name: 'RikoREEE', id: '141367' },
+  { name: 'AobaSalute', id: '138590' },
 ]
 
 export default emoji
