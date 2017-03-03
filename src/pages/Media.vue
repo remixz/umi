@@ -131,10 +131,22 @@
         this.getMediaInfo()
         if (this.room !== '') {
           WS.socket.emit('change', this.$route.path)
+          this.$router.replace({path: this.$route.path, query: Object.assign({}, this.$route.query, {roomId: this.room.replace('umi//', '')})})
+        }
+      },
+      room (id) {
+        if (id) {
+          const newRoute = Object.assign({}, this.$route, {query: {roomId: id.replace('umi//', '')}})
+          this.$router.replace(newRoute)
+        } else {
+          const newRoute = Object.assign({}, this.$route, {query: {}})
+          this.$router.replace(newRoute)
         }
       }
     },
     beforeMount () {
+      if (this.$route.query.roomId && !this.room) return this.$router.replace(`/room/${this.$route.query.roomId}`)
+
       this.getMediaInfo()
       if (this.room !== '') {
         WS.socket.emit('change', this.$route.path)

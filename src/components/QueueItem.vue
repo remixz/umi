@@ -39,7 +39,7 @@
         </p>
       </div>
     </div>
-  </rputer-link>
+  </router-link>
 </template>
 
 <script>

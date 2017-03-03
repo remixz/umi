@@ -1,7 +1,7 @@
 <template>
   <div v-if="!hide">
     <div v-if="loading" style="width: 948px" class="center">
-      <loading-media-item v-for="n in 15" />
+      <loading-media-item v-for="n in 15" :key="n" />
     </div>
     <media-item v-else v-for="id in sortedMedia" :key="id" :id="id" size="medium" />
   </div>

@@ -104,7 +104,7 @@ export default {
     },
     wsOnChange (path) {
       if (this.room !== '' && path !== this.$route.path) {
-        this.$router.push(path)
+        this.$router.push({path, query: this.$route.query})
       }
     },
     handleDestroy () {

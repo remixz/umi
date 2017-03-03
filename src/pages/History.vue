@@ -6,7 +6,7 @@
         <media-item v-for="d in data" :key="d.media.media_id" :id="d.media.media_id" :collectionName="d.collection.name" size="medium" />
       </div>
       <div v-else style="width: 948px" class="center">
-        <loading-media-item v-for="n in 15" />
+        <loading-media-item v-for="n in 15" :key="n" />
       </div>
     </div>
   </div>

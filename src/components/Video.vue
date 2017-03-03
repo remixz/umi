@@ -65,16 +65,20 @@
           },
           events: {
             onReady () {
-              const container = document.createElement('div')
+              if (self.container) {
+                this.core.el.appendChild(self.container)
+                return
+              }
+              self.container = document.createElement('div')
               self.reactions = document.createElement('div')
               self.reactions.className = 'reaction-canvas absolute absolute--fill z-9999 tl'
               self.tron = self.$el.querySelector('.reactotron').cloneNode(true)
               self.tron.style.cssText = ''
               self.tron.className = `${self.tron.className} z-max player-tron`
-              Array.from(self.tron.querySelectorAll('img')).forEach((e) => e.onclick = self.handleEmoji.bind(self, e.id, true))
-              container.appendChild(self.reactions)
-              container.appendChild(self.tron)
-              this.core.el.appendChild(container)
+              Array.from(self.tron.querySelectorAll('img')).forEach((e) => { e.onclick = self.handleEmoji.bind(self, e.id, true) })
+              self.container.appendChild(self.reactions)
+              self.container.appendChild(self.tron)
+              this.core.el.appendChild(self.container)
             }
           }
         })
@@ -204,7 +208,7 @@
           translateY: [
             {value: `+=${Math.random() > 0.5 ? -15 : 15}`, easing: 'easeInOutSine'},
             {value: `+=${Math.random() > 0.5 ? -15 : 15}`, easing: 'easeInOutSine'},
-            {value: `+=${Math.random() > 0.5 ? -15 : 15}`, easing: 'easeInOutSine'},
+            {value: `+=${Math.random() > 0.5 ? -15 : 15}`, easing: 'easeInOutSine'}
           ],
           easing: 'linear',
           duration: 1750,
@@ -229,7 +233,7 @@
           this.player.play()
         }
 
-        this.$router.replace({path: this.$route.path, query: {}})
+        this.$router.replace({path: this.$route.path, query: {roomId: this.room.replace('umi//', '')}})
         this.wsRegisterEvents()
       },
       wsRegisterEvents () {

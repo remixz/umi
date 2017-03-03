@@ -60,7 +60,7 @@
           await $store.dispatch('login', {username, password})
           $router.replace($route.query.next || '/')
         } catch (err) {
-          this.formError = typeof err === 'string' ? err : err.data.message
+          this.formError = typeof err.message === 'string' ? err.message : err.data.message
           this.loading = false
         }
       }
