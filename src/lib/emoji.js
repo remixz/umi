@@ -1,12 +1,10 @@
 const emoji = [
-  { name: 'NozoHeh', image: require('emoji/nozoHeh.png') },
-  { name: 'Yousoro', image: require('emoji/Yousoro.png') },
   { name: 'UmiDorito', image: require('emoji/UmiDorito.png') },
+  { name: 'Yousoro', image: require('emoji/Yousoro.png') },
   { name: 'NicoDab', id: '160850' },
   { name: 'TaigaSalute', id: '100852' },
   { name: 'FeelsNicoMan', id: '145817' },
-  { name: 'UmiShock', id: '73205' },
-  { name: 'TaigaAngel', id: '108591' },
+  { name: 'UmiShock', id: '164005' },
   { name: 'MeguminLewd', id: '94859' },
   { name: 'MakiWut', id: '130634' },
   { name: 'KotoHai', id: '124003' },
@@ -20,9 +18,12 @@ const emoji = [
   { name: 'VanillaGasm', id: '84451' },
   { name: 'MioTea', id: '108483' },
   { name: 'ShinobuThump', id: '114429' },
-  { name: 'MeguminHappy', id: '85103' },
   { name: 'RikoREEE', id: '141367' },
-  { name: 'AobaSalute', id: '138590' }
+  { name: 'AobaSalute', id: '138590' },
+  { name: 'A N G E R Y', id: '154339' },
+  { name: 'Yohane!!', id: '164768' },
+  { name: 'NyatLikeThis', id: '134861' },
+  // { name: 'Angery', id: '154339' },
 ]
 
 export default emoji
