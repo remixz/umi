@@ -17,8 +17,8 @@
         </div>
         <div v-else>
           <strong>Episode {{data.episode_number}}</strong> <br>
-          <small class="gray truncate db">{{data.name}}</small>
-          <small class="truncate db mt2" style="width: 200px" v-if="size === 'inline-small'">{{data.description}}</small>
+          <small class="gray truncate db" :style="noBorder ? 'width: 290px;' : ''">{{data.name}}</small>
+          <small class="truncate db mt2" style="width: 290px;" v-if="size === 'inline-small'">{{data.description}}</small>
         </div>
       </div>
     </div>

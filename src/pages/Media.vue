@@ -19,7 +19,7 @@
           <i class="fa fa-times pointer" aria-hidden="true" @click="nextEpisode = false"></i>
         </div>
       </div>
-      <umi-video v-if="streamData && streamData.format" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :seek="seek" @play="internalSeek = 0" @ended="nextEpisode = true" />
+      <umi-video v-if="streamData && streamData.format" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :seek="seek" @play="internalSeek = 0" @ended="playerEnded" />
       <div v-else class="w-100 bg-light-gray absolute top-0 left-0" style="padding-bottom: 576px"></div>
       <div class="cf media-info">
         <div class="fl w-80 pr2">
@@ -124,6 +124,11 @@
       playerSeek () {
         this.seek = this.internalSeek
         this.internalSeek = 0
+      },
+      playerEnded () {
+        this.nextEpisode = true
+        const newMedia = Object.assign({}, this.media, {playhead: this.media.duration})
+        this.$store.commit('ADD_MEDIA', newMedia)
       }
     },
     watch: {
