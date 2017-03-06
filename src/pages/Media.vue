@@ -133,6 +133,7 @@
     },
     watch: {
       mediaId (id) {
+        this.nextEpisode = false
         this.getMediaInfo()
         if (this.room !== '') {
           WS.socket.emit('change', this.$route.path)
