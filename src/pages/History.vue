@@ -4,6 +4,7 @@
     <div class="mt4">
       <div v-if="loaded" style="width: 948px" class="center">
         <media-item v-for="d in data" :key="d.media.media_id" :id="d.media.media_id" :collectionName="d.collection.name" size="medium" />
+        <button :class="`f5 fw6 db ba b--black-20 ${paginationLoading ? 'bg-gray' : 'bg-blue'} white pointer ph4 pv3 center`" @click="handlePagination">{{ paginationLoading ? 'Loading...' : 'Load more'}}</button>
       </div>
       <div v-else style="width: 948px" class="center">
         <loading-media-item v-for="n in 15" :key="n" />
@@ -26,7 +27,9 @@
     data () {
       return {
         data: [],
-        loaded: false
+        loaded: false,
+        paginationLoading: false,
+        offset: 0
       }
     },
     mixins: [authCheck],
@@ -34,6 +37,15 @@
       'media-item': MediaItem,
       'loading-media-item': LoadingMediaItem,
       'home-tabs': HomeTabs
+    },
+    methods: {
+      async handlePagination () {
+        this.paginationLoading = true
+        this.offset += 21;
+        const data = await this.$store.dispatch('getHistoryInfo', {offset: this.offset})
+        this.data = this.data.concat(data)
+        this.paginationLoading = false
+      }
     },
     async beforeMount () {
       const {$store} = this

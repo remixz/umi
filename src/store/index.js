@@ -114,11 +114,13 @@ const store = new Vuex.Store({
       })
     },
 
-    getHistoryInfo ({commit, state}) {
+    getHistoryInfo ({commit, state}, {limit = 21, offset = 0} = {}) {
       const params = {
         session_id: state.auth.session_id,
         media_types: 'anime|drama',
-        fields: [MEDIA_FIELDS, SERIES_FIELDS].join(',')
+        fields: [MEDIA_FIELDS, SERIES_FIELDS].join(','),
+        limit,
+        offset
       }
 
       return new Promise(async (resolve, reject) => {

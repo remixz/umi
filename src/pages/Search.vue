@@ -35,6 +35,9 @@
       },
       query () {
         return this.$route.query.q
+      },
+      stateQuery () {
+        return this.$store.state.searchQuery
       }
     },
     watch: {
@@ -51,7 +54,9 @@
       if (!$store.state.auth.username) return
       if (!query) return this.$router.go(-1)
 
-      $store.commit('SET_SEARCH_QUERY', query)
+      if (this.stateQuery === '') {
+        $store.commit('SET_SEARCH_QUERY', query)
+      }
       await $store.dispatch('search', query)
       this.loading = false
     },

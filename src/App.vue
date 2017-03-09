@@ -16,7 +16,7 @@
         <span class="relative logo-text">umi</span>
       </router-link>
       <section class="absolute search-bar" v-if="username">
-        <input type="text" class="w-100 bn pa3 f3 white search-input" placeholder="Search...." v-model="searchInput" @input="inputChange">
+        <input type="text" class="w-100 bn pa3 f3 white search-input" placeholder="Search...." v-model="searchInput">
       </section>
       <section class="absolute right-1 top-1 username white f5" v-if="username">
         {{ username }} <br>
@@ -65,6 +65,15 @@ export default {
     searchInput () {
       return this.$store.state.searchQuery
     },
+    searchInput: {
+      get () {
+        return this.$store.state.searchQuery
+      },
+      set (value) {
+        this.$store.commit('SET_SEARCH_QUERY', value)
+        this.goToSearch(this.searchInput, this.$route, this.$router)
+      }
+    },
     connected () {
       return this.$store.state.roomConnected
     },
@@ -88,14 +97,10 @@ export default {
     handleRoomClick ({target}) {
       target.select()
     },
-    inputChange (e) {
-      this.$store.commit('SET_SEARCH_QUERY', e.target.value)
-      this.goToSearch(this.searchInput, this.$route, this.$router)
-    },
     goToSearch: debounce((input, route, router) => {
       const method = route.name === 'search' ? 'replace' : 'push'
       router[method](`/search?q=${input}`)
-    }, 500),
+    }, 250),
     wsOnJoin () {
       this.$store.commit('UPDATE_CONNECTED_COUNT', this.$store.state.connectedCount + 1)
       WS.socket.emit('update-status', {
