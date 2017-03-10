@@ -42,7 +42,6 @@
 </template>
 
 <script>
-  import {authCheck} from 'lib/auth'
   import api from 'lib/api'
   import prettyTime from 'lib/prettyTime'
   import Video from 'components/Video'
@@ -54,7 +53,6 @@
 
   export default {
     name: 'series',
-    mixins: [authCheck],
     metaInfo () {
       return {
         title: this.collection ? `Episode ${this.media.episode_number}: ${this.media.name} — ${this.collection.name}` : 'Loading...'

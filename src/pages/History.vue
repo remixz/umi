@@ -13,7 +13,6 @@
 </template>
 
 <script>
-  import {authCheck} from 'lib/auth'
   import MediaItem from 'components/MediaItem'
   import LoadingMediaItem from 'components/LoadingMediaItem'
   import HomeTabs from 'components/HomeTabs'
@@ -31,7 +30,6 @@
         offset: 0
       }
     },
-    mixins: [authCheck],
     components: {
       'media-item': MediaItem,
       'loading-media-item': LoadingMediaItem,
@@ -48,7 +46,6 @@
     },
     async beforeMount () {
       const {$store} = this
-      if (!$store.state.auth.username) return
 
       const data = await $store.dispatch('getHistoryInfo')
       this.loaded = true

@@ -144,7 +144,7 @@ const store = new Vuex.Store({
       const params = {
         session_id: state.auth.session_id,
         classes: 'series',
-        limit: 50,
+        limit: 999,
         offset: 0,
         media_types: 'anime|drama',
         fields: SERIES_FIELDS,

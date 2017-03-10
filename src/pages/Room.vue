@@ -9,11 +9,9 @@
 
 <script>
   import WS from 'lib/websocket'
-  import {authCheck} from 'lib/auth'
 
   export default {
     name: 'room',
-    mixins: [authCheck],
     metaInfo: {
       title: 'Room'
     },
@@ -23,7 +21,6 @@
       }
     },
     mounted () {
-      if (!this.$store.state.auth.username) return
 
       const room = this.$route.params.id
       this.$store.dispatch('joinRoom', room)

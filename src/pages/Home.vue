@@ -20,13 +20,11 @@
 </template>
 
 <script>
-  import {authCheck} from 'lib/auth'
   import QueueItem from 'components/QueueItem'
   import HomeTabs from 'components/HomeTabs'
 
   export default {
     name: 'home',
-    mixins: [authCheck],
     metaInfo: {
       title: 'Queue'
     },
@@ -42,7 +40,6 @@
     },
     async beforeMount () {
       const {$store} = this
-      if (!$store.state.auth.username) return
 
       const data = await $store.dispatch('getQueueInfo')
       this.loaded = true

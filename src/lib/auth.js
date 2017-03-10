@@ -1,12 +1,21 @@
 import uuid from 'uuid/v4'
+import store from '../store'
 
-export const authCheck = {
-  beforeCreate () {
-    const {$store: {state: {auth}}, $router, $route} = this
+export function authGuard (to, from, next) {
+  const loggedIn = !!store.state.auth.username
+  if (loggedIn) {
+    next()
+  } else {
+    next(`/login?next=${encodeURIComponent(to.fullPath)}`)
+  }
+}
 
-    if (!auth.username) {
-      $router.replace(`/login?next=${encodeURIComponent($route.fullPath)}`)
-    }
+export function loginGuard (to, from, next) {
+  const noAuth = !store.state.auth.username
+  if (noAuth) {
+    next()
+  } else {
+    next('/')
   }
 }
 

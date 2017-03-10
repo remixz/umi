@@ -1,21 +1,22 @@
 <template>
   <div>
-    <h1> Search: "{{query}}" </h1>
-    <div v-if="!loading" class="center">
-      <series-item v-for="id in searchIds" :key="id" :id="id" />
-      <h2 v-if="searchIds.length === 0">no results</h2>
+    <div class="tr mv2">
+      <span class="small-caps" v-if="loading && searchIds.length > 0">Loading...</span>
+      <span class="small-caps" v-else-if="searchIds.length > 0">{{searchIds.length}} result{{searchIds.length !== 1 ? 's' : ''}}</span>
     </div>
-    <h2 class="tc" v-else>Loading...</h2>
+    <div class="center" style="width: 880px;">
+        <series-item v-for="id in searchIds" :key="id" :id="id" />
+        <h3 class="fw5 dark-gray tc" v-if="loading && searchIds.length === 0">Loading...</h3>
+        <h3 class="fw5 dark-gray tc" v-if="searchIds.length === 0 && !loading">No results found.</h3>
+    </div>
   </div>
 </template>
 
 <script>
-  import {authCheck} from 'lib/auth'
   import SeriesItem from 'components/SeriesItem'
 
   export default {
     name: 'search',
-    mixins: [authCheck],
     metaInfo () {
       return {
         title: `Search: "${this.query}"`
@@ -51,7 +52,6 @@
     },
     async beforeMount () {
       const {$store, query} = this
-      if (!$store.state.auth.username) return
       if (!query) return this.$router.go(-1)
 
       if (this.stateQuery === '') {
@@ -62,6 +62,7 @@
     },
     destroyed () {
       this.$store.commit('SET_SEARCH_QUERY', '')
+      this.$store.commit('SET_SEARCH_IDS', [])
     }
   }
 </script>

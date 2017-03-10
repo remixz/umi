@@ -40,11 +40,9 @@
 <script>
   import Collection from 'components/Collection'
   import QueueButton from 'components/QueueButton'
-  import {authCheck} from 'lib/auth'
 
   export default {
     name: 'series',
-    mixins: [authCheck],
     metaInfo () {
       return {
         title: this.series ? this.series.name : 'Loading...'
@@ -92,7 +90,6 @@
     },
     async beforeMount () {
       const {$store, $route} = this
-      if (!$store.state.auth.username) return
 
       await $store.dispatch('getSeriesInfo', $route.params.id)
       await $store.dispatch('getCollectionsForSeries', this.series.series_id)

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Meta from 'vue-meta'
 import Analytics from 'vue-analytics'
+import {authGuard, loginGuard} from 'lib/auth'
 
 import Home from 'pages/Home'
 import History from 'pages/History'
@@ -31,37 +32,44 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
+      beforeEnter: authGuard
     },
     {
       path: '/history',
       name: 'history',
-      component: History
+      component: History,
+      beforeEnter: authGuard
     },
     {
       path: '/login',
       name: 'login',
-      component: Login
+      component: Login,
+      beforeEnter: loginGuard
     },
     {
       path: '/search',
       name: 'search',
-      component: Search
+      component: Search,
+      beforeEnter: authGuard
     },
     {
       path: '/series/:id',
       name: 'series',
-      component: Series
+      component: Series,
+      beforeEnter: authGuard
     },
     {
       path: '/series/:seriesId/:id',
       name: 'media',
-      component: Media
+      component: Media,
+      beforeEnter: authGuard
     },
     {
       path: '/room/:id',
       name: 'room',
-      component: Room
+      component: Room,
+      beforeEnter: authGuard
     }
   ]
 })
