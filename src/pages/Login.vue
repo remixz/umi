@@ -38,11 +38,6 @@
         loading: false
       }
     },
-    beforeMount () {
-      if (this.$store.state.auth.username) {
-        this.$router.replace('/')
-      }
-    },
     methods: {
       async login () {
         const {username, password, $store, $router, $route} = this
