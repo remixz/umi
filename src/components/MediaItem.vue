@@ -12,12 +12,15 @@
       </div>
       <div :class="`pa2 ${size === 'inline-small' ? 'dib v-top' : ''}`">
         <div v-if="collectionName">
-          <strong class="truncate db">{{collectionName}}</strong> <br>
+          <span class="truncate db fw6">{{collectionName}}</span> <br>
           <small class="gray truncate db">Episode {{data.episode_number}} &mdash; {{data.name}}</small>
         </div>
         <div v-else>
-          <strong>Episode {{data.episode_number}}</strong> <br>
-          <small class="gray truncate db" :style="noBorder ? 'width: 290px;' : ''">{{data.name}}</small>
+          <span class="fw6" v-if="data.episode_number !== ''">Episode {{data.episode_number}}</span>
+          <span class="fw6" v-else>{{data.name}}</span>
+          <br>
+          <small class="gray truncate db" :style="noBorder ? 'width: 290px;' : ''" v-if="data.episode_number !== ''">{{data.name}}</small>
+          <small class="gray truncate db" :style="noBorder ? 'width: 290px;' : ''" v-else>&nbsp;</small>
           <small class="truncate db mt2" style="width: 290px;" v-if="size === 'inline-small'">{{data.description}}</small>
         </div>
       </div>

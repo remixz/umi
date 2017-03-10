@@ -3,7 +3,7 @@
     <div v-if="media && media.name">
       <div v-if="internalSeek !== 0 && internalSeek !== media.duration" class="w-100 bg-washed-green pa2 cf absolute top-0 left-0 z-max">
         <div class="fl">
-          <span class="b underline pointer" @click="playerSeek"><i class="fa fa-play-circle" aria-hidden="true"></i> Resume watching at {{prettyTime(internalSeek)}}?</span>
+          <span @click="playerSeek"> <i class="fa fa-play-circle" aria-hidden="true"></i> <span class="fw6 underline pointer">Resume watching at {{prettyTime(internalSeek)}}?</span></span>
         </div>
         <div class="fr">
           <i class="fa fa-times pointer" aria-hidden="true" @click="internalSeek = 0"></i>
@@ -20,21 +20,21 @@
         </div>
       </div>
       <umi-video v-if="streamData && streamData.format" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :seek="seek" @play="internalSeek = 0" @ended="playerEnded" />
-      <div v-else class="w-100 bg-light-gray absolute top-0 left-0" style="padding-bottom: 576px"></div>
-      <div class="cf media-info">
-        <div class="fl w-80 pr2">
-          <h2>Episode {{media.episode_number}}: {{media.name}}</h2>
-          <p>{{media.description}}</p>
+      <div v-else class="pv2">
+        <div class="w-100 bg-light-gray absolute top-0 left-0" style="padding-bottom: 576px"></div>
+        <div class="absolute z-9999" style="top: 588px">
+          <div class="f5 fw6 dib ba black b--black-20 bg-transparent br2 black pointer ph3 pv2"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Toggle lights</div>
+          <div class="f5 fw6 dib ba black b--black-20 bg-transparent br2 black pointer ph3 pv2" v-if="room === ''"><i class="fa fa-globe" aria-hidden="true"></i> Watch with others</div>
+          <reactotron v-if="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron" />
+        </div>
+      </div>
+      <div class="media-info">
+        <h2 class="normal lh-title mb2"><span class="small-caps fw6">Episode {{media.episode_number}}:</span> {{media.name}}</h2>
+        <router-link class="dark-gray fw6 no-underline bb pb1 b--dark-gray" :to="`/series/${media.series_id}`">{{collectionLoaded ? collection.name : 'Loading...'}}</router-link>
+        <p class="lh-copy">{{media.description}}</p>
 
-          <h2>Episodes</h2>
-          <episode-scroller v-if="collectionMedia && collectionMedia.length > 0" :ids="collectionMedia" :selected="$route.params.id" />
-        </div>
-        <div class="fl w-20">
-          <div class="fr">
-            <h2>Series</h2>
-            <series-item v-if="seriesLoaded" :id="media.series_id" noMargin="true" />
-          </div>
-        </div>
+        <h3 class="fw5">Episodes</h3>
+        <episode-scroller v-if="collectionMedia && collectionMedia.length > 0" :ids="collectionMedia" :selected="$route.params.id" />
       </div>
     </div>
     <h2 class="tc" v-else>Loading video...</h2>
@@ -49,6 +49,7 @@
   import MediaItem from 'components/MediaItem'
   import SeriesItem from 'components/SeriesItem'
   import EpisodeScroller from 'components/EpisodeScroller'
+  import Reactotron from 'components/Reactotron'
   import WS from 'lib/websocket'
 
   export default {
@@ -56,14 +57,15 @@
     mixins: [authCheck],
     metaInfo () {
       return {
-        title: this.series ? `Episode ${this.media.episode_number}: ${this.media.name} — ${this.series.name}` : 'Loading...'
+        title: this.collection ? `Episode ${this.media.episode_number}: ${this.media.name} — ${this.collection.name}` : 'Loading...'
       }
     },
     components: {
       'umi-video': Video,
       'media-item': MediaItem,
       'series-item': SeriesItem,
-      'episode-scroller': EpisodeScroller
+      'episode-scroller': EpisodeScroller,
+      'reactotron': Reactotron
     },
     data () {
       return {
@@ -71,7 +73,7 @@
         internalSeek: 0,
         seek: 0,
         nextEpisode: false,
-        seriesLoaded: false
+        collectionLoaded: false
       }
     },
     computed: {
@@ -89,11 +91,11 @@
       room () {
         return this.$store.state.roomId
       },
-      series () {
-        return this.media ? this.$store.state.series[this.media.series_id] : null
+      collection () {
+        return this.media ? this.$store.state.collections[this.media.collection_id] : null
       },
       nextEpisodeId () {
-        if (this.seriesLoaded) {
+        if (this.collectionLoaded) {
           return Object.keys(this.$store.state.media).find((key) => {
             if (!this.media) return false
             const m = this.$store.state.media[key]
@@ -110,13 +112,15 @@
         if (!$store.state.auth.username) return
 
         await $store.dispatch('getMediaInfo', $route.params.id)
-        const res = await api({route: 'info', params: {session_id: $store.state.auth.session_id, media_id: $route.params.id, fields: 'media.stream_data'}})
-        this.streamData = res.data.data.stream_data
-        this.seek = 0
-        this.internalSeek = this.media.playhead
+        api({route: 'info', params: {session_id: $store.state.auth.session_id, media_id: $route.params.id, fields: 'media.stream_data'}})
+          .then((res) => {
+            this.streamData = res.data.data.stream_data
+            this.seek = 0
+            this.internalSeek = this.media.playhead
+          })
+        await $store.dispatch('getCollectionInfo', this.media.collection_id)
+        this.collectionLoaded = true
         await $store.dispatch('getMediaForCollection', this.media.collection_id)
-        await $store.dispatch('getSeriesInfo', this.media.series_id)
-        this.seriesLoaded = true
       },
       prettyTime (time) {
         return prettyTime(time)

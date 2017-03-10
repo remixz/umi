@@ -11,7 +11,6 @@ const SERIES_FIELDS = 'series.series_id,series.name,series.portrait_image,series
 
 Vue.use(Vuex)
 
-// use Vue.set for adding series/collections/media
 const store = new Vuex.Store({
   state: {
     auth: localStorage.getItem('auth') ? (
@@ -269,7 +268,29 @@ const store = new Vuex.Store({
       })
     },
 
-    getMediaInfo ({commit, state}, id) {
+    getCollectionInfo ({commit, state}, id) {
+      const params = {
+        session_id: state.auth.session_id,
+        collection_id: id
+      }
+
+      if (state.media[id]) return Promise.resolve()
+
+      return new Promise(async (resolve, reject) => {
+        try {
+          const resp = await api({route: 'info', params})
+          if (resp.data.error) throw resp
+
+          const data = resp.data.data
+          commit('ADD_COLLECTION', data)
+          resolve()
+        } catch (err) {
+          reject(err)
+        }
+      })
+    },
+
+    getMediaInfo ({commit, state, dispatch}, id) {
       const params = {
         session_id: state.auth.session_id,
         media_id: id,

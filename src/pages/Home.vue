@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <home-tabs />
+  <div class="home-tabs-padding">
     <div class="mt4">
       <div v-if="loaded">
         <queue-item v-for="d in data" :key="d.queue_entry_id" :data="d" />

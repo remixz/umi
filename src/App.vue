@@ -13,9 +13,9 @@
     <header :class="`bg-blue relative shadow-1 header${connected ? ' connected' : ''}`">
       <router-link class="no-underline white f3 dib tracked absolute bottom-0 left-2" to="/" title="Home">
         <img src="./assets/umi.png" alt="umi logo" class="logo">
-        <span class="relative logo-text">umi</span>
+        <span class="relative logo-text avenir ttu">umi</span>
       </router-link>
-      <section class="absolute search-bar" v-if="username">
+      <section class="center search-bar" v-if="username">
         <input type="text" class="w-100 bn pa3 f3 white search-input" placeholder="Search...." v-model="searchInput">
       </section>
       <section class="absolute right-1 top-1 username white f5" v-if="username">
@@ -25,6 +25,9 @@
     </header>
 
     <main class="bg-white center pv1 ph3 mv3 relative">
+      <transition name="fade" mode="out-in">
+        <home-tabs v-if="showTabs" />
+      </transition>
       <transition name="fade" mode="out-in" v-if="!loading">
         <router-view></router-view>
       </transition>
@@ -46,9 +49,11 @@
 <script>
 import debounce from 'debounce'
 import WS from 'lib/websocket'
+import HomeTabs from 'components/HomeTabs'
 
 export default {
   name: 'app',
+  components: { HomeTabs },
   data () {
     return {
       loading: true
@@ -61,9 +66,6 @@ export default {
   computed: {
     username () {
       return this.$store.state.auth.username
-    },
-    searchInput () {
-      return this.$store.state.searchQuery
     },
     searchInput: {
       get () {
@@ -91,6 +93,9 @@ export default {
     },
     lights () {
       return this.$store.state.lights
+    },
+    showTabs () {
+      return this.$route.name === 'home' || this.$route.name === 'history'
     }
   },
   methods: {
@@ -180,6 +185,10 @@ export default {
   .tooltip.tooltip-after-open {
     opacity: 1;
   }
+
+  .home-tabs-padding {
+    padding-top: 30px;
+  }
 </style>
 
 <style scoped>
@@ -198,6 +207,7 @@ export default {
   }
 
   .logo {
+    width: 64px;
     height: 55px;
     vertical-align: bottom;
   }

@@ -3,8 +3,8 @@
     <div id="player" :class="`absolute top-0 left-0 z-9999${lights ? ' shadow-2' : ''}`"></div>
     <div v-if="!playerInit" class="w-100 bg-light-gray absolute top-0 left-0" style="padding-bottom: 576px"></div>
     <div class="absolute controls z-9999">
-      <button :class="`f5 fw6 dib ba b--black-20 ${lights ? 'bg-dark-gray' : 'bg-blue'} white pointer ph3 pv2`" @click="$store.commit('UPDATE_LIGHTS', !lights)"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Toggle lights</button>
-      <button :class="`f5 fw6 dib ba b--black-20 ${lights ? 'bg-dark-gray' : 'bg-blue'} white pointer ph3 pv2`" @click="wsCreateRoom" v-if="room === ''"><i class="fa fa-globe" aria-hidden="true"></i> Watch with others</button>
+      <div :class="`f5 fw6 dib ba ${lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate'} bg-transparent br2 black pointer ph3 pv2`" @click="$store.commit('UPDATE_LIGHTS', !lights)"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Toggle lights</div>
+      <div :class="`f5 fw6 dib ba ${lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate'} bg-transparent br2 black pointer ph3 pv2`" @click="wsCreateRoom" v-if="room === ''"><i class="fa fa-globe" aria-hidden="true"></i> Watch with others</div>
       <reactotron v-show="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron" @emoji="handleEmoji" />
     </div>
   </div>

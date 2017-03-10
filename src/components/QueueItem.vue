@@ -11,7 +11,7 @@
         </div>
       </div>
       <div class="fl w-80">
-        <strong>{{data.series.name}}</strong> <br>
+        <strong class="fw6">{{data.series.name}}</strong> <br>
         <small class="gray">Next up: Episode {{data.most_likely_media.episode_number}} &mdash; {{data.most_likely_media.name}}</small>
         <p>
           <small>
