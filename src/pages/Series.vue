@@ -21,7 +21,7 @@
 
       <div v-if="collections">
         <div v-for="id in sortedCollections" :key="id">
-          <div class="cf bg-light-gray pa3 mv2 pointer bb bw2 b--black-10" :data-id="id" @click="selectCollection">
+          <div :class="`cf bg-light-gray pa3 mv2 ${selectedCollection !== id ? 'pointer' : ''} bb bw2 b--black-10`" :data-id="id" @click="selectCollection">
             <div class="fl">
               <span class="fw6">{{collectionData[id].name}}</span>
             </div>
@@ -33,7 +33,6 @@
         </div>
       </div>
     </div>
-    <h2 class="tc" v-else>Loading series...</h2>
   </div>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="media && media.name">
-      <div v-if="internalSeek !== 0 && internalSeek !== media.duration" class="w-100 bg-washed-green pa2 cf absolute top-0 left-0 z-max">
+      <div v-if="internalSeek !== 0 && internalSeek < media.duration" class="w-100 bg-washed-green pa2 cf absolute top-0 left-0 z-max">
         <div class="fl">
           <span @click="playerSeek"> <i class="fa fa-play-circle" aria-hidden="true"></i> <span class="fw6 underline pointer">Resume watching at {{prettyTime(internalSeek)}}?</span></span>
         </div>
@@ -22,22 +22,24 @@
       <umi-video v-if="streamData && streamData.format" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :seek="seek" @play="internalSeek = 0" @ended="playerEnded" />
       <div v-else class="pv2">
         <div class="w-100 bg-light-gray absolute top-0 left-0" style="padding-bottom: 576px"></div>
-        <div class="absolute z-9999" style="top: 588px">
-          <div class="f5 fw6 dib ba black b--black-20 bg-transparent br2 black pointer ph3 pv2"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Toggle lights</div>
-          <div class="f5 fw6 dib ba black b--black-20 bg-transparent br2 black pointer ph3 pv2" v-if="room === ''"><i class="fa fa-globe" aria-hidden="true"></i> Watch with others</div>
-          <reactotron v-if="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron" />
+        <div class="absolute z-9999" style="top: 584px; right: 5px;">
+          <div class="f5 fw6 dib ba black b--black-20 bg-transparent br2 black pointer ph3 pv2" v-if="room === ''"><i class="tc fa fa-users" aria-hidden="true"></i></div>
+          <div class="f5 fw6 dib ba black b--black-20 bg-transparent br2 black pointer ph3 pv2"><i class="tc fa fa-moon-o" aria-hidden="true" style="width: 16px;"></i></div>
         </div>
+        <reactotron v-if="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron relative z-9999" style="top: 576px;" />
       </div>
       <div class="media-info">
-        <h2 class="normal lh-title mb2"><span class="small-caps fw6">Episode {{media.episode_number}}:</span> {{media.name}}</h2>
-        <router-link class="dark-gray fw6 no-underline bb pb1 b--dark-gray" :to="`/series/${media.series_id}`">{{collectionLoaded ? collection.name : 'Loading...'}}</router-link>
+        <h2 class="normal lh-title mb2 w-90"><span class="small-caps fw6">Episode {{media.episode_number}}:</span> {{media.name}}</h2>
+        <router-link class="dark-gray fw6 no-underline bb pb1 b--dark-gray hover-blue link" :to="`/series/${media.series_id}`">{{collectionLoaded ? collection.name : 'Loading...'}}</router-link>
         <p class="lh-copy">{{media.description}}</p>
 
         <h3 class="fw5">Episodes</h3>
         <episode-scroller v-if="collectionMedia && collectionMedia.length > 0" :ids="collectionMedia" :selected="$route.params.id" />
       </div>
     </div>
-    <h2 class="tc" v-else>Loading video...</h2>
+    <div v-else>
+      <div class="w-100 bg-light-gray absolute top-0 left-0" style="padding-bottom: 576px"></div>
+    </div>
   </div>
 </template>
 
@@ -46,13 +48,12 @@
   import prettyTime from 'lib/prettyTime'
   import Video from 'components/Video'
   import MediaItem from 'components/MediaItem'
-  import SeriesItem from 'components/SeriesItem'
   import EpisodeScroller from 'components/EpisodeScroller'
   import Reactotron from 'components/Reactotron'
   import WS from 'lib/websocket'
 
   export default {
-    name: 'series',
+    name: 'media',
     metaInfo () {
       return {
         title: this.collection ? `Episode ${this.media.episode_number}: ${this.media.name} — ${this.collection.name}` : 'Loading...'
@@ -61,7 +62,6 @@
     components: {
       'umi-video': Video,
       'media-item': MediaItem,
-      'series-item': SeriesItem,
       'episode-scroller': EpisodeScroller,
       'reactotron': Reactotron
     },
@@ -107,7 +107,6 @@
     methods: {
       async getMediaInfo () {
         const {$store, $route} = this
-        if (!$store.state.auth.username) return
 
         await $store.dispatch('getMediaInfo', $route.params.id)
         api({route: 'info', params: {session_id: $store.state.auth.session_id, media_id: $route.params.id, fields: 'media.stream_data'}})
@@ -158,6 +157,8 @@
       this.getMediaInfo()
       if (this.room !== '') {
         WS.socket.emit('change', this.$route.path)
+        const newRoute = Object.assign({}, this.$route, {query: {roomId: this.room.replace('umi//', '')}})
+        this.$router.replace(newRoute)
       }
     },
     beforeDestroy () {
@@ -168,6 +169,6 @@
 
 <style scoped>
   .media-info {
-    padding-top: 595px;
+    padding-top: 547px;
   }
 </style>

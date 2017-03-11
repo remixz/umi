@@ -1,30 +1,30 @@
 <template>
   <div class="sans-serif" id="app">
-    <div v-if="connected" :class="`${lights ? 'bg-dark-gray' : 'bg-green'} white pa2 cf z-5 absolute w-100 top-0`">
+    <div :class="`${lights ? 'bg-dark-gray' : 'bg-green'} white pa2 cf z-5 fixed right-0 bottom-0 br1 br--left br--top shadow-1 room-bar ${roomBarClass}`">
       <div class="w-80 dib ph3">
-        <span><strong>Connected to room!</strong> Share this link:</span>
-        <input type="text" :class="`w-60 ${lights ? 'bg-near-black' : 'bg-dark-green'} white input-reset bw0 pa2`" v-model="roomUrl" @click="handleRoomClick">
+        <i :class="`fa fa-caret-${hideBar ? 'left' : 'right'} absolute pointer bar-caret`" aria-hidden="true" @click="hideBar = !hideBar"></i>
+        <input type="text" :class="`w-100 ${lights ? 'bg-near-black' : 'bg-dark-green'} white input-reset bw0 pa2 br1 pointer`" readonly v-tooltip.top-center="tooltip" v-model="roomUrl" @mouseenter="tooltip = 'Click to copy URL'" @click="handleRoomClick" @mouseleave="handleRoomInputLeave">
       </div>
-      <div class="fr">
-        <span class="underline pointer" @click="handleDestroy">Leave this room</span> <br>
-        <span>Watching: {{connectedCount}}</span>
+      <div class="w-20 fr">
+        <span :class="`f6 fw5 db ba b--white-40 bg-transparent bg-animate ${!lights ? 'hover-bg-dark-green' : ''} white br1 pointer ph2 pv1 tc`" style="margin-top: -3px" @click="handleDestroy">Leave this room</span>
+        <span class="small-caps f6 absolute" style="right: 35px">Connected: {{connectedCount}}</span>
       </div>
     </div>
-    <header :class="`bg-blue relative shadow-1 header${connected ? ' connected' : ''}`">
+    <header :class="`bg-blue fixed top-0 shadow-1 header ${lights ? 'z-3' : 'z-max'}`">
       <router-link class="no-underline white f3 dib tracked absolute bottom-0 left-2" to="/" title="Home">
         <img src="./assets/umi.png" alt="umi logo" class="logo">
         <span class="relative logo-text avenir ttu">umi</span>
       </router-link>
       <section class="center search-bar" v-if="username">
-        <input type="text" class="w-100 bn pa3 f3 white search-input" placeholder="Search...." v-model="searchInput">
+        <input type="text" class="w-100 bn pa3 f3 white search-input" placeholder="Search…" v-model="searchInput">
       </section>
-      <section class="absolute right-1 top-1 username white f5" v-if="username">
-        {{ username }} <br>
-        <span class="underline pointer" @click="logout">Log out</span>
+      <section class="absolute right-1 username white f5" style="top: 20px;" v-if="username">
+        {{ username }}
+        <span class="f6 fw5 dib ml1 ba b--white-40 bg-transparent bg-animate white br1 pointer ph2 pv1 tc logout" @click="logout">Log out</span>
       </section>
     </header>
 
-    <main class="bg-white center pv1 ph3 mv3 relative">
+    <main class="bg-white center pv1 ph3 mv3 relative" style="margin-top: 77px;">
       <transition name="fade" mode="out-in">
         <home-tabs v-if="showTabs" />
       </transition>
@@ -56,7 +56,9 @@ export default {
   components: { HomeTabs },
   data () {
     return {
-      loading: true
+      loading: true,
+      tooltip: 'Click to copy URL',
+      hideBar: false
     }
   },
   metaInfo: {
@@ -96,11 +98,23 @@ export default {
     },
     showTabs () {
       return this.$route.name === 'home' || this.$route.name === 'history'
+    },
+    roomBarClass () {
+      return !this.connected ? 'hidden' : (this.hideBar ? 'peek' : 'show')
     }
   },
   methods: {
     handleRoomClick ({target}) {
       target.select()
+      const didCopy = document.execCommand('copy')
+      if (didCopy) {
+        this.tooltip = 'Copied!'
+      } else {
+        this.tooltip = 'Couldn\'t copy, press CTRL-C'
+      }
+    },
+    handleRoomInputLeave ({target}) {
+      target.blur()
     },
     goToSearch: debounce((input, route, router) => {
       const method = route.name === 'search' ? 'replace' : 'push'
@@ -122,9 +136,9 @@ export default {
       this.$store.commit('UPDATE_CONNECTED', false)
       this.$store.dispatch('leaveRoom')
     },
-    logout () {
-      localStorage.removeItem('auth')
-      location.pathname = '/'
+    async logout () {
+      await this.$store.dispatch('logout')
+      this.$router.push('/login')
     }
   },
   watch: {
@@ -202,10 +216,6 @@ export default {
     height: 4rem;
   }
 
-  .header.connected {
-    margin-top: 52px;
-  }
-
   .logo {
     width: 64px;
     height: 55px;
@@ -229,6 +239,38 @@ export default {
   .search-input::placeholder {
     color: white;
     opacity: 0.8;
+  }
+
+  .logout:hover {
+    background-color: #2c60a2;
+  }
+
+  .room-bar {
+    width: 724px;
+    transition: transform 0.2s ease;
+  }
+
+  .room-bar.hidden {
+    transform: translateY(55px);
+  }
+
+  .room-bar.peek {
+    transform: translateX(700px);
+  }
+
+  .room-bar.peek:hover {
+    transform: translateX(690px);
+  }
+
+  .room-bar.show {
+    transform: translateX(0);
+  }
+
+  .bar-caret {
+    padding: 10px;
+    left: -2px;
+    top: 3px;
+    font-size: 26px;
   }
 
   .fade-enter-active, .fade-leave-active {

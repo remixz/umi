@@ -3,15 +3,15 @@
     <div id="player" :class="`absolute top-0 left-0 z-9999${lights ? ' shadow-2' : ''}`"></div>
     <div v-if="!playerInit" class="w-100 bg-light-gray absolute top-0 left-0" style="padding-bottom: 576px"></div>
     <div class="absolute controls z-9999">
-      <div :class="`f5 fw6 dib ba ${lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate'} bg-transparent br2 black pointer ph3 pv2`" @click="$store.commit('UPDATE_LIGHTS', !lights)"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Toggle lights</div>
-      <div :class="`f5 fw6 dib ba ${lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate'} bg-transparent br2 black pointer ph3 pv2`" @click="wsCreateRoom" v-if="room === ''"><i class="fa fa-globe" aria-hidden="true"></i> Watch with others</div>
-      <reactotron v-show="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron" @emoji="handleEmoji" />
+      <div v-tooltip.bottom-center="'Watch with others'" :class="`f5 fw6 dib ba ${lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate'} bg-transparent br2 black pointer ph3 pv2`" @click="wsCreateRoom" v-if="room === ''"><i class="tc fa fa-users" aria-hidden="true"></i></div>
+      <div v-tooltip.bottom-center="'Toggle dark mode'" :class="`f5 fw6 dib ba ${lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate'} bg-transparent br2 black pointer ph3 pv2`" @click="$store.commit('UPDATE_LIGHTS', !lights)"><i :class="`tc fa fa-${lights ? 'sun' : 'moon'}-o`" aria-hidden="true" style="width: 16px;"></i></div>
     </div>
+    <reactotron v-show="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron relative z-9999" style="top: 576px;" @emoji="handleEmoji" />
   </div>
 </template>
 
 <script>
-  /* global Clappr, LevelSelector, ChromecastPlugin */
+  /* global Clappr, LevelSelector */
   import $script from 'scriptjs'
   import anime from 'animejs'
   import api, {LOCALE, VERSION} from 'lib/api'
@@ -42,7 +42,7 @@
       }
     },
     mounted () {
-      $script('//cdn.jsdelivr.net/g/clappr@0.2.65,clappr.chromecast-plugin@0.0.5,clappr.level-selector@0.1.10', () => {
+      $script('//cdn.jsdelivr.net/g/clappr@0.2.65,clappr.level-selector@0.1.10', () => {
         const self = this
         this.playerInit = true
         this.player = new Clappr.Player({
@@ -52,7 +52,7 @@
           source: this.streamUrl,
           poster: this.poster,
           disableVideoTagContextMenu: true,
-          plugins: [LevelSelector, ChromecastPlugin],
+          plugins: [LevelSelector],
           levelSelectorConfig: {
             title: 'Quality',
             labels: {
@@ -334,6 +334,7 @@
 
 <style scoped>
   .controls {
-    top: 588px;
+    top: 584px;
+    right: 5px;
   }
 </style>

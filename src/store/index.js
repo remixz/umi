@@ -88,6 +88,19 @@ const store = new Vuex.Store({
       })
     },
 
+    logout ({commit, dispatch}) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('REMOVE_AUTH')
+          localStorage.removeItem('auth')
+          await dispatch('startSession')
+          resolve()
+        } catch (err) {
+          reject(err)
+        }
+      })
+    },
+
     getQueueInfo ({commit, state}) {
       const params = {
         session_id: state.auth.session_id,
@@ -345,6 +358,10 @@ const store = new Vuex.Store({
       const updated = Object.assign({}, state.auth, obj)
       localStorage.setItem('auth', JSON.stringify(updated))
       Vue.set(state, 'auth', updated)
+    },
+
+    REMOVE_AUTH (state) {
+      Vue.set(state, 'auth', {})
     },
 
     SET_SEARCH_IDS (state, arr) {
