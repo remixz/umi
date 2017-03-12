@@ -15,11 +15,7 @@ import Room from 'pages/Room'
 Vue.use(Router)
 Vue.use(Meta)
 
-if (process.env.NODE_ENV === 'production') {
-  Vue.use(Analytics, {id: 'UA-46859303-4'})
-}
-
-export default new Router({
+const router = new Router({
   mode: 'history',
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {
@@ -73,3 +69,10 @@ export default new Router({
     }
   ]
 })
+
+
+if (process.env.NODE_ENV === 'production') {
+  Vue.use(Analytics, {id: 'UA-46859303-4', router})
+}
+
+export default router

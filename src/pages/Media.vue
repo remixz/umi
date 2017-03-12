@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="media && media.name">
-      <div v-if="internalSeek !== 0 && internalSeek < media.duration" class="w-100 bg-washed-green pa2 cf absolute top-0 left-0 z-max">
+      <div v-if="internalSeek !== 0 && internalSeek < media.duration" class="w-100 bg-washed-green pa2 cf absolute top-0 left-0" style="z-index: 10000;">
         <div class="fl">
           <span @click="playerSeek"> <i class="fa fa-play-circle" aria-hidden="true"></i> <span class="fw6 underline pointer">Resume watching at {{prettyTime(internalSeek)}}?</span></span>
         </div>

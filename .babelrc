@@ -1,6 +1,18 @@
 {
   "presets": [
-    ["es2015", { "modules": false }]
+    ["env", {
+      "modules": false,
+      "targets": {
+        "chrome": 56,
+        "firefox": 52,
+        "ios": 10,
+        "safari": 10,
+        "edge": 14
+      },
+      "debug": true,
+      "exclude": ["transform-regenerator", "transform-async-to-generator"],
+      "useBuiltIns": true
+    }]
   ],
   "plugins": [
     ["fast-async", {
