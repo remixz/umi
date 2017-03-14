@@ -22,7 +22,8 @@ const emoji = [
   { name: 'AobaSalute', id: '138590' },
   { name: 'A N G E R Y', id: '154339' },
   { name: 'Yohane!!', id: '164768' },
-  { name: 'NyatLikeThis', id: '134861' }
+  { name: 'NyatLikeThis', id: '134861' },
+  { name: 'GnomeChild', id: '43562' }
   // { name: 'Angery', id: '154339' },
 ]
 
