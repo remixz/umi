@@ -157,8 +157,7 @@
       this.getMediaInfo()
       if (this.room !== '') {
         WS.socket.emit('change', this.$route.path)
-        const newRoute = Object.assign({}, this.$route, {query: {roomId: this.room.replace('umi//', '')}})
-        this.$router.replace(newRoute)
+        this.$router.replace({path: this.$route.path, query: Object.assign({}, this.$route.query, {roomId: this.room.replace('umi//', '')})})
       }
     },
     beforeDestroy () {
