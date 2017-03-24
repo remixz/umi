@@ -70,7 +70,6 @@ const router = new Router({
   ]
 })
 
-
 if (process.env.NODE_ENV === 'production') {
   Vue.use(Analytics, {id: 'UA-46859303-4', router})
 }

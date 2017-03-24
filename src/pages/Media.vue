@@ -1,12 +1,12 @@
 <template>
   <div>
     <div v-if="media && media.name">
-      <div v-if="internalSeek !== 0 && internalSeek < media.duration" class="w-100 bg-washed-green pa2 cf absolute top-0 left-0" style="z-index: 10000;">
+      <div v-if="internalSeek !== 0 && internalSeek < media.duration" class="bg-washed-green pa2 cf absolute left-0 right-0 center player-width" style="z-index: 10000; top: 606px;">
         <div class="fl">
           <span @click="playerSeek"> <i class="fa fa-play-circle" aria-hidden="true"></i> <span class="fw6 underline pointer">Resume watching at {{prettyTime(internalSeek)}}?</span></span>
         </div>
         <div class="fr">
-          <i class="fa fa-times pointer" aria-hidden="true" @click="internalSeek = 0"></i>
+          <i class="fa fa-times pointer grow" aria-hidden="true" @click="internalSeek = 0"></i>
         </div>
       </div>
       <div v-if="nextEpisode && nextEpisodeId !== ''" class="bg-black-60 absolute absolute--fill z-max" style="height: 576px"></div>
@@ -21,15 +21,19 @@
       </div>
       <umi-video v-if="streamData && streamData.format" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :seek="seek" @play="internalSeek = 0" @ended="playerEnded" />
       <div v-else class="pv2">
-        <div class="w-100 bg-light-gray absolute top-0 left-0" style="padding-bottom: 576px"></div>
-        <div class="absolute z-9999" style="top: 584px; right: 5px;">
-          <div class="f5 fw6 dib ba black b--black-20 bg-transparent br2 black pointer ph3 pv2" v-if="room === ''"><i class="tc fa fa-users" aria-hidden="true"></i></div>
-          <div class="f5 fw6 dib ba black b--black-20 bg-transparent br2 black pointer ph3 pv2"><i class="tc fa fa-moon-o" aria-hidden="true" style="width: 16px;"></i></div>
+        <div class="bg-black absolute w-100 left-0 player-height player-top-offset">
+          <div class="bg-dark-gray center player-width player-height"></div>
         </div>
-        <reactotron v-if="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron relative z-9999" style="top: 576px;" />
+        <reactotron v-if="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron relative z-9999" style="top: 565px;" />
       </div>
       <div class="media-info">
-        <h2 class="normal lh-title mb2 w-90"><span class="small-caps fw6">Episode {{media.episode_number}}:</span> {{media.name}}</h2>
+        <div class="w-100">
+          <h2 class="normal lh-title mb2 w-80 dib"><span class="small-caps fw6">Episode {{media.episode_number}}:</span> {{media.name}}</h2>
+          <div class="dib fr pt3 z-9999 relative">
+            <div v-tooltip.bottom-center="'Watch with others'" :class="`f5 fw6 dib ba ${lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate'} bg-transparent br2 black pointer ph3 pv2`" v-if="room === ''" @click="$store.dispatch('createRoom')"><i class="tc fa fa-users" aria-hidden="true"></i></div>
+            <div v-tooltip.bottom-center="'Toggle dark mode'" :class="`f5 fw6 dib ba ${lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate'} bg-transparent br2 black pointer ph3 pv2`" @click="$store.commit('UPDATE_LIGHTS', !lights)"><i class="tc fa fa-moon-o" aria-hidden="true" style="width: 16px;"></i></div>
+          </div>
+        </div>
         <router-link class="dark-gray fw6 no-underline bb pb1 b--dark-gray hover-blue link" :to="`/series/${media.series_id}`">{{collectionLoaded ? collection.name : 'Loading...'}}</router-link>
         <p class="lh-copy">{{media.description}}</p>
 
@@ -38,7 +42,11 @@
       </div>
     </div>
     <div v-else>
-      <div class="w-100 bg-light-gray absolute top-0 left-0" style="padding-bottom: 576px"></div>
+      <div class="pv2">
+        <div class="bg-black absolute w-100 left-0 player-height player-top-offset">
+          <div class="bg-dark-gray center player-width player-height"></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -102,6 +110,9 @@
         } else {
           return ''
         }
+      },
+      lights () {
+        return this.$store.state.lights
       }
     },
     methods: {
@@ -168,6 +179,6 @@
 
 <style scoped>
   .media-info {
-    padding-top: 547px;
+    padding-top: 540px;
   }
 </style>

@@ -1,27 +1,24 @@
 <template>
-  <div class="home-tabs-padding">
-    <div class="mt4">
-      <div v-if="loaded">
-        <queue-item v-for="d in data" :key="d.queue_entry_id" :data="d" />
-      </div>
-      <div v-else>
-        <div v-for="n in 10" class="bg-near-white w-100 mb2 pa3 cf bb bw2 b--light-gray">
-          <div class="animated-background">
-            <div class="bg-near-white absolute mask vid-sep"></div>
-            <div class="bg-near-white absolute mask vid-below-line"></div>
-            <div class="bg-near-white absolute mask desc-sep"></div>
-            <div class="bg-near-white absolute mask line-1-sep"></div>
-          </div>
+  <div class="mt2">
+    <div v-if="loaded">
+      <queue-item v-for="d in data" :key="d.queue_entry_id" :data="d" />
+    </div>
+    <div v-else>
+      <div v-for="n in 10" class="bg-near-white w-100 mb2 pa3 cf bb bw2 b--light-gray">
+        <div class="animated-background">
+          <div class="bg-near-white absolute mask vid-sep"></div>
+          <div class="bg-near-white absolute mask vid-below-line"></div>
+          <div class="bg-near-white absolute mask desc-sep"></div>
+          <div class="bg-near-white absolute mask line-1-sep"></div>
         </div>
       </div>
-      <h2 class="tc" v-else>Loading your queue...</h2>
     </div>
+    <h2 class="tc" v-else>Loading your queue...</h2>
   </div>
 </template>
 
 <script>
   import QueueItem from 'components/QueueItem'
-  import HomeTabs from 'components/HomeTabs'
 
   export default {
     name: 'home',
@@ -35,8 +32,7 @@
       }
     },
     components: {
-      'queue-item': QueueItem,
-      'home-tabs': HomeTabs
+      'queue-item': QueueItem
     },
     async beforeMount () {
       const {$store} = this

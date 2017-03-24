@@ -10,29 +10,12 @@
         <span class="small-caps f6 absolute" style="right: 35px">Connected: {{connectedCount}}</span>
       </div>
     </div>
-    <header :class="`bg-blue fixed top-0 shadow-1 header ${lights ? 'z-3' : 'z-max'}`">
-      <router-link class="no-underline white f3 dib tracked absolute bottom-0 left-2" to="/" title="Home">
-        <img src="./assets/umi.png" alt="umi logo" class="logo">
-        <span class="relative logo-text avenir ttu">umi</span>
-      </router-link>
-      <section class="center search-bar" v-if="username">
-        <input type="text" class="w-100 bn pa3 f3 white search-input" placeholder="Search…" v-model="searchInput">
-      </section>
-      <section class="absolute right-1 username white f5" style="top: 20px;" v-if="username">
-        {{ username }}
-        <span class="f6 fw5 dib ml1 ba b--white-40 bg-transparent bg-animate white br1 pointer ph2 pv1 tc logout" @click="logout">Log out</span>
-      </section>
-    </header>
-
-    <main class="bg-white center pv1 ph3 mv3 relative" style="margin-top: 77px;">
-      <transition name="fade" mode="out-in">
-        <home-tabs v-if="showTabs" />
-      </transition>
+    <umi-header />
+    <main class="bg-white center pv1 ph3 mv3" style="margin-top: 77px;">
       <transition name="fade" mode="out-in" v-if="!loading">
         <router-view></router-view>
       </transition>
     </main>
-
     <footer class="mw8 center relative">
       <a href="https://www.netlify.com" target="_blank" class="absolute right-0">
         <img src="https://www.netlify.com/img/global/badges/netlify-light.svg"/>
@@ -47,13 +30,12 @@
 </template>
 
 <script>
-import debounce from 'debounce'
 import WS from 'lib/websocket'
-import HomeTabs from 'components/HomeTabs'
+import Header from 'components/Header'
 
 export default {
   name: 'app',
-  components: { HomeTabs },
+  components: { 'umi-header': Header },
   data () {
     return {
       loading: true,
@@ -66,18 +48,6 @@ export default {
     title: 'Loading...'
   },
   computed: {
-    username () {
-      return this.$store.state.auth.username
-    },
-    searchInput: {
-      get () {
-        return this.$store.state.searchQuery
-      },
-      set (value) {
-        this.$store.commit('SET_SEARCH_QUERY', value)
-        this.goToSearch(this.searchInput, this.$route, this.$router)
-      }
-    },
     connected () {
       return this.$store.state.roomConnected
     },
@@ -116,10 +86,6 @@ export default {
     handleRoomInputLeave ({target}) {
       target.blur()
     },
-    goToSearch: debounce((input, route, router) => {
-      const method = route.name === 'search' ? 'replace' : 'push'
-      router[method](`/search?q=${input}`)
-    }, 250),
     wsOnJoin () {
       this.$store.commit('UPDATE_CONNECTED_COUNT', this.$store.state.connectedCount + 1)
       WS.socket.emit('update-status', {
@@ -135,10 +101,6 @@ export default {
       WS.socket.off('change', this.wsOnChange)
       this.$store.commit('UPDATE_CONNECTED', false)
       this.$store.dispatch('leaveRoom')
-    },
-    async logout () {
-      await this.$store.dispatch('logout')
-      this.$router.push('/login')
     }
   },
   watch: {
@@ -168,8 +130,12 @@ export default {
 </script>
 
 <style>
-  body {
-    background: #f4f4f4;
+  img {
+    user-select: none;
+  }
+
+  .sans-serif {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   }
 
   .emoji {
@@ -199,50 +165,12 @@ export default {
   .tooltip.tooltip-after-open {
     opacity: 1;
   }
-
-  .home-tabs-padding {
-    padding-top: 30px;
-  }
 </style>
 
 <style scoped>
   main {
     width: 64rem;
     min-height: calc(100vh - 5rem);
-  }
-
-  .header {
-    width: 100%;
-    height: 4rem;
-  }
-
-  .logo {
-    width: 64px;
-    height: 55px;
-    vertical-align: bottom;
-  }
-
-  .logo-text {
-    top: -18px;
-  }
-
-  .search-bar {
-    width: 70%;
-    left: 11rem;
-  }
-
-  .search-input {
-    height: 4rem;
-    background-color: #2c60a2;
-  }
-
-  .search-input::placeholder {
-    color: white;
-    opacity: 0.8;
-  }
-
-  .logout:hover {
-    background-color: #2c60a2;
   }
 
   .room-bar {

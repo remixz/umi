@@ -13,11 +13,7 @@
       <div class="fl w-80">
         <strong class="fw6">{{data.series.name}}</strong> <br>
         <small class="gray">Next up: Episode {{data.most_likely_media.episode_number}} &mdash; {{data.most_likely_media.name}}</small>
-        <p>
-          <small>
-            {{data.most_likely_media.description}}
-          </small>
-        </p>
+        <p class="lh-copy" style="font-size: 80%;">{{data.most_likely_media.description}}</p>
       </div>
     </div>
   </router-link>
