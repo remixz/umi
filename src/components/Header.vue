@@ -13,10 +13,7 @@
           <router-link to="/history" class="white no-underline bg-animate"><i class="fa fa-history v-mid mr2" aria-hidden="true"></i> History</router-link>
         </div>
         <div class="absolute search right-0" style="top: 6px;">
-          <form @submit.prevent="search" class="dib">
-            <input type="text" class="br2 br--left input-reset white bw0 search-bar" placeholder="Search Crunchyroll" v-model="searchInput">
-            <button class="br2 br--right pointer bw0 button-reset search-btn"><i class="fa fa-search white"></i></button>
-          </form>
+          <search />
           <span class="f6 fw5 dib ml1 ba b--white-40 bg-transparent bg-animate white br1 pointer ph2 pv1 tc logout" @click="logout">Log out</span>
         </div>
       </div>
@@ -25,30 +22,20 @@
 </template>
 
 <script>
+import Search from './Search'
+
 export default {
   name: 'umi-header',
+  components: { Search },
   computed: {
     username () {
       return this.$store.state.auth.username
     },
     lights () {
       return this.$store.state.lights
-    },
-    searchInput: {
-      get () {
-        return this.$store.state.searchQuery
-      },
-      set (value) {
-        this.$store.commit('SET_SEARCH_QUERY', value)
-      }
     }
   },
   methods: {
-    search () {
-      if (this.searchInput.trim() === '') return
-      const method = this.$route.name === 'search' ? 'replace' : 'push'
-      this.$router[method](`/search?q=${this.searchInput}`)
-    },
     async logout () {
       await this.$store.dispatch('logout')
       this.$router.push('/login')
@@ -128,27 +115,6 @@ export default {
   .nav .router-link-active {
     border-bottom: 0.25rem solid #2c60a2;
   }
-
-  .search-bar {
-    background-color: #2c60a2;
-    padding: 0.5rem;
-  }
-
-  .search-bar::placeholder {
-    color: white;
-    opacity: 0.8;
-  }
-
-  .search-btn {
-    background-color: #2c60a2;
-    padding: 0.5rem;
-    margin-left: -5px;
-  }
-
-  .search-bar:focus, .search-btn:active, .search-btn:focus {
-    outline: none;
-  }
-
   .logout:hover {
     background-color: #2c60a2;
   }

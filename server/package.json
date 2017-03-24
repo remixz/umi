@@ -6,9 +6,14 @@
   "author": "Zach Bruggeman",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.15.3",
+    "compression": "^1.6.2",
     "socket.io": "^1.7.2"
   },
   "scripts": {
     "start": "node index.js"
+  },
+  "now": {
+    "alias": "umi-watch-api"
   }
 }

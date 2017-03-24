@@ -49,6 +49,7 @@ const store = new Vuex.Store({
           const data = resp.data.data
           commit('UPDATE_AUTH', {
             session_id: data.session_id,
+            country: data.country_code.toLowerCase(),
             token: data.auth,
             expires: data.expires
           })

@@ -61,13 +61,10 @@ export default {
       return `${window.location.origin}/room/${this.room.replace('umi//', '')}`
     },
     routeName () {
-      return this.$store.state.route.name
+      return this.$route.name
     },
     lights () {
       return this.$store.state.lights
-    },
-    showTabs () {
-      return this.$route.name === 'home' || this.$route.name === 'history'
     },
     roomBarClass () {
       return !this.connected ? 'hidden' : (this.hideBar ? 'peek' : 'show')

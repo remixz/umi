@@ -1,5 +1,16 @@
-const http = require('http');
-const srv = http.createServer((req, res) => res.end('love arrow shoot!'))
+const http = require('http')
+const compress = require('compression')()
+const autocompleteHandler = require('./autocomplete')
+
+const srv = http.createServer((req, res) => {
+  compress(req, res, () => {
+    if (req.url.indexOf('/autocomplete') === 0) {
+      autocompleteHandler(req, res)
+    } else {
+      res.end('love arrow shoot!')
+    }
+  })
+})
 const io = require('socket.io')(srv)
 io.origins('*:*')
 

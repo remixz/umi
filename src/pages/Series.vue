@@ -33,6 +33,9 @@
         </div>
       </div>
     </div>
+    <div v-else-if="seriesError">
+      <h1 class="fw6">This series is not available.</h1>
+    </div>
   </div>
 </template>
 
@@ -54,17 +57,21 @@
     data () {
       return {
         selectedCollection: '',
-        sort: 'new'
+        sort: 'new',
+        seriesError: false
       }
     },
     computed: {
+      seriesId () {
+        return this.$route.params.id
+      },
       series () {
         const {$store, $route} = this
-        return $store.state.series[$route.params.id]
+        return $store.state.series[this.seriesId]
       },
       collections () {
         const {$store, $route} = this
-        return $store.state.seriesCollections[$route.params.id]
+        return $store.state.seriesCollections[this.seriesId]
       },
       sortedCollections () {
         return this.sort === 'old' ? this.collections : Array.from(this.collections).reverse()
@@ -74,6 +81,17 @@
       }
     },
     methods: {
+      async getSeriesInfo () {
+        const {$store, $route} = this
+
+        try {
+          await $store.dispatch('getSeriesInfo', this.seriesId)
+          await $store.dispatch('getCollectionsForSeries', this.series.series_id)
+          this.selectedCollection = this.sortedCollections[0]
+        } catch (err) {
+          this.seriesError = true
+        }
+      },
       selectCollection ({target}) {
         if (this.selectedCollection === target.dataset.id) return
 
@@ -87,12 +105,14 @@
         this.selectedCollection = this.sortedCollections[0]
       }
     },
+    watch: {
+      seriesId (curr) {
+        this.seriesError = false
+        this.getSeriesInfo()
+      }
+    },
     async beforeMount () {
-      const {$store, $route} = this
-
-      await $store.dispatch('getSeriesInfo', $route.params.id)
-      await $store.dispatch('getCollectionsForSeries', this.series.series_id)
-      this.selectedCollection = this.sortedCollections[0]
+      this.getSeriesInfo()
     }
   }
 </script>
