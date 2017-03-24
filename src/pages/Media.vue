@@ -9,8 +9,8 @@
           <i class="fa fa-times pointer grow" aria-hidden="true" @click="internalSeek = 0"></i>
         </div>
       </div>
-      <div v-if="nextEpisode && nextEpisodeId !== ''" class="bg-black-60 absolute absolute--fill z-max" style="height: 576px"></div>
-      <div v-if="nextEpisode && nextEpisodeId !== ''" class="w-50 center bg-near-white pa2 pb0 cf mb3 absolute z-max left-0 right-0 shadow-1" style="top: 220px; height: 138px">
+      <div v-if="nextEpisode && nextEpisodeId !== ''" class="bg-black-60 absolute absolute--fill z-max player-height player-top-offset"></div>
+      <div v-if="nextEpisode && nextEpisodeId !== ''" class="w-50 center bg-near-white pa2 pb0 cf mb3 absolute z-max left-0 right-0 shadow-1" style="top: 284px; height: 138px">
         <div class="fl">
           <strong class="mb2 db">Watch next episode:</strong>
           <media-item :seriesId="$route.params.seriesId" :id="nextEpisodeId" size="inline-small" :noBorder="true" @click="nextEpisode = false" />
@@ -19,7 +19,7 @@
           <i class="fa fa-times pointer" aria-hidden="true" @click="nextEpisode = false"></i>
         </div>
       </div>
-      <umi-video v-if="streamData && streamData.format" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :seek="seek" @play="internalSeek = 0" @ended="playerEnded" />
+      <umi-video v-if="streamData && streamData.format" :duration="media.duration" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :seek="seek" @play="internalSeek = 0" @ended="playerEnded" />
       <div v-else class="pv2">
         <div class="bg-black absolute w-100 left-0 player-height player-top-offset">
           <div class="bg-dark-gray center player-width player-height"></div>

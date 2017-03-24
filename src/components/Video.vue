@@ -19,7 +19,7 @@
 
   export default {
     name: 'video',
-    props: ['data', 'poster', 'id', 'seek'],
+    props: ['data', 'poster', 'id', 'seek', 'duration'],
     components: {Reactotron},
     data () {
       return {
@@ -83,7 +83,7 @@
 
         this.playback = this.player.core.getCurrentContainer().playback
         this.player.on(Clappr.Events.PLAYER_ENDED, () => {
-          this.logTime(null, this.player.getDuration())
+          this.logTime(null, this.duration)
           this.$emit('ended')
         })
         this.player.on(Clappr.Events.PLAYER_PLAY, () => {
