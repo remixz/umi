@@ -3,7 +3,7 @@
     <form @submit.prevent="search">
       <input
         type="text"
-        class="br2 br--left input-reset white bw0 search-bar"
+        class="br2 br--left input-reset white bw0 bg-dark-blue search-bar"
         placeholder="Search Crunchyroll"
         v-model="searchInput"
         ref="input"
@@ -11,10 +11,10 @@
         @focus="focus"
         @blur="blur"
       >
-      <button class="br2 br--right pointer bw0 button-reset search-btn"><i class="fa fa-search white"></i></button>
+      <button class="br2 br--right pointer bw0 button-reset bg-dark-blue search-btn"><i class="fa fa-search white"></i></button>
     </form>
     <div v-if="showResults" class="absolute br2 shadow-1 bg-white w-100 mt1">
-      <div v-for="(series, index) in matching" :key="series.id" :id="series.id" :class="`search-result ${index === selected ? 'selected' : ''}`" @mousedown="resultPress">
+      <div v-for="(series, index) in matching" :key="series.id" :id="series.id" :data-index="index" :class="`bb b--black-40 search-result ${index === selected ? 'selected' : ''}`" @mouseover="resultHover" @mousedown="resultPress">
         <img :src="series.image" :alt="series.name">
         <span class="truncate dib f6">{{series.name}}</span>
       </div>
@@ -100,6 +100,9 @@
         this.selected = -1
         this.focused = false
       },
+      resultHover ({target}) {
+        this.selected = parseInt(target.dataset.index, 10)
+      },
       resultPress ({target, which}) {
         if (which !== 1) return
         this.$router.push(`/series/${target.id}`)
@@ -122,7 +125,6 @@
 
 <style scoped>
   .search-bar {
-    background-color: #2c60a2;
     padding: 0.5rem;
   }
 
@@ -132,7 +134,6 @@
   }
 
   .search-btn {
-    background-color: #2c60a2;
     padding: 0.5rem;
     margin-left: -5px;
   }
@@ -154,6 +155,7 @@
   .search-result:last-child {
     border-bottom-left-radius: 0.25rem;
     border-bottom-right-radius: 0.25rem;
+    border: 0;
   }
 
   .search-result.selected, .search-result:hover {

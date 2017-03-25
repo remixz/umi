@@ -1,5 +1,5 @@
 <template>
-  <header :class="`bg-blue absolute top-0 w-100 ${lights ? 'z-3' : 'z-max'}`">
+  <header :class="`bg-blue absolute top-0 w-100 bw1 bb b--dark-blue ${lights ? 'z-3' : 'z-max'}`">
     <div class="header-container center relative">
       <div class="logo-container">
         <router-link to="/" class="db no-underline">
@@ -9,12 +9,18 @@
       </div>
       <div v-if="username">
         <div class="absolute nav" style="left: 95px; top: 14px;">
-          <router-link exact to="/" class="white no-underline bg-animate"><i class="fa fa-th-list v-mid mr2" aria-hidden="true"></i> Queue</router-link>
-          <router-link to="/history" class="white no-underline bg-animate"><i class="fa fa-history v-mid mr2" aria-hidden="true"></i> History</router-link>
+          <router-link exact to="/" class="white no-underline bg-animate">
+            <i class="fa fa-th-list v-mid mr2" aria-hidden="true"></i>
+            <span class="fw6">Queue</span>
+          </router-link>
+          <router-link to="/history" class="white no-underline bg-animate">
+            <i class="fa fa-history v-mid mr2" aria-hidden="true"></i>
+            <span class="fw6">History</span>
+          </router-link>
         </div>
         <div class="absolute search right-0" style="top: 6px;">
           <search />
-          <span class="f6 fw5 dib ml1 ba b--white-40 bg-transparent bg-animate white br1 pointer ph2 pv1 tc logout" @click="logout">Log out</span>
+          <span class="f6 fw5 dib ml1 ba b--light-blue bg-transparent bg-animate white br1 pointer ph2 pv1 tc logout" @click="logout">Log out</span>
         </div>
       </div>
     </div>
@@ -94,18 +100,18 @@ export default {
   }
 
   .nav a {
-    height: 64px;
+    height: 62px;
     display: inline-block;
     margin-right: -5px;
     position: relative;
     top: -23px;
     padding: 1.4rem 1rem;
-    border-bottom: 0.25rem solid #357edd;
+    border-bottom: 0 solid #00449e;
     transition: all 0.2s ease-in-out;
   }
 
   .nav a:hover {
-    border-bottom: 0.25rem solid #2c60a2;
+    border-bottom-width: 0.25rem;
   }
 
   .nav .fa {
@@ -113,9 +119,9 @@ export default {
   }
 
   .nav .router-link-active {
-    border-bottom: 0.25rem solid #2c60a2;
+    border-bottom: 0.25rem solid #00449e;
   }
   .logout:hover {
-    background-color: #2c60a2;
+    background-color: #00449e;
   }
 </style>
