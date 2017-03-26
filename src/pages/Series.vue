@@ -49,6 +49,11 @@
   import QueueButton from 'components/QueueButton'
   import { UMI_SERVER } from 'lib/api'
 
+  const openingOverrides = {
+    '269071': 'konosuba',
+    '42852': 'Naruto: Shippuden'
+  }
+
   export default {
     name: 'series',
     metaInfo () {
@@ -102,7 +107,8 @@
         }
       },
       async getOpening () {
-        const {data: {result}} = await axios.get(`${UMI_SERVER}/opening?search=${this.series.name}`)
+        const query = openingOverrides[this.seriesId] || this.series.name
+        const {data: {result}} = await axios.get(`${UMI_SERVER}/opening?search=${query}`)
         this.opening = result
       },
       selectCollection ({target}) {

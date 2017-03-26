@@ -128,6 +128,7 @@
           const method = this.$route.name === 'search' ? 'replace' : 'push'
           this.$router[method](`/search?q=${this.searchInput}`)
         }
+        this.$refs.input.blur()
         this.blur()
       }
     }
