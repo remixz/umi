@@ -1,11 +1,10 @@
-const io = require('socket.io-client')
-
-const SERVER = process.env.NODE_ENV === 'production' ? 'https://umi-watch-api.now.sh' : 'http://localhost:3001'
+import io from 'socket.io-client'
+import { UMI_SERVER } from './api'
 
 const WS = {
   connected: false,
   init () {
-    this.socket = io.connect(SERVER)
+    this.socket = io.connect(UMI_SERVER)
     this.socket.on('connect', () => {
       this.connected = true
     })

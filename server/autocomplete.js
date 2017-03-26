@@ -17,9 +17,9 @@ function autocompleteHandler (req, res) {
         image: c.img
       }))
 
-      res.setHeader('Access-Control-Allow-Origin', '*')
-      res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify(filtered))
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify(filtered))
   })).catch((err) => {
     console.error(err.message)
     res.statusCode = 500

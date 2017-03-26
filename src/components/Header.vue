@@ -8,7 +8,7 @@
         </router-link>
       </div>
       <div v-if="username">
-        <div class="absolute nav" style="left: 95px; top: 14px;">
+        <div class="absolute nav" style="left: 95px; top: 16px;">
           <router-link exact to="/" class="white no-underline bg-animate">
             <i class="fa fa-th-list v-mid mr2" aria-hidden="true"></i>
             <span class="fw6">Queue</span>
@@ -18,7 +18,7 @@
             <span class="fw6">History</span>
           </router-link>
         </div>
-        <div class="absolute search right-0" style="top: 6px;">
+        <div class="absolute search right-0" style="top: 8px;">
           <search />
           <span class="f6 fw5 dib ml1 ba b--light-blue bg-transparent bg-animate white br1 pointer ph2 pv1 tc logout" @click="logout">Log out</span>
         </div>
@@ -62,7 +62,7 @@ export default {
   .logo-container {
     width: 64px;
     height: 55px;
-    margin-top: 9px;
+    margin-top: 7px;
   }
 
   .logo-container > a {

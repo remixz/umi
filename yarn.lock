@@ -3069,7 +3069,7 @@ longest@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/longest/-/longest-1.0.1.tgz#30a0b2da38f73770e8294a0d22e6625ed77d0097"
 
-loose-envify@^1.0.0:
+loose-envify@^1.0.0, loose-envify@^1.2.0:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.3.1.tgz#d1a8ad33fa9ce0e713d65fdd0ac8b748d478c848"
   dependencies:
@@ -4794,6 +4794,12 @@ vue-analytics@^3.0.0:
   resolved "https://registry.yarnpkg.com/vue-analytics/-/vue-analytics-3.0.0.tgz#3ada85ea72a624956a6a7388a0dbb986b6060e4f"
   dependencies:
     load-script "^1.0.0"
+
+vue-clickaway@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/vue-clickaway/-/vue-clickaway-2.1.0.tgz#392de764751f31cd20787e8fb3a6e319825f8d4f"
+  dependencies:
+    loose-envify "^1.2.0"
 
 vue-hot-reload-api@^2.0.11:
   version "2.0.11"

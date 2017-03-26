@@ -1,6 +1,10 @@
 <template>
   <div class="pv2">
-    <div id="player" :class="`bg-black w-100 absolute left-0 z-9999${lights ? ' shadow-2' : ''} player-top-offset`"></div>
+    <div id="player" :class="`bg-black w-100 absolute left-0 z-9999${lights ? ' shadow-2' : ''} player-top-offset`">
+      <div v-if="playerInit && showBlur && !lights" class="w-100 player-height absolute top-0 left-0 overflow-hidden o-80">
+        <img :src="poster" class="player-background" draggable="false">
+      </div>
+    </div>
     <div v-if="!playerInit" class="bg-black absolute w-100 left-0 player-height player-top-offset">
       <div class="bg-dark-gray center player-width player-height"></div>
     </div>
@@ -25,7 +29,8 @@
       return {
         playerInit: false,
         events: [],
-        lastEvent: null
+        lastEvent: null,
+        showBlur: true
       }
     },
     computed: {
@@ -83,10 +88,12 @@
 
         this.playback = this.player.core.getCurrentContainer().playback
         this.player.on(Clappr.Events.PLAYER_ENDED, () => {
+          this.showBlur = true
           this.logTime(null, this.duration)
           this.$emit('ended')
         })
         this.player.on(Clappr.Events.PLAYER_PLAY, () => {
+          this.showBlur = false
           this.$emit('play')
         })
         this.player.on(Clappr.Events.PLAYER_PAUSE, () => {
@@ -105,6 +112,7 @@
     },
     watch: {
       data () {
+        this.showBlur = true
         this.player.configure({
           source: this.streamUrl,
           poster: this.poster
@@ -339,6 +347,13 @@
 
   #player > div[data-player] {
     margin: 0 auto;
+  }
+
+  .player-background {
+    filter: blur(100px);
+    position: relative;
+    top: -300px;
+    width: 100%;
   }
 </style>
 

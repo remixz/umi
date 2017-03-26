@@ -1,5 +1,5 @@
 <template>
-  <div class="dib relative">
+  <div class="dib relative" v-on-clickaway="blur">
     <form @submit.prevent="search">
       <input
         type="text"
@@ -9,25 +9,34 @@
         ref="input"
         @keydown="keydown"
         @focus="focus"
-        @blur="blur"
       >
       <button class="br2 br--right pointer bw0 button-reset bg-dark-blue search-btn"><i class="fa fa-search white"></i></button>
     </form>
     <div v-if="showResults" class="absolute br2 shadow-1 bg-white w-100 mt1">
-      <div v-for="(series, index) in matching" :key="series.id" :id="series.id" :data-index="index" :class="`bb b--black-40 search-result ${index === selected ? 'selected' : ''}`" @mouseover="resultHover" @mousedown="resultPress">
+      <router-link
+        v-for="(series, index) in matching"
+        :key="series.id"
+        :to="`/series/${series.id}`"
+        :data-index="index"
+        :class="`db no-underline black bb b--black-40 search-result ${index === selected ? 'selected' : ''}`"
+        @mouseover.native="resultHover"
+        @click.native="resultPress"
+      >
         <img :src="series.image" :alt="series.name">
         <span class="truncate dib f6">{{series.name}}</span>
-      </div>
+      </router-link>
     </div>
   </div>
 </template>
 
 <script>
   import axios from 'axios'
-  const SERVER = process.env.NODE_ENV === 'production' ? 'https://umi-watch-api.now.sh' : 'http://localhost:3001'
+  import { mixin as clickaway } from 'vue-clickaway'
+  import { UMI_SERVER } from 'lib/api'
 
   export default {
     name: 'search',
+    mixins: [ clickaway ],
     data () {
       return {
         data: [],
@@ -72,12 +81,14 @@
     methods: {
       keydown (e) {
         if (e.which === 38) { // up
+          if (this.searchInput === '' || this.searchInput.length < 3) return
           e.preventDefault()
           this.selected -= 1
           if (this.selected < -1) {
             this.selected = this.matching.length - 1
           }
         } else if (e.which === 40) { // down
+          if (this.searchInput === '' || this.searchInput.length < 3) return
           e.preventDefault()
           this.selected += 1
           if (this.selected > this.matching.length - 1) {
@@ -88,7 +99,7 @@
       async focus () {
         if (this.data.length === 0 && !this.errorLoading) {
           try {
-            const {data} = await axios.get(`${SERVER}/autocomplete/${this.country}`)
+            const {data} = await axios.get(`${UMI_SERVER}/autocomplete/${this.country}`)
             this.data = data
           } catch (err) {
             this.errorLoading = true
@@ -103,9 +114,9 @@
       resultHover ({target}) {
         this.selected = parseInt(target.dataset.index, 10)
       },
-      resultPress ({target, which}) {
-        if (which !== 1) return
-        this.$router.push(`/series/${target.id}`)
+      resultPress () {
+        this.selected = -1
+        this.focused = false
         this.searchInput = ''
       },
       search () {
@@ -117,7 +128,7 @@
           const method = this.$route.name === 'search' ? 'replace' : 'push'
           this.$router[method](`/search?q=${this.searchInput}`)
         }
-        this.$refs.input.blur()
+        this.blur()
       }
     }
   }

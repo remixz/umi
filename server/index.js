@@ -1,11 +1,14 @@
 const http = require('http')
 const compress = require('compression')()
 const autocompleteHandler = require('./autocomplete')
+const openingHandler = require('./opening')
 
 const srv = http.createServer((req, res) => {
   compress(req, res, () => {
     if (req.url.indexOf('/autocomplete') === 0) {
       autocompleteHandler(req, res)
+    } else if (req.url.indexOf('/opening') === 0) {
+      openingHandler(req, res)
     } else {
       res.end('love arrow shoot!')
     }
