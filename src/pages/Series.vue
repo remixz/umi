@@ -25,7 +25,7 @@
       </div>
       <div v-if="collections">
         <div v-for="id in sortedCollections" :key="id">
-          <div :class="`collection-header cf bg-light-gray pa3 mv2 ${selectedCollection !== id ? 'pointer' : ''} bb bw2 b--black-10`" :data-id="id" @click="selectCollection">
+          <div class="collection-header cf bg-light-gray pa3 mv2 pointer bb bw2 b--black-10" :data-id="id" @click="selectCollection">
             <div class="fl">
               <span class="fw6">{{collectionData[id].name}}</span>
             </div>
@@ -112,7 +112,10 @@
         this.opening = result
       },
       selectCollection ({target}) {
-        if (this.selectedCollection === target.dataset.id) return
+        if (this.selectedCollection === target.dataset.id) {
+          this.selectedCollection = -1
+          return
+        }
 
         this.selectedCollection = target.dataset.id
         this.$nextTick(() => {
