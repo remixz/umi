@@ -30,7 +30,7 @@
         <small class="gray">Next up: Episode {{data.most_likely_media.episode_number}}</small>
         <p>
           <small>
-            Available to watch in {{parseTimeDiff(data.most_likely_media.available_time)}}
+            Available to watch in {{parsedTime}}
           </small>
         </p>
       </div>
@@ -43,9 +43,9 @@
 
   export default {
     props: ['data'],
-    methods: {
-      parseTimeDiff (date) {
-        return distance(new Date(date))
+    computed: {
+      parsedTime () {
+        return distance(this.data.most_likely_media.available_time)
       }
     }
   }
