@@ -17,7 +17,6 @@
   import $script from 'scriptjs'
   import anime from 'animejs'
   import api, {LOCALE, VERSION} from 'lib/api'
-  import WS from 'lib/websocket'
   import emoji from 'lib/emoji'
   import Reactotron from './Reactotron'
 
@@ -141,10 +140,9 @@
       events () {
         if (this.events.length <= 0) return
         while (this.events.length > 0) {
-          const {socket} = WS
           const event = this.events[0]
 
-          if (event.id !== socket.id) {
+          if (event.id !== this.$socket.id) {
             const playing = this.player.isPlaying()
             if (event.method === 'pause' && !playing) {
               return
@@ -153,7 +151,7 @@
             this.lastEvent = event
             this.player[event.method](...event.args)
           } else {
-            socket.emit('player-event', event)
+            this.$socket.emit('player-event', event)
           }
           this.events.shift()
         }
@@ -195,7 +193,7 @@
         if (show) {
           this.player.core.showMediaControl()
         }
-        WS.socket.emit('emoji', name)
+        this.$socket.emit('emoji', name)
         this.displayEmoji(name)
       },
       displayEmoji (name) {
@@ -241,11 +239,9 @@
         this.wsRegisterEvents()
       },
       wsRegisterEvents () {
-        const {socket} = WS
-
-        socket.on('user-joined', this.wsOnJoined)
-        socket.on('player-event', this.wsOnEvent)
-        socket.on('emoji', this.displayEmoji)
+        this.$socket.on('user-joined', this.wsOnJoined)
+        this.$socket.on('player-event', this.wsOnEvent)
+        this.$socket.on('emoji', this.displayEmoji)
 
         this.wsHandlePlay = this.wsHandleEvent.bind(this, 'play')
         this.wsHandlePause = this.wsHandleEvent.bind(this, 'pause')
@@ -259,7 +255,7 @@
       },
       wsOnJoined () {
         this.$store.commit('UPDATE_CONNECTED_COUNT', this.$store.state.connectedCount + 1)
-        WS.socket.emit('update-status', {
+        this.$socket.emit('update-status', {
           time: Math.round(this.player.getCurrentTime()),
           playing: this.player.isPlaying(),
           path: this.$route.path,
@@ -270,22 +266,19 @@
         this.events.push(ev)
       },
       wsHandleEvent (method, ...args) {
-        const {socket} = WS
         if (this.lastEvent) {
           this.lastEvent = null
           return
         }
 
         this.events.push({
-          id: socket.id, method, args
+          id: this.$socket.id, method, args
         })
       },
       wsDestroy () {
-        const {socket} = WS
-
-        socket.off('user-joined', this.wsOnJoined)
-        socket.off('player-event', this.wsOnEvent)
-        socket.off('emoji', this.displayEmoji)
+        this.$socket.off('user-joined', this.wsOnJoined)
+        this.$socket.off('player-event', this.wsOnEvent)
+        this.$socket.off('emoji', this.displayEmoji)
 
         this.playback.off(Clappr.Events.PLAYBACK_PLAY_INTENT, this.wsHandlePlay)
         this.player.off(Clappr.Events.PLAYER_PAUSE, this.wsHandlePause)
@@ -298,8 +291,8 @@
     beforeDestroy () {
       this.logTime()
       if (this.room !== '') {
-        WS.socket.emit('player-event', {
-          id: WS.socket.id,
+        this.$socket.emit('player-event', {
+          id: this.$socket.id,
           method: 'pause',
           args: []
         })

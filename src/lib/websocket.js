@@ -8,6 +8,12 @@ const WS = {
     this.socket.on('connect', () => {
       this.connected = true
     })
+  },
+  install (Vue) {
+    this.init()
+    Object.defineProperty(Vue.prototype, '$socket', {
+      get () { return WS.socket }
+    })
   }
 }
 

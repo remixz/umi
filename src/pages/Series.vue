@@ -2,7 +2,7 @@
   <div v-if="series && series.name">
     <div class="absolute w-100 player-top-offset left-0 overflow-hidden" style="height: 300px;">
       <video v-if="opening" class="w-100 absolute top-0" :src="opening" @playing="playing = true" muted loop autoplay></video>
-      <div :class="`w-100 cover bg-center absolute video-banner ${playing ? 'away' : ''}`" :style="`background-image: url(${series.landscape_image.full_url}); height: 300px;`"></div>
+      <div :class="`w-100 cover bg-center absolute video-banner ${playing ? 'away' : ''}`" :style="`background-image: url(${series.landscape_image.full_url});`"></div>
       <div class="w-100 bg-black o-40 absolute" style="height: 300px;"></div>
     </div>
     <div class="relative z-9999" style="margin-top: 150px;">
@@ -151,6 +151,7 @@
   }
 
   .video-banner {
+    height: 300px;
     opacity: 1;
     transition: opacity 0.3s ease-in-out;
   }

@@ -8,8 +8,6 @@
 </template>
 
 <script>
-  import WS from 'lib/websocket'
-
   export default {
     name: 'room',
     metaInfo: {
@@ -27,7 +25,7 @@
         this.expired = true
         this.$store.dispatch('leaveRoom')
       }, 5000)
-      WS.socket.once('update-status', (obj) => {
+      this.$socket.once('update-status', (obj) => {
         clearTimeout(this.timeout)
         this.$store.commit('UPDATE_CONNECTED', true)
         if (obj.name !== 'media') {

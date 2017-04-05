@@ -8,9 +8,8 @@ import VTooltip from 'v-tooltip'
 import 'babel-polyfill'
 
 Vue.use(VTooltip)
-
+Vue.use(WS)
 sync(store, router)
-WS.init()
 
 /* eslint-disable no-new */
 new Vue({

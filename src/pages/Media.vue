@@ -58,7 +58,6 @@
   import MediaItem from 'components/MediaItem'
   import EpisodeScroller from 'components/EpisodeScroller'
   import Reactotron from 'components/Reactotron'
-  import WS from 'lib/websocket'
 
   export default {
     name: 'media',
@@ -148,7 +147,7 @@
         this.nextEpisode = false
         this.getMediaInfo()
         if (this.room !== '') {
-          WS.socket.emit('change', this.$route.path)
+          this.$socket.emit('change', this.$route.path)
           this.$router.replace({path: this.$route.path, query: Object.assign({}, this.$route.query, {roomId: this.room.replace('umi//', '')})})
         }
       },
@@ -167,7 +166,7 @@
 
       this.getMediaInfo()
       if (this.room !== '') {
-        WS.socket.emit('change', this.$route.path)
+        this.$socket.emit('change', this.$route.path)
         this.$router.replace({path: this.$route.path, query: Object.assign({}, this.$route.query, {roomId: this.room.replace('umi//', '')})})
       }
     },

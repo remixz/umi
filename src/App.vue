@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import WS from 'lib/websocket'
 import Header from 'components/Header'
 
 export default {
@@ -85,7 +84,7 @@ export default {
     },
     wsOnJoin () {
       this.$store.commit('UPDATE_CONNECTED_COUNT', this.$store.state.connectedCount + 1)
-      WS.socket.emit('update-status', {
+      this.$socket.emit('update-status', {
         name: this.$route.name
       })
     },
@@ -95,7 +94,7 @@ export default {
       }
     },
     handleDestroy () {
-      WS.socket.off('change', this.wsOnChange)
+      this.$socket.off('change', this.wsOnChange)
       this.$store.commit('UPDATE_CONNECTED', false)
       this.$store.dispatch('leaveRoom')
     }
@@ -104,17 +103,17 @@ export default {
     routeName (curr, prev) {
       if (this.room !== '') {
         if (prev === 'media' && curr !== 'media') {
-          WS.socket.on('user-joined', this.wsOnJoin)
+          this.$socket.on('user-joined', this.wsOnJoin)
         } else {
-          WS.socket.off('user-joined', this.wsOnJoin)
+          this.$socket.off('user-joined', this.wsOnJoin)
         }
       }
     },
     room () {
       if (this.room !== '') {
-        WS.socket.on('change', this.wsOnChange)
+        this.$socket.on('change', this.wsOnChange)
         if (this.$route.name !== 'media') {
-          WS.socket.on('user-joined', this.wsOnJoin)
+          this.$socket.on('user-joined', this.wsOnJoin)
         }
       }
     }
