@@ -12,9 +12,13 @@
     "socket.io": "^1.7.2"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "cross-env UPDATE_TOKEN=example nodemon index.js"
   },
   "now": {
-    "alias": "umi-watch-api"
+    "alias": "umi-watch-api",
+    "env": {
+      "UPDATE_TOKEN": "@update-token"
+    }
   }
 }

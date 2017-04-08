@@ -18,3 +18,11 @@ new Vue({
   store,
   render: h => h(App)
 })
+
+if (process.env.NODE_ENV === 'production') {
+  const runtime = require('offline-plugin/runtime')
+  runtime.install({
+    onUpdateReady () { runtime.applyUpdate() },
+    onUpdated () { store.commit('SET_UPDATE_AVAILABLE') }
+  })
+}

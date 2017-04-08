@@ -13,23 +13,25 @@
 </template>
 
 <script>
-  /* global Clappr, LevelSelector */
+  /* global Clappr, LevelSelector, ClapprThumbnailsPlugin */
   import $script from 'scriptjs'
   import anime from 'animejs'
   import api, {LOCALE, VERSION} from 'lib/api'
   import emoji from 'lib/emoji'
+  import bif from 'lib/bif'
   import Reactotron from './Reactotron'
 
   export default {
     name: 'video',
-    props: ['data', 'poster', 'id', 'seek', 'duration'],
+    props: ['data', 'poster', 'bif', 'id', 'seek', 'duration'],
     components: {Reactotron},
     data () {
       return {
         playerInit: false,
         events: [],
         lastEvent: null,
-        showBlur: true
+        showBlur: true,
+        frames: []
       }
     },
     computed: {
@@ -44,7 +46,7 @@
       }
     },
     mounted () {
-      $script('//cdn.jsdelivr.net/g/clappr@0.2.65,clappr.level-selector@0.1.10', () => {
+      $script('//cdn.jsdelivr.net/g/clappr@0.2.65,clappr.level-selector@0.1.10,clappr.thumbnails-plugin@3.6.0', () => {
         const self = this
         this.playerInit = true
         this.player = new Clappr.Player({
@@ -54,7 +56,7 @@
           source: this.streamUrl,
           poster: this.poster,
           disableVideoTagContextMenu: true,
-          plugins: [LevelSelector],
+          plugins: [LevelSelector, ClapprThumbnailsPlugin],
           levelSelectorConfig: {
             title: 'Quality',
             labels: {
@@ -64,6 +66,11 @@
               1: '360p',
               0: '240p'
             }
+          },
+          scrubThumbnails: {
+            backdropHeight: null,
+            spotlightHeight: 84,
+            thumbs: []
           },
           events: {
             onReady () {
@@ -107,6 +114,10 @@
         } else if (this.room !== '') {
           this.wsRegisterEvents()
         }
+
+        if (this.bif) {
+          this.loadBif()
+        }
       })
     },
     watch: {
@@ -120,6 +131,7 @@
         if (this.room !== '') {
           this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.wsHandlePlay)
         }
+        this.loadBif()
       },
       room (curr) {
         if (curr === '') {
@@ -222,6 +234,16 @@
             this.reactions.removeChild(el)
           }
         })
+      },
+      async loadBif () {
+        const thumbnailsPlugin = this.player.getPlugin('scrub-thumbnails')
+        if (this.frames.length > 0) {
+          thumbnailsPlugin.removeThumbnail(this.frames)
+        }
+        try {
+          this.frames = await bif(this.bif)
+          thumbnailsPlugin.addThumbnail(this.frames)
+        } catch (err) {}
       },
       wsJoinRoom () {
         const time = parseInt(this.$route.query.wsTime, 10)

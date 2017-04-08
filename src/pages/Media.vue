@@ -19,7 +19,7 @@
           <i class="fa fa-times pointer" aria-hidden="true" @click="nextEpisode = false"></i>
         </div>
       </div>
-      <umi-video v-if="streamData && streamData.format" :duration="media.duration" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :seek="seek" @play="internalSeek = 0" @ended="playerEnded" />
+      <umi-video v-if="streamData && streamData.format" :duration="media.duration" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :bif="media.bif_url" :seek="seek" @play="internalSeek = 0" @ended="playerEnded" />
       <div v-else class="pv2">
         <div class="bg-black absolute w-100 left-0 player-height player-top-offset">
           <div class="bg-dark-gray center player-width player-height"></div>

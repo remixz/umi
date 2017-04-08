@@ -6,7 +6,7 @@ import api, {ACCESS_TOKEN, DEVICE_TYPE, LOCALE, VERSION} from 'lib/api'
 import {getUuid} from 'lib/auth'
 import WS from 'lib/websocket'
 
-const MEDIA_FIELDS = 'media.media_id,media.available,media.available_time,media.collection_id,media.series_id,media.type,media.episode_number,media.name,media.description,media.screenshot_image,media.created,media.duration,media.playhead'
+const MEDIA_FIELDS = 'media.media_id,media.available,media.available_time,media.collection_id,media.series_id,media.type,media.episode_number,media.name,media.description,media.screenshot_image,media.created,media.duration,media.playhead,media.bif_url'
 const SERIES_FIELDS = 'series.series_id,series.name,series.portrait_image,series.landscape_image,series.description,series.in_queue'
 
 Vue.use(Vuex)
@@ -28,7 +28,8 @@ const store = new Vuex.Store({
     roomId: '',
     roomConnected: false,
     connectedCount: 0,
-    lights: false
+    lights: false,
+    updateAvailable: false
   },
 
   actions: {
@@ -411,6 +412,10 @@ const store = new Vuex.Store({
 
     UPDATE_LIGHTS (state, bool) {
       state.lights = bool
+    },
+
+    SET_UPDATE_AVAILABLE (state) {
+      state.updateAvailable = true
     }
   }
 })

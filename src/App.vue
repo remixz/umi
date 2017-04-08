@@ -17,14 +17,17 @@
       </transition>
     </main>
     <footer class="mw8 center relative">
-      <a href="https://www.netlify.com" target="_blank" class="absolute right-0">
+      <a href="https://www.netlify.com" target="_blank" rel="noopener" class="absolute right-0">
         <img src="https://www.netlify.com/img/global/badges/netlify-light.svg"/>
       </a>
       <p class="gray">
-        This site is not endorsed by or affiliated with Crunchyroll. <br /> Created by <a href="https://twitter.com/zachbruggeman" target="_blank">Zach Bruggeman</a>. <a href="https://github.com/remixz/umi" target="_blank">View source on GitHub</a>.
+        This site is not endorsed by or affiliated with Crunchyroll. <br /> Created by <a href="https://twitter.com/zachbruggeman" target="_blank" rel="noopener">Zach Bruggeman</a>. <a href="https://github.com/remixz/umi" target="_blank" rel="noopener">View source on GitHub</a>.
       </p>
     </footer>
-
+    <div v-if="updateAvailable" class="fixed left-0 bottom-0 bg-yellow pa3 fw6 br1 shadow-1">
+      <span>An update is ready to be installed:</span>
+      <span class="f6 fw5 dib ml1 ba b--black bg-transparent bg-animate hover-bg-black hover-yellow br1 pointer ph2 pv1 tc" @click="refresh">Install and refresh</span>
+    </div>
     <div :class="`fixed absolute--fill z-4 ${lights ? 'bg-black-90' : 'dn'}`"></div>
   </div>
 </template>
@@ -67,6 +70,9 @@ export default {
     },
     roomBarClass () {
       return !this.connected ? 'hidden' : (this.hideBar ? 'peek' : 'show')
+    },
+    updateAvailable () {
+      return this.$store.state.updateAvailable
     }
   },
   methods: {
@@ -97,6 +103,9 @@ export default {
       this.$socket.off('change', this.wsOnChange)
       this.$store.commit('UPDATE_CONNECTED', false)
       this.$store.dispatch('leaveRoom')
+    },
+    refresh () {
+      location.reload()
     }
   },
   watch: {
@@ -121,6 +130,14 @@ export default {
   async beforeMount () {
     await this.$store.dispatch('startSession')
     this.loading = false
+  },
+  mounted () {
+    if (process.env.NODE_ENV === 'production') {
+      const runtime = require('offline-plugin/runtime')
+      this.$socket.on('app-update', () => {
+        runtime.update()
+      })
+    }
   }
 }
 </script>

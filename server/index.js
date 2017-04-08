@@ -2,6 +2,7 @@ const http = require('http')
 const compress = require('compression')()
 const autocompleteHandler = require('./autocomplete')
 const openingHandler = require('./opening')
+const bifHandler = require('./bif')
 
 const srv = http.createServer((req, res) => {
   compress(req, res, () => {
@@ -9,6 +10,10 @@ const srv = http.createServer((req, res) => {
       autocompleteHandler(req, res)
     } else if (req.url.indexOf('/opening') === 0) {
       openingHandler(req, res)
+    } else if (req.url.indexOf('/bif') === 0) {
+      bifHandler(req, res)
+    } else if (req.url.indexOf('/update') === 0) {
+      updateHandler(req, res)
     } else {
       res.end('love arrow shoot!')
     }
@@ -19,6 +24,15 @@ io.origins('*:*')
 
 function findRoom (rooms) {
   return Object.keys(rooms).find((k) => k.startsWith('umi//'))
+}
+
+function updateHandler (req, res) {
+  const token = req.url.split('/update/')[1]
+  if (token !== process.env.UPDATE_TOKEN) {
+    return res.end('not ok')
+  }
+  io.emit('app-update')
+  res.end('ok')
 }
 
 io.on('connection', (socket) => {
