@@ -153,7 +153,14 @@
       },
       playerPlay () {
         this.internalSeek = 0
-        if (this.malItem.id && process.env.NODE_ENV === 'production') {
+        const shouldUpdateMal = (
+          this.isMalAuthed &&
+          this.malItem.id &&
+          this.timeout === 0 &&
+          !this.malSynced &&
+          process.env.NODE_ENV === 'production'
+        )
+        if (shouldUpdateMal) {
           this.timeout = setTimeout(async () => {
             try {
               const episode = this.collectionMedia.indexOf(this.media.media_id.toString()) + 1
@@ -187,6 +194,7 @@
         this.nextEpisode = false
         this.malSynced = false
         clearTimeout(this.timeout)
+        this.timeout = 0
         this.getMediaInfo()
         if (this.room !== '') {
           this.$socket.emit('change', this.$route.path)
@@ -214,6 +222,7 @@
     },
     beforeDestroy () {
       clearTimeout(this.timeout)
+      this.timeout = 0
       this.$store.commit('UPDATE_LIGHTS', false)
     }
   }
