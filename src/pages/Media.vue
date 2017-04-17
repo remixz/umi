@@ -153,7 +153,7 @@
       },
       playerPlay () {
         this.internalSeek = 0
-        if (this.malItem.id) {
+        if (this.malItem.id && process.env.NODE_ENV === 'production') {
           this.timeout = setTimeout(async () => {
             try {
               const episode = this.collectionMedia.indexOf(this.media.media_id.toString()) + 1
@@ -186,6 +186,7 @@
       mediaId (id) {
         this.nextEpisode = false
         this.malSynced = false
+        clearTimeout(this.timeout)
         this.getMediaInfo()
         if (this.room !== '') {
           this.$socket.emit('change', this.$route.path)
@@ -212,6 +213,7 @@
       }
     },
     beforeDestroy () {
+      clearTimeout(this.timeout)
       this.$store.commit('UPDATE_LIGHTS', false)
     }
   }
