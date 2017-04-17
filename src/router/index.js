@@ -5,6 +5,7 @@ import Analytics from 'vue-analytics'
 import {authGuard, loginGuard} from 'lib/auth'
 
 import Home from 'pages/Home'
+import Settings from 'pages/Settings'
 import History from 'pages/History'
 import Search from 'pages/Search'
 import Login from 'pages/Login'
@@ -29,6 +30,12 @@ const router = new Router({
       path: '/',
       name: 'home',
       component: Home,
+      beforeEnter: authGuard
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: Settings,
       beforeEnter: authGuard
     },
     {

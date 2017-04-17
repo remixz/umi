@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import uuid from 'uuid/v4'
+import axios from 'axios'
 
-import api, {ACCESS_TOKEN, DEVICE_TYPE, LOCALE, VERSION} from 'lib/api'
+import api, {ACCESS_TOKEN, DEVICE_TYPE, LOCALE, VERSION, UMI_SERVER} from 'lib/api'
 import {getUuid} from 'lib/auth'
 import WS from 'lib/websocket'
 
@@ -15,6 +16,11 @@ const store = new Vuex.Store({
   state: {
     auth: localStorage.getItem('auth') ? (
       JSON.parse(localStorage.getItem('auth'))
+    ) : (
+      {}
+    ),
+    malAuth: localStorage.getItem('malAuth') ? (
+      JSON.parse(localStorage.getItem('malAuth'))
     ) : (
       {}
     ),
@@ -94,9 +100,24 @@ const store = new Vuex.Store({
       return new Promise(async (resolve, reject) => {
         try {
           commit('REMOVE_AUTH')
-          localStorage.removeItem('auth')
           await dispatch('startSession')
           resolve()
+        } catch (err) {
+          reject(err)
+        }
+      })
+    },
+
+    authenticateMal ({commit, state}, {username, password}) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const {data} = await axios.post(`${UMI_SERVER}/mal/login`, {username, password})
+          if (data.status === 'ok') {
+            commit('UPDATE_MAL', data)
+            resolve()
+          } else {
+            reject(new Error(data.error))
+          }
         } catch (err) {
           reject(err)
         }
@@ -363,7 +384,19 @@ const store = new Vuex.Store({
     },
 
     REMOVE_AUTH (state) {
+      localStorage.removeItem('auth')
       Vue.set(state, 'auth', {})
+    },
+
+    UPDATE_MAL (state, obj) {
+      const updated = Object.assign({}, state.malAuth, obj)
+      localStorage.setItem('malAuth', JSON.stringify(updated))
+      Vue.set(state, 'malAuth', updated)
+    },
+
+    REMOVE_MAL_AUTH (state) {
+      localStorage.removeItem('malAuth')
+      Vue.set(state, 'malAuth', {})
     },
 
     SET_SEARCH_IDS (state, arr) {

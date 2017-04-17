@@ -17,7 +17,7 @@
         </div>
       </fieldset>
       <div>
-        <input class="fw6 ph3 pv2 input-reset ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer f6 dib w-100" type="submit" value="Sign in">
+        <input class="fw6 ph3 pv2 input-reset ba b--black-20 bg-white bg-animate hover-bg-blue black hover-white br1 pointer f6 dib w-100" type="submit" value="Sign in">
       </div>
       <img src="https://media.tenor.co/images/27f277a3ecf2e3cea170ed293f6d59f7/raw" class="mt3" alt="">
     </form>

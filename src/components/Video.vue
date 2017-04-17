@@ -312,6 +312,7 @@
     },
     beforeDestroy () {
       this.logTime()
+      this.player.destroy()
       if (this.room !== '') {
         this.$socket.emit('player-event', {
           id: this.$socket.id,

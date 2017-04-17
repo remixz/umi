@@ -19,7 +19,7 @@
           <i class="fa fa-times pointer" aria-hidden="true" @click="nextEpisode = false"></i>
         </div>
       </div>
-      <umi-video v-if="streamData && streamData.format" :duration="media.duration" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :bif="media.bif_url" :seek="seek" @play="internalSeek = 0" @ended="playerEnded" />
+      <umi-video v-if="streamData && streamData.format" :duration="media.duration" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :bif="media.bif_url" :seek="seek" @play="playerPlay" @ended="playerEnded" />
       <div v-else class="pv2">
         <div class="bg-black absolute w-100 left-0 player-height player-top-offset">
           <div class="bg-dark-gray center player-width player-height"></div>
@@ -34,7 +34,10 @@
             <div v-tooltip.bottom-center="'Toggle dark mode'" :class="`f5 fw6 dib ba ${lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate'} bg-transparent br2 black pointer ph3 pv2`" @click="$store.commit('UPDATE_LIGHTS', !lights)"><i class="tc fa fa-moon-o" aria-hidden="true" style="width: 16px;"></i></div>
           </div>
         </div>
-        <router-link class="dark-gray fw6 no-underline bb pb1 b--dark-gray hover-blue link" :to="`/series/${media.series_id}`">{{collectionLoaded ? collection.name : 'Loading...'}}</router-link>
+        <div style="height: 21px;">
+          <router-link class="dark-gray fw6 no-underline bb pb1 b--dark-gray hover-blue link" :to="`/series/${media.series_id}`">{{collectionLoaded ? collection.name : 'Loading...'}}</router-link>
+          <a v-if="isMalAuthed && malItem.id" :href="malItem.url" target="_blank" rel="noopener"><span :class="`mal-icon ${malSynced ? 'watched' : ''} ml1`"></span></a>
+        </div>
         <p class="lh-copy">{{media.description}}</p>
 
         <h3 class="fw5">Episodes</h3>
@@ -52,7 +55,8 @@
 </template>
 
 <script>
-  import api from 'lib/api'
+  import axios from 'axios'
+  import api, { UMI_SERVER } from 'lib/api'
   import prettyTime from 'lib/prettyTime'
   import Video from 'components/Video'
   import MediaItem from 'components/MediaItem'
@@ -78,7 +82,10 @@
         internalSeek: 0,
         seek: 0,
         nextEpisode: false,
-        collectionLoaded: false
+        collectionLoaded: false,
+        malItem: {},
+        malSynced: false,
+        timeout: 0
       }
     },
     computed: {
@@ -112,6 +119,12 @@
       },
       lights () {
         return this.$store.state.lights
+      },
+      malAuth () {
+        return this.$store.state.malAuth
+      },
+      isMalAuthed () {
+        return !!this.$store.state.malAuth.username
       }
     },
     methods: {
@@ -127,10 +140,37 @@
           })
         await $store.dispatch('getCollectionInfo', this.media.collection_id)
         this.collectionLoaded = true
-        await $store.dispatch('getMediaForCollection', this.media.collection_id)
+        $store.dispatch('getMediaForCollection', this.media.collection_id)
+        if (this.isMalAuthed) {
+          const {data: {status, item}} = await axios.get(`${UMI_SERVER}/mal/series?name=${this.collection.name}`)
+          if (status === 'ok') {
+            this.malItem = item
+          }
+        }
       },
       prettyTime (time) {
         return prettyTime(time)
+      },
+      playerPlay () {
+        this.internalSeek = 0
+        if (this.malItem.id) {
+          this.timeout = setTimeout(async () => {
+            try {
+              const episode = this.collectionMedia.indexOf(this.media.media_id.toString()) + 1
+              const status = (episode === this.collectionMedia.length && this.malItem.payload.status !== 'Finished Airing') ? 'completed' : 'watching'
+              await axios.post(`${UMI_SERVER}/mal/update`, {
+                username: this.malAuth.username,
+                password: this.malAuth.password,
+                id: this.malItem.id,
+                episode,
+                status
+              })
+              this.malSynced = true
+            } catch (err) {
+              this.malSynced = false
+            }
+          }, 1000 * 60 * 2) // 1000 * 60 * 2 = 2 minutes
+        }
       },
       playerSeek () {
         this.seek = this.internalSeek
@@ -145,6 +185,7 @@
     watch: {
       mediaId (id) {
         this.nextEpisode = false
+        this.malSynced = false
         this.getMediaInfo()
         if (this.room !== '') {
           this.$socket.emit('change', this.$route.path)

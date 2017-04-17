@@ -1,7 +1,7 @@
 const axios = require('axios')
 
 function autocompleteHandler (req, res) {
-  const country = req.url.replace('/autocomplete/', '')
+  const {country} = req.params
   axios.all([
     axios.get(`http://because.moe/json/${country}`),
     axios.get('http://www.crunchyroll.com/ajax/?req=RpcApiSearch_GetSearchCandidates')
@@ -17,13 +17,10 @@ function autocompleteHandler (req, res) {
         image: c.img
       }))
 
-    res.setHeader('Access-Control-Allow-Origin', '*')
-    res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify(filtered))
+    res.send(filtered)
   })).catch((err) => {
     console.error(err.message)
-    res.statusCode = 500
-    res.end('something went wrong')
+    res.status(500).send('something went wrong')
   })
 }
 

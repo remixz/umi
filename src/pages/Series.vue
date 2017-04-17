@@ -68,7 +68,7 @@
     data () {
       return {
         selectedCollection: '',
-        sort: 'new',
+        sort: localStorage.getItem(`series-${this.$route.params.id}-sort`) || 'new',
         seriesError: false,
         opening: null,
         playing: false
@@ -125,6 +125,7 @@
       sortCollection ({target}) {
         this.sort = target.dataset.sort
         this.selectedCollection = this.sortedCollections[0]
+        localStorage.setItem(`series-${this.seriesId}-sort`, target.dataset.sort)
       }
     },
     watch: {

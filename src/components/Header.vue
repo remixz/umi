@@ -20,7 +20,29 @@
         </div>
         <div class="absolute search right-0" style="top: 8px;">
           <search />
-          <span class="f6 fw5 dib ml1 ba b--light-blue bg-transparent bg-animate white br1 pointer ph2 pv1 tc logout" @click="logout">Log out</span>
+          <span class="fa-stack dib pointer" @click="showMenu">
+            <i :class="`fa fa-circle fa-stack-2x blue link menu-circle ${menu ? 'active' : ''}`"></i>
+            <i class="fa fa-ellipsis-v fa-stack-1x white" style="pointer-events: none"></i>
+          </span>
+          <div v-if="menu" v-on-clickaway="hideMenu" class="absolute bg-white shadow-1 right-0 br2 pv2 menu">
+            <div class="pv2 mh2 fw6 bb mb2 b--gray">
+              <div class="db">
+                <svg class="v-mid mr1" xmlns="http://www.w3.org/2000/svg" width="34" height="25" viewBox="0 0 250.9 278.8" data-ember-extension="1"><g fill="#f78b24"><path d="M115.4 209.8c-3.6-.3-13-2-16.3-2.8-29-7.7-55-28-68-55.4-7-15-10-28.4-10-45.6 0-17 3-30.8 10.6-45.5C36 49.5 42 41 51 32 67.4 16 88.3 5.8 112 2.7c7.8-1 24.2-.7 31.4.6 15 2.8 28.6 8 40.7 16.2 26 16.8 42 42.5 46 71.8 1 6.3 2 19.5 1 20.5l-.2-2.6c-1-12.7-6.5-28.2-14.2-40C192.6 34 149 19 109 32.5 77.8 42.8 54 69 47.8 101c-3 15.6-2 31 3 46.2 9 27 30 48.3 57.3 57.6 7 2.2 15 4 20 4.5 7 .6 5 1-3 1-4 0-9 0-9-.2z"/><path d="M137.7 196.8c-33.6-2.4-61.4-27.5-67.2-60.5-1-6-1.3-17.2-.5-22.7 5-33 30.3-57.8 63.3-62.4 6.7-1 18.6-.6 25 .7 5.5 1 11.7 3 16.5 5l3.8 1-3.6 2c-12.7 6-20.6 20-18.7 33.5 1.8 13.4 11.2 24 24.6 28 4 1.2 12 1.2 17 0 6-2 11-4.8 15-9.4 1-1.5 3-2.6 3-2.5l1 5c0 6 0 17-1 23-4 17.7-14 33-28 44-14 10.5-33 16-51 14.4z"/></g></svg>
+                <span>{{username}}</span>
+              </div>
+              <a :href="`https://myanimelist.net/profile/${malUsername}`" target="_blank" rel="noopener" v-if="malUsername" class="mv2 db black no-underline">
+                <span class="mal-icon mr1"></span>
+                <span>{{malUsername}}</span>
+              </a>
+            </div>
+            <router-link @click.native="hideMenu" to="/settings" class="db pointer bg-white hover-bg-blue hover-white pa2 no-underline black">
+              <i class="fa fa-cog mr1"></i> Settings
+            </router-link>
+            <div @click="logout" class="pointer bg-white hover-bg-blue hover-white pa2">
+              <i class="fa fa-sign-out mr1"></i> Sign out
+            </div>
+          </div>
+          <!-- <span class="f6 fw5 dib ml1 ba b--light-blue bg-transparent bg-animate white br1 pointer ph2 pv1 tc logout" @click="logout">Log out</span> -->
         </div>
       </div>
     </div>
@@ -28,14 +50,24 @@
 </template>
 
 <script>
+import { mixin as clickaway } from 'vue-clickaway'
 import Search from './Search'
 
 export default {
   name: 'umi-header',
   components: { Search },
+  mixins: [ clickaway ],
+  data () {
+    return {
+      menu: false
+    }
+  },
   computed: {
     username () {
       return this.$store.state.auth.username
+    },
+    malUsername () {
+      return this.$store.state.malAuth.username
     },
     lights () {
       return this.$store.state.lights
@@ -43,12 +75,47 @@ export default {
   },
   methods: {
     async logout () {
+      this.menu = false
       await this.$store.dispatch('logout')
       this.$router.push('/login')
+    },
+    showMenu () {
+      this.menu = true
+    },
+    hideMenu () {
+      this.menu = false
     }
   }
 }
 </script>
+
+<style>
+  .mal-icon {
+    display: inline-block;
+    width: 35px;
+    padding: 2px;
+    box-sizing: border-box;
+    color: #004175;
+    border: 0.125rem solid #004175;
+    border-radius: 0.25rem;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .mal-icon:after {
+    content: 'MAL';
+  }
+
+  .mal-icon.watched {
+    color: #19a974;
+    border-color: #19a974;
+    width: 55px;
+  }
+
+  .mal-icon.watched:after {
+    content: 'MAL ✔'
+  }
+</style>
 
 <style scoped>
   header {
@@ -123,5 +190,29 @@ export default {
   }
   .logout:hover {
     background-color: #00449e;
+  }
+
+  .menu-circle:hover, .menu-circle.active {
+    color: #00449e;
+  }
+
+  .menu {
+    top: 45px;
+    width: 200px;
+  }
+
+  .menu:after {
+    bottom: 100%;
+    right: 9px;
+    border: solid transparent;
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(255, 255, 255, 0);
+    border-bottom-color: #fff;
+    border-width: 8px;
+    margin-left: -8px;
   }
 </style>

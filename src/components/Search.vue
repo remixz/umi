@@ -171,10 +171,11 @@
   }
 
   .search-result.selected, .search-result:hover {
-    background: #f4f4f4;
+    background-color: #357edd;
   }
 
   .search-result.selected span, .search-result:hover span {
+    color: #fff;
     font-weight: 600;
   }
 

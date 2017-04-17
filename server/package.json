@@ -7,18 +7,24 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.15.3",
+    "body-parser": "^1.17.1",
     "cheerio": "^0.22.0",
     "compression": "^1.6.2",
+    "cors": "^2.8.3",
+    "express": "^4.15.2",
+    "iron": "^4.0.4",
+    "popura": "^1.2.5",
     "socket.io": "^1.7.2"
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "cross-env UPDATE_TOKEN=example nodemon index.js"
+    "dev": "cross-env UPDATE_TOKEN=example IRON_TOKEN=EXAMPLE_TOKEN_PLEASE_DONT_USE_IN_PRODUCTION nodemon index.js"
   },
   "now": {
     "alias": "umi-watch-api",
     "env": {
-      "UPDATE_TOKEN": "@update-token"
+      "UPDATE_TOKEN": "@update-token",
+      "IRON_TOKEN": "@iron-token"
     }
   }
 }
