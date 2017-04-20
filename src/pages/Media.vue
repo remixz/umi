@@ -164,7 +164,7 @@
           this.timeout = setTimeout(async () => {
             try {
               const episode = this.collectionMedia.indexOf(this.media.media_id.toString()) + 1
-              const status = (episode === this.collectionMedia.length && this.malItem.payload.status !== 'Finished Airing') ? 'completed' : 'watching'
+              const status = (episode === this.collectionMedia.length && this.malItem.payload.status === 'Finished Airing') ? 'completed' : 'watching'
               await axios.post(`${UMI_SERVER}/mal/update`, {
                 username: this.malAuth.username,
                 password: this.malAuth.password,
