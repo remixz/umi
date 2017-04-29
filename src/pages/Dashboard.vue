@@ -108,7 +108,7 @@
       }
     },
     async mounted () {
-      const history = await this.$store.dispatch('getHistoryInfo')
+      const history = await this.$store.dispatch('getHistoryInfo', {limit: 50})
       const obj = {}
       history.forEach((d) => {
         const seriesId = d.series.series_id
