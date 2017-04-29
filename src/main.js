@@ -5,7 +5,6 @@ import store from './store'
 import { sync } from 'vuex-router-sync'
 import WS from 'lib/websocket'
 import VTooltip from 'v-tooltip'
-import 'babel-polyfill'
 
 Vue.use(VTooltip)
 Vue.use(WS)

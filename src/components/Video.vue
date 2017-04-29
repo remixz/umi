@@ -349,27 +349,8 @@
     transform: translateY(0);
   }
 
-  .player-top-offset {
-    top: 64px;
-  }
-
-  .player-width {
-    width: 1024px;
-  }
-
-  .player-height {
-    height: 576px;
-  }
-
   #player > div[data-player] {
     margin: 0 auto;
-  }
-
-  .player-background {
-    filter: blur(100px);
-    position: relative;
-    top: -300px;
-    width: 100%;
   }
 </style>
 
@@ -377,5 +358,12 @@
   .controls {
     top: 584px;
     right: 5px;
+  }
+
+  .player-background {
+    filter: blur(100px);
+    position: relative;
+    top: -300px;
+    width: 100%;
   }
 </style>

@@ -49,6 +49,10 @@
     width: 300px;
   }
 
+  .media-item.dashboard {
+    width: 250px;
+  }
+
   .media-item.small {
     width: 150px;
   }
@@ -56,6 +60,11 @@
   .medium .image-size {
     width: 300px;
     height: 168.75px;
+  }
+
+  .dashboard .image-size {
+    width: 250px;
+    height: 140px;
   }
 
   .small .image-size, .inline-small .image-size {
@@ -67,6 +76,12 @@
     display: block !important;
     font-size: 2rem !important;
     margin: 75px auto;
+  }
+
+  .dashboard .play-icon {
+    display: block !important;
+    font-size: 2rem !important;
+    margin: 55px auto;
   }
 
   .small .play-icon, .inline-small .play-icon {

@@ -10,7 +10,7 @@ const emoji = [
   { name: 'KotoHai', id: '124003' },
   { name: 'NozomiSmug', id: '129796' },
   { name: 'MichiruSmug', id: '161817' },
-  { name: 'NUT!', id: '102655' },
+  { name: 'NUT!', id: '142253' },
   { name: 'MayoiSmug', id: '116048' },
   { name: 'MeguSmug', id: '116299' },
   { name: 'CoryZ', id: '126423' },
@@ -23,8 +23,10 @@ const emoji = [
   { name: 'A N G E R Y', id: '154339' },
   { name: 'Yohane!!', id: '164768' },
   { name: 'NyatLikeThis', id: '134861' },
-  { name: 'GnomeChild', id: '43562' }
-  // { name: 'Angery', id: '154339' },
+  { name: 'GnomeChild', id: '43562' },
+  { name: 'KumikoW', id: '92979' },
+  { name: 'FrostyFridays', image: require('emoji/FrostyFridays.png') },
+  { name: 'Tsuyu~~', image: require('emoji/TsuyuW.png') }
 ]
 
 export default emoji

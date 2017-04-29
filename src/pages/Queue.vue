@@ -21,7 +21,7 @@
   import QueueItem from 'components/QueueItem'
 
   export default {
-    name: 'home',
+    name: 'queue',
     metaInfo: {
       title: 'Queue'
     },
@@ -44,20 +44,9 @@
   }
 </script>
 
-<style>
-  @keyframes home-shimmer {
-    0% {
-        background-position: -992px 0
-    }
-    100% {
-        background-position: 992px 0
-    }
-  }
-</style>
-
 <style scoped>
   .animated-background {
-    animation: home-shimmer 1s linear infinite;
+    animation: loading-shimmer 1s linear infinite;
     background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
     background-size: 2000px 104px;
     height: 96px;

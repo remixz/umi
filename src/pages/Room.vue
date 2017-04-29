@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="expired" class="w-80 bg-washed-red pa2 mv3 center">
-      <strong>This room has expired. <router-link to="/">Return to your queue?</router-link></strong>
+      <strong>This room has expired. <router-link to="/">Return to your dashboard?</router-link></strong>
     </div>
     <h2 class="tc" v-else>Joining room...</h2>
   </div>

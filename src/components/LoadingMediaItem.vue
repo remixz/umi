@@ -9,17 +9,6 @@
   </div>
 </template>
 
-<style>
-  @keyframes history-shimmer {
-    0% {
-        background-position: -992px 0
-    }
-    100% {
-        background-position: 992px 0
-    }
-  }
-</style>
-
 <style scoped>
   .loading-media-item {
     width: 300px;
@@ -27,7 +16,7 @@
   }
 
   .animated-background {
-    animation: history-shimmer 1.25s linear infinite;
+    animation: loading-shimmer 1.25s linear infinite;
     background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
     background-size: 2000px 104px;
     height: 208px;

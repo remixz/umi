@@ -3,7 +3,7 @@ import axios from 'axios'
 export const ACCESS_TOKEN = 'vdsWT3hI0V99etr'
 export const DEVICE_TYPE = 'com.crunchyroll.iphone'
 export const LOCALE = 'enUS'
-export const VERSION = '3005.2'
+export const VERSION = '3007.1'
 export const UMI_SERVER = process.env.NODE_ENV === 'production' ? 'https://umi-watch-api.now.sh' : 'http://localhost:3001'
 
 export default function api (opts) {

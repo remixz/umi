@@ -18,6 +18,9 @@ module.exports = {
       ? config.build.assetsPublicPath
       : config.dev.assetsPublicPath
   },
+  node: {
+    Buffer: false,
+  },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     modules: [

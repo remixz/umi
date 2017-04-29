@@ -4,12 +4,12 @@
       <div class="logo-container">
         <router-link to="/" class="db no-underline">
           <img src="../assets/umi.png" alt="Umi player logo" class="logo db">
-          <span class="b db ttu white f3 logo-text">Umi!</span>
+          <span class="b db ttu white f3 logo-text poppins">Umi!</span>
         </router-link>
       </div>
       <div v-if="username">
         <div class="absolute nav" style="left: 95px; top: 16px;">
-          <router-link exact to="/" class="white no-underline bg-animate">
+          <router-link to="/queue" class="white no-underline bg-animate">
             <i class="fa fa-th-list v-mid mr2" aria-hidden="true"></i>
             <span class="fw6">Queue</span>
           </router-link>
@@ -42,7 +42,6 @@
               <i class="fa fa-sign-out mr1"></i> Sign out
             </div>
           </div>
-          <!-- <span class="f6 fw5 dib ml1 ba b--light-blue bg-transparent bg-animate white br1 pointer ph2 pv1 tc logout" @click="logout">Log out</span> -->
         </div>
       </div>
     </div>
@@ -88,34 +87,6 @@ export default {
   }
 }
 </script>
-
-<style>
-  .mal-icon {
-    display: inline-block;
-    width: 35px;
-    padding: 2px;
-    box-sizing: border-box;
-    color: #004175;
-    border: 0.125rem solid #004175;
-    border-radius: 0.25rem;
-    font-size: 12px;
-    font-weight: bold;
-  }
-
-  .mal-icon:after {
-    content: 'MAL';
-  }
-
-  .mal-icon.watched {
-    color: #19a974;
-    border-color: #19a974;
-    width: 55px;
-  }
-
-  .mal-icon.watched:after {
-    content: 'MAL ✔'
-  }
-</style>
 
 <style scoped>
   header {

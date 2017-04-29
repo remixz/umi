@@ -11,7 +11,7 @@
         "uglify": true
       },
       "exclude": ["transform-regenerator", "transform-async-to-generator"],
-      "useBuiltIns": true
+      "loose": true
     }]
   ],
   "plugins": [

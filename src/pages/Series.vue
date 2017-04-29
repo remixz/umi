@@ -11,7 +11,7 @@
           <img :src="series.portrait_image.full_url" class="shadow-1">
         </div>
         <div class="w-80 fl pl3">
-          <h1 class="series-title fw6 white" style="margin-top: 5rem;">{{series.name}}</h1>
+          <h1 class="series-title poppins white" style="margin-top: 5rem;">{{series.name}}</h1>
           <p class="lh-copy" style="margin-top: 2rem;">{{series.description}}</p>
           <queue-button :id="series.series_id" />
           <a class="link f6 fw6 dib ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph2 pv1" target="_blank" :href="`https://myanimelist.net/search/all?q=${encodeURIComponent(series.name)}`">Find on MyAnimeList</a>
@@ -118,9 +118,6 @@
         }
 
         this.selectedCollection = target.dataset.id
-        this.$nextTick(() => {
-          target.scrollIntoView()
-        })
       },
       sortCollection ({target}) {
         this.sort = target.dataset.sort

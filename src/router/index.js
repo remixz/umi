@@ -4,7 +4,8 @@ import Meta from 'vue-meta'
 import Analytics from 'vue-analytics'
 import {authGuard, loginGuard} from 'lib/auth'
 
-import Home from 'pages/Home'
+import Dashboard from 'pages/Dashboard'
+import Queue from 'pages/Queue'
 import Settings from 'pages/Settings'
 import History from 'pages/History'
 import Search from 'pages/Search'
@@ -28,8 +29,14 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home,
+      name: 'dashboard',
+      component: Dashboard,
+      beforeEnter: authGuard
+    },
+    {
+      path: '/queue',
+      name: 'queue',
+      component: Queue,
       beforeEnter: authGuard
     },
     {

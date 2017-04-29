@@ -24,6 +24,7 @@ const store = new Vuex.Store({
     ) : (
       {}
     ),
+    displayName: localStorage.getItem('displayName') || '',
     series: {},
     seriesCollections: {},
     collections: {},
@@ -168,6 +169,32 @@ const store = new Vuex.Store({
             commit('ADD_SERIES', d.series)
             commit('ADD_COLLECTION', d.collection)
             commit('ADD_MEDIA', d.media)
+          })
+          resolve(data)
+        } catch (err) {
+          reject(err)
+        }
+      })
+    },
+
+    getRecentInfo ({commit, state}) {
+      const params = {
+        session_id: state.auth.session_id,
+        media_type: 'anime',
+        fields: [MEDIA_FIELDS, 'media.series_name', 'series.most_recent_media'].join(','),
+        offset: 0,
+        limit: 50,
+        filter: 'updated'
+      }
+
+      return new Promise(async (resolve, reject) => {
+        try {
+          const resp = await api({route: 'list_series', params})
+          if (resp.data.error) throw resp
+
+          const data = resp.data.data
+          data.forEach((d) => {
+            commit('ADD_MEDIA', d.most_recent_media)
           })
           resolve(data)
         } catch (err) {
@@ -449,6 +476,11 @@ const store = new Vuex.Store({
 
     SET_UPDATE_AVAILABLE (state) {
       state.updateAvailable = true
+    },
+
+    UPDATE_DISPLAY_NAME (state, str) {
+      localStorage.setItem('displayName', str)
+      state.displayName = str
     }
   }
 })

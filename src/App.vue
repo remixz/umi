@@ -17,11 +17,10 @@
       </transition>
     </main>
     <footer class="mw8 center relative">
-      <a href="https://www.netlify.com" target="_blank" rel="noopener" class="absolute right-0">
-        <img src="https://www.netlify.com/img/global/badges/netlify-light.svg"/>
-      </a>
       <p class="gray">
-        This site is not endorsed by or affiliated with Crunchyroll. <br /> Created by <a href="https://twitter.com/zachbruggeman" target="_blank" rel="noopener">Zach Bruggeman</a>. <a href="https://github.com/remixz/umi" target="_blank" rel="noopener">View source on GitHub</a>.
+        This site is not endorsed by or affiliated with Crunchyroll. <br />
+        Created by <a href="https://twitter.com/zachbruggeman" target="_blank" rel="noopener">Zach Bruggeman</a>. <a href="https://github.com/remixz/umi" target="_blank" rel="noopener">View source on GitHub</a>. <br />
+        Dashboard icons made by <a href="http://www.flaticon.com/authors/popcorns-arts" target="_blank" rel="noopener">Popcorns Arts</a> from <a href="http://www.flaticon.com" target="_blank" rel="noopener">www.flaticon.com</a>. Licensed under <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC 3.0 BY</a>.
       </p>
     </footer>
     <div v-if="updateAvailable" class="fixed left-0 bottom-0 bg-yellow pa3 fw6 br1 shadow-1">
@@ -142,43 +141,7 @@ export default {
 }
 </script>
 
-<style>
-  img {
-    user-select: none;
-  }
-
-  .sans-serif {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  }
-
-  .emoji {
-    height: 28px;
-    user-select: none;
-  }
-
-  .tooltip {
-    display: none;
-    opacity: 0;
-    transition: opacity .15s;
-    pointer-events: none;
-    padding: 4px;
-    z-index: 10000;
-  }
-
-  .tooltip .tooltip-content {
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    padding: 5px 10px 4px;
-  }
-
-  .tooltip.tooltip-open-transitionend {
-    display: block;
-  }
-
-  .tooltip.tooltip-after-open {
-    opacity: 1;
-  }
-</style>
+<style src="./App.css" />
 
 <style scoped>
   main {
