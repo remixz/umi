@@ -33,13 +33,14 @@
     </div>
     <div class="dashboard-section">
       <h2 class="fw4 mv0 pb3 bb poppins"><i class="fa fa-calendar-o mr1" aria-hidden="true"></i> Latest releases</h2>
-      <div v-if="splits.Today">
+      <div v-if="Object.keys(splits).length !== 0">
         <div v-for="(media, title) in splits">
           <h3 class="fw4 near-black pb2 bb b--silver">{{title}}</h3>
           <div class="center" style="width: 798px;">
             <media-item v-for="d in media" :key="d.media_id" :id="d.media_id" :collectionName="d.series_name" size="dashboard" />
           </div>
         </div>
+        <div v-if="!finishedLatest" class="center pointer f5 fw6 db ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer pa3 tc" @click="getRecent" style="width: 782px;">{{latestLoading ? 'Loading...' : 'Load more'}}</div>
       </div>
       <div v-else class="center mt3" style="width: 798px;">
         <div class="tc" style="height: 436px;">
@@ -53,7 +54,7 @@
 <script>
   import isToday from 'date-fns/is_today'
   import isYesterday from 'date-fns/is_yesterday'
-  import distance from 'date-fns/distance_in_words_strict'
+  import difference from 'date-fns/difference_in_calendar_days'
   import MediaItem from 'components/MediaItem'
 
   export default {
@@ -66,7 +67,10 @@
       return {
         history: [],
         queue: [],
-        splits: {}
+        splits: {},
+        latestLoading: false,
+        finishedLatest: false,
+        offset: 0
       }
     },
     computed: {
@@ -105,6 +109,35 @@
         if (this.displayName) return
 
         this.$router.push('/settings')
+      },
+      async getRecent () {
+        this.latestLoading = true
+        const recent = await this.$store.dispatch('getRecentInfo', {offset: this.offset})
+        if (recent.length === 0) {
+          this.latestLoading = false
+          this.finishedLatest = true
+          return
+        }
+        const splits = Object.assign({}, this.splits)
+        recent.map((r) => r.most_recent_media).forEach((m) => {
+          if (isToday(m.available_time)) {
+            if (!splits['Today']) splits['Today'] = []
+            splits['Today'].push(m)
+          } else if (isYesterday(m.available_time)) {
+            if (!splits['Yesterday']) splits['Yesterday'] = []
+            splits['Yesterday'].push(m)
+          } else {
+            const ago = `${difference(new Date(), m.available_time)} days ago`
+            if (!splits[ago]) splits[ago] = []
+            splits[ago].push(m)
+          }
+        })
+        this.splits = splits
+        this.latestLoading = false
+        this.offset = this.offset + 50
+        if (recent.length < 50) {
+          this.finishedLatest = true
+        }
       }
     },
     async mounted () {
@@ -119,24 +152,9 @@
       this.history = Object.values(obj).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 6)
 
       const queue = await this.$store.dispatch('getQueueInfo')
-      this.queue = queue.slice(0, 6)
+      this.queue = queue.filter((d) => d.most_likely_media.available).slice(0, 6)
 
-      const recent = await this.$store.dispatch('getRecentInfo')
-      const splits = {}
-      recent.map((r) => r.most_recent_media).forEach((m) => {
-        if (isToday(m.available_time)) {
-          if (!splits['Today']) splits['Today'] = []
-          splits['Today'].push(m)
-        } else if (isYesterday(m.available_time)) {
-          if (!splits['Yesterday']) splits['Yesterday'] = []
-          splits['Yesterday'].push(m)
-        } else {
-          const ago = `${distance(m.available_time, new Date(), {unit: 'd', partialMethod: 'ceil'})} ago`
-          if (!splits[ago]) splits[ago] = []
-          splits[ago].push(m)
-        }
-      })
-      this.splits = splits
+      this.getRecent()
     }
   }
 </script>

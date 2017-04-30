@@ -177,13 +177,13 @@ const store = new Vuex.Store({
       })
     },
 
-    getRecentInfo ({commit, state}) {
+    getRecentInfo ({commit, state}, {limit = 50, offset = 0} = {}) {
       const params = {
         session_id: state.auth.session_id,
         media_type: 'anime',
         fields: [MEDIA_FIELDS, 'media.series_name', 'series.most_recent_media'].join(','),
-        offset: 0,
-        limit: 50,
+        limit,
+        offset,
         filter: 'updated'
       }
 
