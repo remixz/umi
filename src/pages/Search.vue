@@ -50,7 +50,7 @@
         this.loading = false
       }
     },
-    async beforeMount () {
+    async created () {
       const {$store, query} = this
       if (!query) return this.$router.go(-1)
 

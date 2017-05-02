@@ -1,7 +1,10 @@
 <template>
   <div>
     <div v-if="media && media.name">
-      <div v-if="internalSeek !== 0 && internalSeek < media.duration" class="bg-washed-green pa2 cf absolute left-0 right-0 center player-width" style="z-index: 10000; top: 606px;">
+      <div v-if="loading" class="bg-black-60 absolute absolute--fill z-max player-height player-top-offset tc">
+        <i class="fa fa-circle-o-notch fa-spin fa-3x white center" style="margin-top: 265px;"></i>
+      </div>
+      <div v-if="internalSeek !== 0 && internalSeek < media.duration" class="bg-washed-green pa2 cf absolute left-0 right-0 center player-width shadow-4" style="z-index: 10000; top: 606px;">
         <div class="fl">
           <span @click="playerSeek"> <i class="fa fa-play-circle" aria-hidden="true"></i> <span class="fw6 underline pointer">Resume watching at {{prettyTime(internalSeek)}}?</span></span>
         </div>
@@ -19,7 +22,7 @@
           <i class="fa fa-times pointer" aria-hidden="true" @click="nextEpisode = false"></i>
         </div>
       </div>
-      <umi-video v-if="streamData && streamData.format" :duration="media.duration" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :bif="media.bif_url" :seek="seek" @play="playerPlay" @ended="playerEnded" />
+      <umi-video v-if="streamData && streamData.format" :duration="media.duration" :data="streamData" :poster="media.screenshot_image.full_url" :id="$route.params.id" :bif="media.bif_url" :seek="seek" @play="playerPlay" @ended="playerEnded" @loaded="loading = false" />
       <div v-else class="pv2">
         <div class="bg-black absolute w-100 left-0 player-height player-top-offset">
           <div class="bg-dark-gray center player-width player-height"></div>
@@ -85,7 +88,8 @@
         collectionLoaded: false,
         malItem: {},
         malSynced: false,
-        timeout: 0
+        timeout: 0,
+        loading: false
       }
     },
     computed: {
@@ -131,6 +135,7 @@
       async getMediaInfo () {
         const {$store, $route} = this
 
+        this.loading = true
         await $store.dispatch('getMediaInfo', $route.params.id)
         api({route: 'info', params: {session_id: $store.state.auth.session_id, media_id: $route.params.id, fields: 'media.stream_data'}})
           .then((res) => {
@@ -211,7 +216,7 @@
         }
       }
     },
-    beforeMount () {
+    created () {
       if (this.$route.query.roomId && !this.room) return this.$router.replace(`/room/${this.$route.query.roomId}`)
 
       this.getMediaInfo()

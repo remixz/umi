@@ -133,7 +133,7 @@
         this.getSeriesInfo()
       }
     },
-    async beforeMount () {
+    created () {
       this.getSeriesInfo()
     }
   }

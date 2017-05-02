@@ -18,7 +18,7 @@
         expired: false
       }
     },
-    mounted () {
+    created () {
       const room = this.$route.params.id
       this.$store.dispatch('joinRoom', room)
       this.timeout = setTimeout(() => {

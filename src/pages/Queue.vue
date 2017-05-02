@@ -34,7 +34,7 @@
     components: {
       'queue-item': QueueItem
     },
-    async beforeMount () {
+    async created () {
       const {$store} = this
 
       const data = await $store.dispatch('getQueueInfo')

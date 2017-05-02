@@ -40,7 +40,7 @@
         this.paginationLoading = false
       }
     },
-    async beforeMount () {
+    async created () {
       const {$store} = this
 
       const data = await $store.dispatch('getHistoryInfo')

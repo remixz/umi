@@ -140,7 +140,7 @@
         }
       }
     },
-    async mounted () {
+    async created () {
       const history = await this.$store.dispatch('getHistoryInfo', {limit: 50})
       const obj = {}
       history.forEach((d) => {

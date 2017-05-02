@@ -74,6 +74,7 @@
           },
           events: {
             onReady () {
+              self.$emit('loaded')
               if (self.container) {
                 this.core.el.appendChild(self.container)
                 return
