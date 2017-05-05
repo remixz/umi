@@ -87,7 +87,7 @@
         return $store.state.seriesCollections[this.seriesId]
       },
       sortedCollections () {
-        return this.sort === 'old' ? this.collections : Array.from(this.collections).reverse()
+        return this.sort === 'old' ? this.collections : this.collections.slice(0).reverse()
       },
       collectionData () {
         return this.$store.state.collections

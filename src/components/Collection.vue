@@ -30,7 +30,7 @@
       },
       sortedMedia () {
         return this.media ? (
-          this.sort === 'old' ? this.media : Array.from(this.media).reverse()
+          this.sort === 'old' ? this.media : this.media.slice(0).reverse()
         ) : []
       }
     },

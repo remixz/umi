@@ -12,8 +12,11 @@
     </div>
     <umi-header />
     <main class="bg-white center pv1 ph3 mv3" style="margin-top: 77px;">
-      <transition name="fade" mode="out-in" v-if="!loading">
-        <router-view></router-view>
+      <transition name="fade" mode="out-in">
+        <router-view v-if="!loading"></router-view>
+        <div class="center tc" v-else>
+          <i class="fa fa-circle-o-notch fa-spin fa-3x silver mt5"></i>
+        </div>
       </transition>
     </main>
     <footer class="mw8 center relative">

@@ -149,10 +149,15 @@
           obj[seriesId] = d
         }
       })
-      this.history = Object.values(obj).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 6)
+      this.history = Object.values(obj)
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+        .slice(0, 6)
 
       const queue = await this.$store.dispatch('getQueueInfo')
-      this.queue = queue.filter((d) => d.most_likely_media.available).slice(0, 6)
+      this.queue = queue
+        .filter((d) => d.most_likely_media.available)
+        .sort((a, b) => new Date(b.most_likely_media.available_time) - new Date(a.most_likely_media.available_time))
+        .slice(0, 6)
 
       this.getRecent()
     }

@@ -1,7 +1,13 @@
 <template>
-  <div class="mt2">
+  <div>
+    <div class="relative cf mb2">
+      <div class="fr">
+        <div :class="`fw5 ph3 pv2 bg-white pointer f6 dib ${sort === 'recent' ? 'bb bw1 b--blue' : ''}`" data-sort="recent" @click="sortQueue">Recently updated</div>
+        <div :class="`fw5 ph3 pv2 bg-white pointer f6 dib ${sort === 'order' ? 'bb bw1 b--blue' : ''}`" data-sort="order" @click="sortQueue">Queue order</div>
+      </div>
+    </div>
     <div v-if="loaded">
-      <queue-item v-for="d in data" :key="d.queue_entry_id" :data="d" />
+      <queue-item v-for="d in sortedData" :key="d.queue_entry_id" :data="d" />
     </div>
     <div v-else>
       <div v-for="n in 10" class="bg-near-white w-100 mb2 pa3 cf bb bw2 b--light-gray">
@@ -28,11 +34,23 @@
     data () {
       return {
         data: [],
-        loaded: false
+        loaded: false,
+        sort: localStorage.getItem('queue-sort') || 'recent'
+      }
+    },
+    computed: {
+      sortedData () {
+        return this.sort === 'recent' ? this.data.slice(0).sort((a, b) => new Date(b.most_likely_media.available_time) - new Date(a.most_likely_media.available_time)) : this.data
       }
     },
     components: {
       'queue-item': QueueItem
+    },
+    methods: {
+      sortQueue ({target}) {
+        this.sort = target.dataset.sort
+        localStorage.setItem('queue-sort', target.dataset.sort)
+      }
     },
     async created () {
       const {$store} = this
