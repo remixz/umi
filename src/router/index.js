@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Meta from 'vue-meta'
 import Analytics from 'vue-analytics'
 import {authGuard, loginGuard} from 'lib/auth'
+import {cancelCurrentRequests} from 'lib/api'
 
 import Dashboard from 'pages/Dashboard'
 import Queue from 'pages/Queue'
@@ -82,6 +83,14 @@ const router = new Router({
       beforeEnter: authGuard
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  // on all page changes aside from the initial load, we cancel in progress requests
+  if (from.name) {
+    cancelCurrentRequests()
+  }
+  next()
 })
 
 if (process.env.NODE_ENV === 'production') {

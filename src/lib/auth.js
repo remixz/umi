@@ -19,13 +19,12 @@ export function loginGuard (to, from, next) {
   }
 }
 
+let localId = localStorage.getItem('umi-uuid')
 export function getUuid () {
-  const localId = localStorage.getItem('umi-uuid')
-  if (localId) {
-    return localId
-  } else {
-    const id = uuid().toUpperCase()
-    localStorage.setItem('umi-uuid', id)
-    return id
+  if (!localId) {
+    localId = uuid().toUpperCase()
+    localStorage.setItem('umi-uuid', localId)
   }
+
+  return localId
 }

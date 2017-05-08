@@ -1,16 +1,23 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import uuid from 'uuid/v4'
-import axios from 'axios'
+import axios, {isCancel} from 'axios'
 
 import api, {ACCESS_TOKEN, DEVICE_TYPE, LOCALE, VERSION, UMI_SERVER} from 'lib/api'
 import {getUuid} from 'lib/auth'
 import WS from 'lib/websocket'
 
-const MEDIA_FIELDS = 'media.media_id,media.available,media.available_time,media.collection_id,media.series_id,media.type,media.episode_number,media.name,media.description,media.screenshot_image,media.created,media.duration,media.playhead,media.bif_url'
+const MEDIA_FIELDS = 'media.media_id,media.available,media.available_time,media.collection_id,media.collection_name,media.series_id,media.type,media.episode_number,media.name,media.description,media.screenshot_image,media.created,media.duration,media.playhead,media.bif_url'
 const SERIES_FIELDS = 'series.series_id,series.name,series.portrait_image,series.landscape_image,series.description,series.in_queue'
 
 Vue.use(Vuex)
+
+function handleError (err, reject) {
+  if (!isCancel(err)) {
+    store.commit('SET_ERROR', true)
+    reject(err)
+  }
+}
 
 const store = new Vuex.Store({
   state: {
@@ -36,7 +43,8 @@ const store = new Vuex.Store({
     roomConnected: false,
     connectedCount: 0,
     lights: false,
-    updateAvailable: false
+    updateAvailable: false,
+    error: false
   },
 
   actions: {
@@ -92,7 +100,7 @@ const store = new Vuex.Store({
           })
           resolve()
         } catch (err) {
-          reject(err)
+          handleError(err, reject)
         }
       })
     },
@@ -104,7 +112,7 @@ const store = new Vuex.Store({
           await dispatch('startSession')
           resolve()
         } catch (err) {
-          reject(err)
+          handleError(err, reject)
         }
       })
     },
@@ -120,7 +128,7 @@ const store = new Vuex.Store({
             reject(new Error(data.error))
           }
         } catch (err) {
-          reject(err)
+          handleError(err, reject)
         }
       })
     },
@@ -145,7 +153,7 @@ const store = new Vuex.Store({
           })
           resolve(data)
         } catch (err) {
-          reject(err)
+          handleError(err, reject)
         }
       })
     },
@@ -172,7 +180,7 @@ const store = new Vuex.Store({
           })
           resolve(data)
         } catch (err) {
-          reject(err)
+          handleError(err, reject)
         }
       })
     },
@@ -198,7 +206,7 @@ const store = new Vuex.Store({
           })
           resolve(data)
         } catch (err) {
-          reject(err)
+          handleError(err, reject)
         }
       })
     },
@@ -226,7 +234,7 @@ const store = new Vuex.Store({
           commit('SET_SEARCH_IDS', data.map((d) => d.series_id))
           resolve()
         } catch (err) {
-          reject(err)
+          handleError(err, reject)
         }
       })
     },
@@ -249,7 +257,7 @@ const store = new Vuex.Store({
           commit('ADD_SERIES', data)
           resolve()
         } catch (err) {
-          reject(err)
+          handleError(err, reject)
         }
       })
     },
@@ -270,7 +278,7 @@ const store = new Vuex.Store({
 
           resolve()
         } catch (err) {
-          reject(err)
+          handleError(err, reject)
         }
       })
     },
@@ -297,7 +305,7 @@ const store = new Vuex.Store({
           commit('ADD_SERIES_COLLECTION', {id, arr: data.map((d) => d.collection_id)})
           resolve()
         } catch (err) {
-          reject(err)
+          handleError(err, reject)
         }
       })
     },
@@ -326,7 +334,7 @@ const store = new Vuex.Store({
           commit('ADD_COLLECTION_MEDIA', {id, arr: data.map((d) => d.media_id)})
           resolve()
         } catch (err) {
-          reject(err)
+          handleError(err, reject)
         }
       })
     },
@@ -348,7 +356,7 @@ const store = new Vuex.Store({
           commit('ADD_COLLECTION', data)
           resolve()
         } catch (err) {
-          reject(err)
+          handleError(err, reject)
         }
       })
     },
@@ -371,7 +379,7 @@ const store = new Vuex.Store({
           commit('ADD_MEDIA', data)
           resolve()
         } catch (err) {
-          reject(err)
+          handleError(err, reject)
         }
       })
     },
@@ -481,6 +489,10 @@ const store = new Vuex.Store({
     UPDATE_DISPLAY_NAME (state, str) {
       localStorage.setItem('displayName', str)
       state.displayName = str
+    },
+
+    SET_ERROR (state, bool) {
+      state.error = bool
     }
   }
 })

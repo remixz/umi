@@ -13,7 +13,16 @@
     <umi-header />
     <main class="bg-white center pv1 ph3 mv3" style="margin-top: 77px;">
       <transition name="fade" mode="out-in">
-        <router-view v-if="!loading"></router-view>
+        <router-view v-if="loaded"></router-view>
+        <div v-else-if="error">
+          <img src="https://my.mixtape.moe/gazrbv.gif" class="fl pr3">
+          <div class="pt5">
+            <p class="lh-copy">
+              <b>Something went wrong when contacting Crunchyroll.</b> This probably means it's the weekend and Crunchyroll's servers can't handle the load. Try waiting for a seconds and refreshing.
+            </p>
+            <button @click="refresh" class="fw6 ph6 pv2 input-reset ba b--black-20 bg-white bg-animate hover-bg-blue black hover-white br1 pointer f6 db center">Refresh</button>
+          </div>
+        </div>
         <div class="center tc" v-else>
           <i class="fa fa-circle-o-notch fa-spin fa-3x silver mt5"></i>
         </div>
@@ -26,9 +35,14 @@
         Dashboard icons made by <a href="http://www.flaticon.com/authors/popcorns-arts" target="_blank" rel="noopener">Popcorns Arts</a> from <a href="http://www.flaticon.com" target="_blank" rel="noopener">www.flaticon.com</a>. Licensed under <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC 3.0 BY</a>.
       </p>
     </footer>
-    <div v-if="updateAvailable" class="fixed left-0 bottom-0 bg-yellow pa3 fw6 br1 shadow-1">
-      <span>An update is ready to be installed:</span>
-      <span class="f6 fw5 dib ml1 ba b--black bg-transparent bg-animate hover-bg-black hover-yellow br1 pointer ph2 pv1 tc" @click="refresh">Install and refresh</span>
+    <div v-if="updateAvailable" class="fixed left-0 right-0 bottom-0 bg-light-yellow pa3 fw6 br1 shadow-1 tc">
+      <span>An update is ready to be installed.</span>
+      <span class="f6 fw5 dib ml1 ba b--black bg-transparent bg-animate hover-bg-black hover-light-yellow br1 pointer ph2 pv1 tc" @click="refresh">Install and refresh</span>
+    </div>
+    <div v-if="stateError" class="fixed right-0 left-0 bottom-0 bg-light-red pa3 fw6 br1 shadow-1 center tc">
+      <span>Something went wrong when contacting Crunchyroll.</span>
+      <span class="f6 fw5 dib ml1 ba b--black bg-transparent bg-animate hover-bg-black hover-light-red br1 pointer ph2 pv1 tc" @click="dismissError">Dismiss</span>
+      <span class="f6 fw5 dib ml1 ba b--black bg-transparent bg-animate hover-bg-black hover-light-red br1 pointer ph2 pv1 tc" @click="refresh">Refresh</span>
     </div>
     <div :class="`fixed absolute--fill z-4 ${lights ? 'bg-black-90' : 'dn'}`"></div>
   </div>
@@ -42,14 +56,17 @@ export default {
   components: { 'umi-header': Header },
   data () {
     return {
-      loading: true,
+      loaded: false,
+      error: false,
       tooltip: 'Click to copy URL',
       hideBar: false
     }
   },
-  metaInfo: {
-    titleTemplate: '%s - Umi',
-    title: 'Loading...'
+  metaInfo () {
+    return {
+      titleTemplate: '%s - Umi',
+      title: this.error ? 'Error' : 'Loading...'
+    }
   },
   computed: {
     connected () {
@@ -75,6 +92,9 @@ export default {
     },
     updateAvailable () {
       return this.$store.state.updateAvailable
+    },
+    stateError () {
+      return this.$store.state.error
     }
   },
   methods: {
@@ -108,6 +128,9 @@ export default {
     },
     refresh () {
       location.reload()
+    },
+    dismissError () {
+      this.$store.commit('SET_ERROR', false)
     }
   },
   watch: {
@@ -129,9 +152,13 @@ export default {
       }
     }
   },
-  async beforeMount () {
-    await this.$store.dispatch('startSession')
-    this.loading = false
+  async created () {
+    try {
+      await this.$store.dispatch('startSession')
+      this.loaded = true
+    } catch (err) {
+      this.error = true
+    }
   },
   mounted () {
     if (process.env.NODE_ENV === 'production') {

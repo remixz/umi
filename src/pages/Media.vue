@@ -38,7 +38,7 @@
           </div>
         </div>
         <div style="height: 21px;">
-          <router-link class="dark-gray fw6 no-underline bb pb1 b--dark-gray hover-blue link" :to="`/series/${media.series_id}`">{{collectionLoaded ? collection.name : 'Loading...'}}</router-link>
+          <router-link class="dark-gray fw6 no-underline bb pb1 b--dark-gray hover-blue link" :to="`/series/${media.series_id}`">{{media.collection_name}}</router-link>
           <a v-if="isMalAuthed && malItem.id" :href="malItem.url" target="_blank" rel="noopener"><span :class="`mal-icon ${malSynced ? 'watched' : ''} ml1`"></span></a>
         </div>
         <p class="lh-copy">{{media.description}}</p>
@@ -70,7 +70,7 @@
     name: 'media',
     metaInfo () {
       return {
-        title: this.collection ? `Episode ${this.media.episode_number}: ${this.media.name} — ${this.collection.name}` : 'Loading...'
+        title: this.media ? `Episode ${this.media.episode_number}: ${this.media.name} — ${this.media.collection_name}` : 'Loading...'
       }
     },
     components: {
@@ -143,9 +143,8 @@
             this.seek = 0
             this.internalSeek = this.media.playhead
           })
-        await $store.dispatch('getCollectionInfo', this.media.collection_id)
+        await $store.dispatch('getMediaForCollection', this.media.collection_id)
         this.collectionLoaded = true
-        $store.dispatch('getMediaForCollection', this.media.collection_id)
         if (this.isMalAuthed) {
           const {data: {status, item}} = await axios.get(`${UMI_SERVER}/mal/series?name=${this.collection.name}`)
           if (status === 'ok') {
