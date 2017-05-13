@@ -146,7 +146,7 @@
         await $store.dispatch('getMediaForCollection', this.media.collection_id)
         this.collectionLoaded = true
         if (this.isMalAuthed) {
-          const {data: {status, item}} = await axios.get(`${UMI_SERVER}/mal/series?name=${this.collection.name}`)
+          const {data: {status, item}} = await axios.get(`${UMI_SERVER}/mal/series?name=${this.media.collection_name}`)
           if (status === 'ok') {
             this.malItem = item
           }
