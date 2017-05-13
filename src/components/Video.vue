@@ -46,7 +46,8 @@
       }
     },
     mounted () {
-      $script('//cdn.jsdelivr.net/g/clappr@0.2.65,clappr.level-selector@0.1.10,clappr.thumbnails-plugin@3.6.0', () => {
+      // $script('//cdn.jsdelivr.net/g/clappr@0.2.65,clappr.level-selector@0.1.10,clappr.thumbnails-plugin@3.6.0', () => {
+      $script('//cdn.jsdelivr.net/g/clappr@0.2.65,clappr.level-selector@0.1.10', () => {
         const self = this
         this.playerInit = true
         this.player = new Clappr.Player({
@@ -56,7 +57,8 @@
           source: this.streamUrl,
           poster: this.poster,
           disableVideoTagContextMenu: true,
-          plugins: [LevelSelector, ClapprThumbnailsPlugin],
+          // plugins: [LevelSelector, ClapprThumbnailsPlugin],
+          plugins: [LevelSelector],
           levelSelectorConfig: {
             title: 'Quality',
             labels: {
@@ -67,11 +69,11 @@
               0: '240p'
             }
           },
-          scrubThumbnails: {
-            backdropHeight: null,
-            spotlightHeight: 84,
-            thumbs: []
-          },
+          // scrubThumbnails: {
+          //   backdropHeight: null,
+          //   spotlightHeight: 84,
+          //   thumbs: []
+          // },
           events: {
             onReady () {
               self.$emit('loaded')
@@ -117,7 +119,7 @@
         }
 
         if (this.bif) {
-          this.loadBif()
+          // this.loadBif()
         }
       })
     },
@@ -132,7 +134,7 @@
         if (this.room !== '') {
           this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.wsHandlePlay)
         }
-        this.loadBif()
+        // this.loadBif()
       },
       room (curr) {
         if (curr === '') {
