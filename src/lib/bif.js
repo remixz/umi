@@ -19,15 +19,7 @@ const MAGIC_NUMBER = new Uint8Array([
 ])
 
 function validate (magicNumber) {
-  let isValid = true
-
-  MAGIC_NUMBER.forEach((byte, i) => {
-    if (byte !== magicNumber[i]) {
-      isValid = false
-    }
-  })
-
-  return isValid
+  return MAGIC_NUMBER.every((byte, i) => magicNumber[i] === byte)
 }
 
 export default function bif (url) {

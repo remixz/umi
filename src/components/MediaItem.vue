@@ -1,7 +1,7 @@
 <template>
   <router-link :to="`/series/${data.series_id}/${id}`" class="black" v-if="data.available">
-    <div :class="`media-item dib v-top h-100 bg-near-white mr3 mb2 ${!noBorder ? 'bb bw2 b--light-gray' : ''} ${!selected ? 'hide-child' : ''} ${size}`" @click="$emit('click')">
-      <div :class="`relative ${size === 'inline-small' ? 'dib' : ''}`">
+    <div class="media-item dib v-top h-100 bg-near-white mr3 mb2" :class="[{'bb bw2 b--light-gray': !noBorder, 'hide-child': !selected}, size]" @click="$emit('click')">
+      <div class="relative" :class="{dib: size === 'inline-small'}">
         <img :src="data.screenshot_image.full_url" class="w-100 image-size">
         <div class="bg-gray playhead" style="margin-top: -4px;">
           <div class="bg-blue playhead" :style="`width: ${Math.min(100, (data.playhead / data.duration) * 100)}%`"></div>
@@ -10,7 +10,7 @@
           <i class="fa fa-play white tc play-icon" aria-hidden="true"></i>
         </div>
       </div>
-      <div :class="`pa2 ${size === 'inline-small' ? 'dib v-top' : ''}`">
+      <div class="pa2" :class="{'div v-top': size === 'inline-small'}">
         <div v-if="collectionName">
           <span class="truncate db fw6">{{collectionName}}</span> <br>
           <small class="gray truncate db lh-copy">Episode {{data.episode_number}} &mdash; {{data.name}}</small>

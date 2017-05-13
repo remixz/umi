@@ -128,7 +128,7 @@ const store = new Vuex.Store({
             reject(new Error(data.error))
           }
         } catch (err) {
-          handleError(err, reject)
+          reject(err)
         }
       })
     },

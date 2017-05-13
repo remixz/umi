@@ -1,12 +1,12 @@
 <template>
   <div class="sans-serif" id="app">
-    <div :class="`${lights ? 'bg-dark-gray' : 'bg-green'} white pa2 cf z-5 fixed right-0 bottom-0 br1 br--left br--top shadow-1 room-bar ${roomBarClass}`">
+    <div class="white pa2 cf z-5 fixed right-0 bottom-0 br1 br--left br--top shadow-1 room-bar" :class="[lights ? 'bg-dark-gray' : 'bg-green', roomBarClass]">
       <div class="w-80 dib ph3">
-        <i :class="`fa fa-caret-${hideBar ? 'left' : 'right'} absolute pointer bar-caret`" aria-hidden="true" @click="hideBar = !hideBar"></i>
-        <input type="text" :class="`w-100 ${lights ? 'bg-near-black' : 'bg-dark-green'} white input-reset bw0 pa2 br1 pointer`" readonly v-tooltip.top-center="tooltip" v-model="roomUrl" @mouseenter="tooltip = 'Click to copy URL'" @click="handleRoomClick" @mouseleave="handleRoomInputLeave">
+        <i class="fa absolute pointer bar-caret" :class="[`fa-caret-${hideBar ? 'left' : 'right'}`]" aria-hidden="true" @click="hideBar = !hideBar"></i>
+        <input type="text" class="w-100 white input-reset bw0 pa2 br1 pointer" :class="[lights ? 'bg-near-black' : 'bg-dark-green']" readonly v-tooltip.top-center="tooltip" v-model="roomUrl" @mouseenter="tooltip = 'Click to copy URL'" @click="handleRoomClick" @mouseleave="handleRoomInputLeave">
       </div>
       <div class="w-20 fr">
-        <span :class="`f6 fw5 db ba b--white-40 bg-transparent bg-animate ${!lights ? 'hover-bg-dark-green' : ''} white br1 pointer ph2 pv1 tc`" style="margin-top: -3px" @click="handleDestroy">Leave this room</span>
+        <span class="f6 fw5 db ba b--white-40 bg-transparent bg-animate white br1 pointer ph2 pv1 tc" :class="{'hover-bg-dark-green': !lights}" style="margin-top: -3px" @click="handleDestroy">Leave this room</span>
         <span class="small-caps f6 absolute" style="right: 35px">Connected: {{connectedCount}}</span>
       </div>
     </div>
@@ -39,12 +39,12 @@
       <span>An update is ready to be installed.</span>
       <span class="f6 fw5 dib ml1 ba b--black bg-transparent bg-animate hover-bg-black hover-light-yellow br1 pointer ph2 pv1 tc" @click="refresh">Install and refresh</span>
     </div>
-    <div v-if="stateError" class="fixed right-0 left-0 bottom-0 bg-light-red pa3 fw6 br1 shadow-1 center tc">
+    <div v-if="stateError" class="fixed right-0 left-0 bottom-0 bg-light-red pa3 fw6 br1 shadow-1 tc">
       <span>Something went wrong when contacting Crunchyroll.</span>
       <span class="f6 fw5 dib ml1 ba b--black bg-transparent bg-animate hover-bg-black hover-light-red br1 pointer ph2 pv1 tc" @click="dismissError">Dismiss</span>
       <span class="f6 fw5 dib ml1 ba b--black bg-transparent bg-animate hover-bg-black hover-light-red br1 pointer ph2 pv1 tc" @click="refresh">Refresh</span>
     </div>
-    <div :class="`fixed absolute--fill z-4 ${lights ? 'bg-black-90' : 'dn'}`"></div>
+    <div class="fixed absolute--fill z-4" :class="[lights ? 'bg-black-90' : 'dn']"></div>
   </div>
 </template>
 

@@ -18,7 +18,8 @@
         :key="series.id"
         :to="`/series/${series.id}`"
         :data-index="index"
-        :class="`db no-underline black bb b--black-40 search-result ${index === selected ? 'selected' : ''}`"
+        class="db no-underline black bb b--black-40 search-result"
+        :class="{selected: selected === index}"
         @mouseover.native="resultHover"
         @click.native="resultPress"
       >
@@ -63,7 +64,7 @@
         ))
       },
       showResults () {
-        return (!this.errorLoading && this.matching.length > 0) && ((this.focused && this.searchInput.length > 2) || this.selected > -1)
+        return (!this.errorLoading && this.matching.length > 0) && ((this.focused && this.searchInput.replace(/\W/g, '').length > 2) || this.selected > -1)
       }
     },
     watch: {

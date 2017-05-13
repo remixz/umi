@@ -2,7 +2,7 @@
   <div v-if="series && series.name">
     <div class="absolute w-100 player-top-offset left-0 overflow-hidden" style="height: 300px;">
       <video v-if="opening" class="w-100 absolute top-0" :src="opening" @playing="playing = true" muted loop autoplay></video>
-      <div :class="`w-100 cover bg-center absolute video-banner ${playing ? 'away' : ''}`" :style="`background-image: url(${series.landscape_image.full_url});`"></div>
+      <div class="w-100 cover bg-center absolute video-banner" :class="{away: playing}" :style="`background-image: url(${series.landscape_image.full_url});`"></div>
       <div class="w-100 bg-black o-40 absolute" style="height: 300px;"></div>
     </div>
     <div class="relative z-9999" style="margin-top: 150px;">
@@ -19,8 +19,8 @@
       </div>
       <div class="relative">
         <div class="absolute right-0 bottom-0">
-          <div :class="`fw5 ph3 pv2 bg-white pointer f6 dib ${sort === 'old' ? 'bb bw1 b--blue' : ''}`" data-sort="old" @click="sortCollection">Oldest</div>
-          <div :class="`fw5 ph3 pv2 bg-white pointer f6 dib ${sort === 'new' ? 'bb bw1 b--blue' : ''}`" data-sort="new" @click="sortCollection">Newest</div>
+          <div class="fw5 ph3 pv2 bg-white pointer f6 dib" :class="{'bb bw1 b--blue': sort === 'old'}" data-sort="old" @click="sortCollection">Oldest</div>
+          <div class="fw5 ph3 pv2 bg-white pointer f6 dib" :class="{'bb bw1 b--blue': sort === 'new'}" data-sort="new" @click="sortCollection">Newest</div>
         </div>
       </div>
       <div v-if="collections">
@@ -30,7 +30,7 @@
               <span class="fw6">{{collectionData[id].name}}</span>
             </div>
             <div class="fr">
-              <i :class="`fa fa-caret-${selectedCollection === id ? 'up' : 'down'}`" aria-hidden="true"></i>
+              <i class="fa" :class="[`fa-caret-${selectedCollection === id ? 'up' : 'down'}`]" aria-hidden="true"></i>
             </div>
           </div>
           <collection :id="id" :hide="selectedCollection !== id" :sort="sort" class="center" style="width: 948px" />

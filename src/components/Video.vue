@@ -1,6 +1,6 @@
 <template>
   <div class="pv2">
-    <div id="player" :class="`bg-black w-100 absolute left-0 z-9999${lights ? ' shadow-2' : ''} player-top-offset`">
+    <div id="player" class="bg-black w-100 absolute left-0 z-9999 player-top-offset" :class="{'shadow-2': lights}">
       <div v-if="playerInit && showBlur && !lights" class="w-100 player-height absolute top-0 left-0 overflow-hidden o-80">
         <img :src="poster" class="player-background" draggable="false">
       </div>

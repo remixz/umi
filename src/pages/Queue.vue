@@ -2,8 +2,8 @@
   <div>
     <div class="relative cf mb2">
       <div class="fr">
-        <div :class="`fw5 ph3 pv2 bg-white pointer f6 dib ${sort === 'recent' ? 'bb bw1 b--blue' : ''}`" data-sort="recent" @click="sortQueue">Recently updated</div>
-        <div :class="`fw5 ph3 pv2 bg-white pointer f6 dib ${sort === 'order' ? 'bb bw1 b--blue' : ''}`" data-sort="order" @click="sortQueue">Queue order</div>
+        <div class="fw5 ph3 pv2 bg-white pointer f6 dib" :class="{'bb bw1 b--blue': sort === 'recent'}" data-sort="recent" @click="sortQueue">Recently updated</div>
+        <div class="fw5 ph3 pv2 bg-white pointer f6 dib" :class="{'bb bw1 b--blue': sort === 'order'}" data-sort="order" @click="sortQueue">Queue order</div>
       </div>
     </div>
     <div v-if="loaded">

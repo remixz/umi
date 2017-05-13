@@ -33,13 +33,13 @@
         <div class="w-100">
           <h2 class="normal lh-title mb2 w-80 dib poppins"><span class="ttu fw6">Episode {{media.episode_number}}:</span> {{media.name}}</h2>
           <div class="dib fr pt3 z-9999 relative">
-            <div v-tooltip.bottom-center="'Watch with others'" :class="`f5 fw6 dib ba ${lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate'} bg-transparent br2 black pointer ph3 pv2`" v-if="room === ''" @click="$store.dispatch('createRoom')"><i class="tc fa fa-users" aria-hidden="true"></i></div>
-            <div v-tooltip.bottom-center="'Toggle dark mode'" :class="`f5 fw6 dib ba ${lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate'} bg-transparent br2 black pointer ph3 pv2`" @click="$store.commit('UPDATE_LIGHTS', !lights)"><i class="tc fa fa-moon-o" aria-hidden="true" style="width: 16px;"></i></div>
+            <div v-tooltip.bottom-center="'Watch with others'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2" :class="[lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate']" v-if="room === ''" @click="$store.dispatch('createRoom')"><i class="tc fa fa-users" aria-hidden="true"></i></div>
+            <div v-tooltip.bottom-center="'Toggle dark mode'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2" :class="[lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate']" @click="$store.commit('UPDATE_LIGHTS', !lights)"><i class="tc fa fa-moon-o" aria-hidden="true" style="width: 16px;"></i></div>
           </div>
         </div>
         <div style="height: 21px;">
           <router-link class="dark-gray fw6 no-underline bb pb1 b--dark-gray hover-blue link" :to="`/series/${media.series_id}`">{{media.collection_name}}</router-link>
-          <a v-if="isMalAuthed && malItem.id" :href="malItem.url" target="_blank" rel="noopener"><span :class="`mal-icon ${malSynced ? 'watched' : ''} ml1`"></span></a>
+          <a v-if="isMalAuthed && malItem.id" :href="malItem.url" target="_blank" rel="noopener"><span class="mal-icon ml1" :class="{watched: malSynced}"></span></a>
         </div>
         <p class="lh-copy">{{media.description}}</p>
 
