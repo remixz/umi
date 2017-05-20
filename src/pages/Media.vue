@@ -50,7 +50,11 @@
     <div v-else>
       <div class="pv2">
         <div class="bg-black absolute w-100 left-0 player-height player-top-offset">
-          <div class="bg-dark-gray center player-width player-height"></div>
+          <div class="bg-dark-gray center player-width player-height">
+            <div class="bg-black-60 center player-width player-height tc">
+              <i class="fa fa-circle-o-notch fa-spin fa-3x white center" style="margin-top: 265px;"></i>
+            </div>
+          </div>
         </div>
       </div>
     </div>
