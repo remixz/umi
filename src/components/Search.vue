@@ -3,14 +3,14 @@
     <form @submit.prevent="search">
       <input
         type="text"
-        class="br2 br--left input-reset white bw0 bg-dark-blue search-bar"
+        class="br2 br--left input-reset white bw0 bg-dark-blue pa2 search-bar"
         placeholder="Search Crunchyroll"
         v-model="searchInput"
         ref="input"
         @keydown="keydown"
         @focus="focus"
       >
-      <button class="br2 br--right pointer bw0 button-reset bg-dark-blue search-btn"><i class="fa fa-search white"></i></button>
+      <button class="br2 br--right pointer bw0 button-reset bg-dark-blue pa2 search-btn"><i class="fa fa-search white"></i></button>
     </form>
     <div v-if="showResults" class="absolute br2 shadow-1 bg-white w-100 mt1">
       <router-link
@@ -18,13 +18,13 @@
         :key="series.id"
         :to="`/series/${series.id}`"
         :data-index="index"
-        class="db no-underline black bb b--black-40 search-result"
+        class="db no-underline black bb b--black-40 pa2 search-result"
         :class="{selected: selected === index}"
         @mouseover.native="resultHover"
         @click.native="resultPress"
       >
-        <img :src="series.image" :alt="series.name">
-        <span class="truncate dib f6">{{series.name}}</span>
+        <img class="v-mid" :src="series.image" :alt="series.name">
+        <span class="truncate dib f6 v-mid">{{series.name}}</span>
       </router-link>
     </div>
   </div>
@@ -61,7 +61,7 @@
       matching () {
         return this.data.filter((d) => (
           d.name.replace(/\W/g, '').toLowerCase().indexOf(this.searchInput.replace(/\W/g, '').toLowerCase()) > -1
-        ))
+        )).slice(0, 5)
       },
       showResults () {
         return (!this.errorLoading && this.matching.length > 0) && ((this.focused && this.searchInput.replace(/\W/g, '').length > 2) || this.selected > -1)
@@ -95,6 +95,10 @@
           if (this.selected > this.matching.length - 1) {
             this.selected = -1
           }
+        } else if (e.which === 27) { // escape
+          this.focused = false
+          this.selected = -1
+          this.$refs.input.blur()
         }
       },
       async focus () {
@@ -137,27 +141,17 @@
 </script>
 
 <style scoped>
-  .search-bar {
-    padding: 0.5rem;
-  }
-
   .search-bar::placeholder {
     color: white;
     opacity: 0.8;
   }
 
   .search-btn {
-    padding: 0.5rem;
     margin-left: -5px;
   }
 
   .search-bar:focus, .search-btn:active, .search-btn:focus {
     outline: none;
-  }
-
-  .search-result {
-    padding: 0.5rem;
-    cursor: pointer;
   }
 
   .search-result:first-child {
@@ -180,12 +174,7 @@
     font-weight: 600;
   }
 
-  .search-result img {
-    vertical-align: middle;
-  }
-
   .search-result span {
     width: 170px;
-    vertical-align: middle;
   }
 </style>

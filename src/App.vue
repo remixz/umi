@@ -12,21 +12,19 @@
     </div>
     <umi-header />
     <main class="bg-white center pv1 ph3 mv3" style="margin-top: 77px;">
-      <transition name="fade" mode="out-in">
-        <router-view v-if="loaded"></router-view>
-        <div v-else-if="error">
-          <img src="https://my.mixtape.moe/gazrbv.gif" class="fl pr3">
-          <div class="pt5">
-            <p class="lh-copy">
-              <b>Something went wrong when contacting Crunchyroll.</b> This probably means it's the weekend and Crunchyroll's servers can't handle the load. Try waiting for a seconds and refreshing.
-            </p>
-            <button @click="refresh" class="fw6 ph6 pv2 input-reset ba b--black-20 bg-white bg-animate hover-bg-blue black hover-white br1 pointer f6 db center">Refresh</button>
-          </div>
+      <router-view v-if="loaded"></router-view>
+      <div v-else-if="error">
+        <img src="https://my.mixtape.moe/gazrbv.gif" class="fl pr3">
+        <div class="pt5">
+          <p class="lh-copy">
+            <b>Something went wrong when contacting Crunchyroll.</b> This probably means it's the weekend and Crunchyroll's servers can't handle the load. Try waiting for a seconds and refreshing.
+          </p>
+          <button @click="refresh" class="fw6 ph6 pv2 input-reset ba b--black-20 bg-white bg-animate hover-bg-blue black hover-white br1 pointer f6 db center">Refresh</button>
         </div>
-        <div class="center tc" v-else>
-          <i class="fa fa-circle-o-notch fa-spin fa-3x silver mt5"></i>
-        </div>
-      </transition>
+      </div>
+      <div class="center tc" v-else>
+        <i class="fa fa-circle-o-notch fa-spin fa-3x silver mt5"></i>
+      </div>
     </main>
     <footer class="mw8 center relative">
       <p class="gray">

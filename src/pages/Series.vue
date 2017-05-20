@@ -1,5 +1,8 @@
 <template>
-  <div v-if="series && series.name">
+  <div>
+    <div v-if="seriesError">
+      <h1 class="fw6">This series is not available.</h1>
+    </div>
     <div class="absolute w-100 player-top-offset left-0 overflow-hidden" style="height: 300px;">
       <video v-if="opening" class="w-100 absolute top-0" :src="opening" @playing="playing = true" muted loop autoplay></video>
       <div class="w-100 cover bg-center absolute video-banner" :class="{away: playing}" :style="`background-image: url(${series.landscape_image.full_url});`"></div>
@@ -8,22 +11,27 @@
     <div class="relative z-9999" style="margin-top: 150px;">
       <div class="cf">
         <div class="w-20 fl pt2">
-          <img :src="series.portrait_image.full_url" class="shadow-1">
+          <img :src="series.portrait_image.full_url" class="shadow-1 bg-light-gray" style="width: 198px; height: 298px;">
         </div>
         <div class="w-80 fl pl3">
-          <h1 class="series-title poppins white" style="margin-top: 5rem;">{{series.name}}</h1>
+          <h1 class="series-title poppins white">{{series.name || '&nbsp;'}}</h1>
           <p class="lh-copy" style="margin-top: 2rem;">{{series.description}}</p>
-          <queue-button :id="series.series_id" />
-          <a class="link f6 fw6 dib ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph2 pv1" target="_blank" :href="`https://myanimelist.net/search/all?q=${encodeURIComponent(series.name)}`">Find on MyAnimeList</a>
+          <div v-if="!loading">
+            <queue-button :id="series.series_id" />
+            <a class="link f6 fw6 dib ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph2 pv1" target="_blank" :href="`https://myanimelist.net/search/all?q=${encodeURIComponent(series.name)}`">Find on MyAnimeList</a>
+          </div>
+          <div class="center tc" v-else>
+            <i class="fa fa-circle-o-notch fa-spin fa-3x silver mt3"></i>
+          </div>
         </div>
       </div>
-      <div class="relative">
+      <div class="relative" v-if="!loading">
         <div class="absolute right-0 bottom-0">
           <div class="fw5 ph3 pv2 bg-white pointer f6 dib" :class="{'bb bw1 b--blue': sort === 'old'}" data-sort="old" @click="sortCollection">Oldest</div>
           <div class="fw5 ph3 pv2 bg-white pointer f6 dib" :class="{'bb bw1 b--blue': sort === 'new'}" data-sort="new" @click="sortCollection">Newest</div>
         </div>
       </div>
-      <div v-if="collections">
+      <div v-if="collections && !loading">
         <div v-for="id in sortedCollections" :key="id">
           <div class="collection-header cf bg-light-gray pa3 mv2 pointer bb bw2 b--black-10" :data-id="id" @click="selectCollection">
             <div class="fl">
@@ -37,9 +45,6 @@
         </div>
       </div>
     </div>
-  </div>
-  <div v-else-if="seriesError">
-    <h1 class="fw6">This series is not available.</h1>
   </div>
 </template>
 
@@ -71,7 +76,8 @@
         sort: localStorage.getItem(`series-${this.$route.params.id}-sort`) || 'new',
         seriesError: false,
         opening: null,
-        playing: false
+        playing: false,
+        loading: true
       }
     },
     computed: {
@@ -80,7 +86,10 @@
       },
       series () {
         const {$store} = this
-        return $store.state.series[this.seriesId]
+        return this.loading ?  {
+          landscape_image: {},
+          portrait_image: {}
+        } : $store.state.series[this.seriesId]
       },
       collections () {
         const {$store} = this
@@ -99,6 +108,7 @@
 
         try {
           await $store.dispatch('getSeriesInfo', this.seriesId)
+          this.loading = false
           await $store.dispatch('getCollectionsForSeries', this.series.series_id)
           this.selectedCollection = this.sortedCollections[0]
           this.getOpening()
@@ -130,6 +140,7 @@
         this.opening = null
         this.playing = false
         this.seriesError = false
+        this.loading = true
         this.getSeriesInfo()
       }
     },
@@ -160,5 +171,6 @@
 
   .series-title {
     text-shadow: 0px 4px 3px rgba(0,0,0,0.4), 0px 8px 13px rgba(0,0,0,0.1), 0px 18px 23px rgba(0,0,0,0.1);
+    margin-top: 5rem;
   }
 </style>
