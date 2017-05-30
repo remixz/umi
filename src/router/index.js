@@ -87,7 +87,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   // on all page changes aside from the initial load, we cancel in progress requests
-  if (from.name) {
+  if (from.name && from.name !== to.name) {
     cancelCurrentRequests()
   }
   next()
