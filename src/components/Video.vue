@@ -184,7 +184,7 @@
           data.append('event', 'playback_status')
           data.append('playhead', time)
           data.append('media_id', id || this.id)
-          data.append('locale', LOCALE)
+          data.append('locale', LOCALE())
           data.append('version', VERSION)
 
           api({

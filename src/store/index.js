@@ -31,6 +31,7 @@ const store = new Vuex.Store({
     ) : (
       {}
     ),
+    locales: [],
     displayName: localStorage.getItem('displayName') || '',
     series: {},
     seriesCollections: {},
@@ -70,6 +71,9 @@ const store = new Vuex.Store({
             expires: data.expires
           })
           resolve()
+          // fetch locales in the background
+          const localeResp = await api({route: 'list_locales', version: '1', params: {session_id: data.session_id}})
+          commit('UPDATE_LOCALES', localeResp.data.data.locales)
         } catch (err) {
           reject(err)
         }
@@ -81,7 +85,7 @@ const store = new Vuex.Store({
       form.append('account', username)
       form.append('password', password)
       form.append('session_id', state.auth.session_id)
-      form.append('locale', LOCALE)
+      form.append('locale', LOCALE())
       form.append('version', VERSION)
 
       return new Promise(async (resolve, reject) => {
@@ -265,7 +269,7 @@ const store = new Vuex.Store({
     updateSeriesQueue ({commit, state}, {id, queueStatus}) {
       const form = new FormData()
       form.append('session_id', state.auth.session_id)
-      form.append('locale', LOCALE)
+      form.append('locale', LOCALE())
       form.append('version', VERSION)
       form.append('series_id', id)
 
@@ -416,6 +420,10 @@ const store = new Vuex.Store({
       const updated = Object.assign({}, state.auth, obj)
       localStorage.setItem('auth', JSON.stringify(updated))
       Vue.set(state, 'auth', updated)
+    },
+
+    UPDATE_LOCALES (state, arr) {
+      state.locales = arr
     },
 
     REMOVE_AUTH (state) {
