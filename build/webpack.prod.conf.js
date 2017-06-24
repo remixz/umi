@@ -77,11 +77,13 @@ var webpackConfig = merge(baseWebpackConfig, {
     new webpack.LoaderOptionsPlugin({
       minimize: true
     }),
-     new OfflinePlugin({
-       ServiceWorker: {
-         events: true
-       }
-     })
+    new OfflinePlugin({
+      ServiceWorker: {
+        events: true
+      },
+      AppCache: false
+    }),
+    new webpack.optimize.ModuleConcatenationPlugin()
   ]
 })
 
