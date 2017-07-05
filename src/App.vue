@@ -11,7 +11,7 @@
       </div>
     </div>
     <umi-header />
-    <main class="bg-white center pv1 ph3 mv3" style="margin-top: 77px;">
+    <main class="bg-white center pv1 ph3 mv3">
       <router-view v-if="loaded"></router-view>
       <div v-else-if="error">
         <img src="https://my.mixtape.moe/gazrbv.gif" class="fl pr3">
@@ -30,7 +30,6 @@
       <p class="gray">
         This site is not endorsed by or affiliated with Crunchyroll. <br />
         Created by <a href="https://twitter.com/zachbruggeman" target="_blank" rel="noopener">Zach Bruggeman</a>. <a href="https://github.com/remixz/umi" target="_blank" rel="noopener">View source on GitHub</a>. <br />
-        Dashboard icons made by <a href="http://www.flaticon.com/authors/popcorns-arts" target="_blank" rel="noopener">Popcorns Arts</a> from <a href="http://www.flaticon.com" target="_blank" rel="noopener">www.flaticon.com</a>. Licensed under <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC 3.0 BY</a>.
       </p>
     </footer>
     <div v-if="updateAvailable" class="fixed left-0 right-0 bottom-0 bg-light-yellow pa3 fw6 br1 shadow-1 tc">
@@ -175,6 +174,7 @@ export default {
   main {
     width: 64rem;
     min-height: calc(100vh - 5rem);
+    margin-top: 77px;
   }
 
   .room-bar {

@@ -86,7 +86,7 @@
       },
       series () {
         const {$store} = this
-        return this.loading ?  {
+        return this.loading ? {
           landscape_image: {},
           portrait_image: {}
         } : $store.state.series[this.seriesId]

@@ -2,7 +2,10 @@
   <router-link :to="`/series/${data.series_id}/${id}`" class="black" v-if="data.available">
     <div class="media-item dib v-top h-100 bg-near-white mr3 mb2" :class="[{'bb bw2 b--light-gray': !noBorder, 'hide-child': !selected}, size]" @click="$emit('click')">
       <div class="relative" :class="{dib: size === 'inline-small'}">
-        <img :src="data.screenshot_image.full_url" class="w-100 image-size">
+        <img v-if="data.screenshot_image" :src="data.screenshot_image.full_url" class="w-100 image-size">
+        <div v-else class="w-100 image-size tc" style="margin-bottom: 3px;">
+          <i class="fa fa-question-circle-o black-40 missing-icon" aria-hidden="true"></i>
+        </div>
         <div class="bg-gray playhead" style="margin-top: -4px;">
           <div class="bg-blue playhead" :style="`width: ${Math.min(100, (data.playhead / data.duration) * 100)}%`"></div>
         </div>
@@ -50,7 +53,7 @@
   }
 
   .media-item.dashboard {
-    width: 250px;
+    width: 230px;
   }
 
   .media-item.small {
@@ -63,8 +66,8 @@
   }
 
   .dashboard .image-size {
-    width: 250px;
-    height: 140px;
+    width: 230px;
+    height: 129px;
   }
 
   .small .image-size, .inline-small .image-size {
@@ -88,5 +91,20 @@
     display: block !important;
     font-size: 1.5rem !important;
     margin: 30px auto;
+  }
+
+  .medium .missing-icon {
+    font-size: 2rem !important;
+    margin-top: 75px;
+  }
+
+  .dashboard .missing-icon {
+    font-size: 2rem !important;
+    margin-top: 55px;
+  }
+
+  .small .missing-icon, .inline-small .missing-icon {
+    font-size: 1.5rem !important;
+    margin-top: 30px;
   }
 </style>

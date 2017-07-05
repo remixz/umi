@@ -14,17 +14,17 @@
     </form>
     <div v-if="showResults" class="absolute br2 shadow-1 bg-white w-100 mt1">
       <router-link
-        v-for="(series, index) in matching"
-        :key="series.id"
-        :to="`/series/${series.id}`"
+        v-for="(id, index) in matching"
+        :key="id"
+        :to="`/series/${id}`"
         :data-index="index"
         class="db no-underline black bb b--black-40 pa2 search-result"
         :class="{selected: selected === index}"
         @mouseover.native="resultHover"
         @click.native="resultPress"
       >
-        <img class="v-mid" :src="series.image" :alt="series.name">
-        <span class="truncate dib f6 v-mid">{{series.name}}</span>
+        <img class="v-mid" :src="series[id].landscape_image.small_url" :alt="series[id].name">
+        <span class="truncate dib f6 v-mid">{{series[id].name}}</span>
       </router-link>
     </div>
   </div>
@@ -32,6 +32,7 @@
 
 <script>
   import axios from 'axios'
+  import debounce from 'debounce'
   import { mixin as clickaway } from 'vue-clickaway'
   import { UMI_SERVER } from 'lib/api'
 
@@ -59,12 +60,17 @@
         }
       },
       matching () {
-        return this.data.filter((d) => (
-          d.name.replace(/\W/g, '').toLowerCase().indexOf(this.searchInput.replace(/\W/g, '').toLowerCase()) > -1
-        )).slice(0, 5)
+        return this.$store.state.searchIds.slice(0, 5)
+      },
+      series () {
+        return this.$store.state.series
       },
       showResults () {
-        return (!this.errorLoading && this.matching.length > 0) && ((this.focused && this.searchInput.replace(/\W/g, '').length > 2) || this.selected > -1)
+        return (
+          this.$route.name !== 'search' &&
+          (!this.errorLoading && this.matching.length > 0) &&
+          ((this.focused && this.searchInput.replace(/\W/g, '').length > 2) || this.selected > -1)
+        )
       }
     },
     watch: {
@@ -76,8 +82,14 @@
         }
 
         const prevMatching = prev[this.selected]
-        this.selected = curr.findIndex((d) => d.id === prevMatching.id)
-      }
+        this.selected = curr.findIndex((d) => d === prevMatching)
+      },
+      searchInput: debounce(function (curr, prev) {
+        const trimmed = curr.trim()
+        if (trimmed === '' || trimmed === prev || trimmed.length < 3) return
+
+        this.$store.dispatch('search', trimmed)
+      }, 250)
     },
     methods: {
       keydown (e) {
@@ -101,15 +113,7 @@
           this.$refs.input.blur()
         }
       },
-      async focus () {
-        if (this.data.length === 0 && !this.errorLoading) {
-          try {
-            const {data} = await axios.get(`${UMI_SERVER}/autocomplete/${this.country}`)
-            this.data = data
-          } catch (err) {
-            this.errorLoading = true
-          }
-        }
+      focus () {
         this.focused = true
       },
       blur () {
@@ -125,13 +129,14 @@
         this.searchInput = ''
       },
       search () {
-        if (this.searchInput.trim() === '') return
+        const trimmed = this.searchInput.trim()
+        if (trimmed === '' || trimmed.length < 3) return
         if (this.selected > -1) {
-          this.$router.push(`/series/${this.matching[this.selected].id}`)
+          this.$router.push(`/series/${this.matching[this.selected]}`)
           this.searchInput = ''
         } else {
           const method = this.$route.name === 'search' ? 'replace' : 'push'
-          this.$router[method](`/search?q=${this.searchInput}`)
+          this.$router[method](`/search?q=${trimmed}`)
         }
         this.$refs.input.blur()
         this.blur()

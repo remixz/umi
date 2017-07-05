@@ -2,16 +2,6 @@
   <div class="mt2">
     <h2 class="fw5 bb pb2 b--dark-gray"><i class="fa fa-user mr1"></i> Profile</h2>
     <div class="cf">
-      <div class="fl pv1">
-        <span class="fw5">Dashboard name</span>
-      </div>
-      <form class="fr" @submit.prevent="saveDisplayName">
-        <input type="text" :placeholder="$store.state.auth.username" class="ph3 pv2" v-model="displayName" />
-        <input type="submit" value="Save" class="fw6 ph3 pv2 input-reset ba b--black-20 bg-white bg-animate hover-bg-blue black hover-white br1 pointer f6 dib">
-        <div class="green mt1 absolute save-message" :class="[savedName ? 'o-100' : 'o-0']">Saved!</div>
-      </form>
-    </div>
-    <div class="cf">
       <div class="fl mt2">
         <span class="fw5">Content language</span>
       </div>
@@ -52,12 +42,10 @@
     },
     data () {
       return {
-        displayName: this.$store.state.displayName,
         malUsername: '',
         malPassword: '',
         malLoading: false,
         malError: false,
-        savedName: false,
         savedLocale: false,
         selectedLocale: LOCALE()
       }
@@ -81,14 +69,6 @@
       }
     },
     methods: {
-      saveDisplayName () {
-        this.$store.commit('UPDATE_DISPLAY_NAME', this.displayName)
-        if (this.savedName) return
-        this.savedName = true
-        setTimeout(() => {
-          this.savedName = false
-        }, 2000)
-      },
       async loginMal () {
         this.malError = false
         this.malLoading = true

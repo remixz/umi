@@ -32,7 +32,6 @@ const store = new Vuex.Store({
       {}
     ),
     locales: [],
-    displayName: localStorage.getItem('displayName') || '',
     series: {},
     seriesCollections: {},
     collections: {},
@@ -492,11 +491,6 @@ const store = new Vuex.Store({
 
     SET_UPDATE_AVAILABLE (state) {
       state.updateAvailable = true
-    },
-
-    UPDATE_DISPLAY_NAME (state, str) {
-      localStorage.setItem('displayName', str)
-      state.displayName = str
     },
 
     SET_ERROR (state, bool) {

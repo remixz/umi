@@ -5,7 +5,7 @@
       <span class="small-caps" v-else-if="searchIds.length > 0">{{searchIds.length}} result{{searchIds.length !== 1 ? 's' : ''}}</span>
     </div>
     <div class="center" style="width: 880px;">
-        <series-item v-for="id in searchIds" :key="id" :id="id" />
+        <series-item v-for="id in searchIds" :key="id" :id="id" class="pr1" />
         <h3 class="fw5 dark-gray tc" v-if="loading && searchIds.length === 0">Loading...</h3>
         <h3 class="fw5 dark-gray tc" v-if="searchIds.length === 0 && !loading">No results found.</h3>
     </div>
@@ -27,7 +27,7 @@
     },
     data () {
       return {
-        loading: true
+        loading: false
       }
     },
     computed: {
@@ -38,21 +38,24 @@
         return this.$route.query.q
       },
       stateQuery () {
-        return this.$store.state.searchQuery
+        return this.$store.state.searchQuery.trim()
       }
     },
     watch: {
-      async query () {
-        const {$store, query} = this
-        if (!query) return this.$router.go(-1)
-        this.loading = true
-        await $store.dispatch('search', query)
+      stateQuery (curr, prev) {
+        if (curr !== prev && curr.trim().length > 2) {
+          this.loading = true
+        }
+      },
+      searchIds () {
+        this.$router.replace(Object.assign({}, this.$route, {query: {q: this.stateQuery}}))
         this.loading = false
       }
     },
     async created () {
       const {$store, query} = this
       if (!query) return this.$router.go(-1)
+      if (this.searchIds.length === 0) this.loading = true
 
       if (this.stateQuery === '') {
         $store.commit('SET_SEARCH_QUERY', query)

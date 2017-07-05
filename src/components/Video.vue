@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  /* global Clappr, LevelSelector, ClapprThumbnailsPlugin */
+  /* global Clappr, LevelSelector */
   import $script from 'scriptjs'
   import anime from 'animejs'
   import api, {LOCALE, VERSION} from 'lib/api'

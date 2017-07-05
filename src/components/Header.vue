@@ -2,7 +2,7 @@
   <header class="bg-blue absolute top-0 w-100 bw1 bb b--dark-blue" :class="[lights ? 'z-3' : 'z-max']">
     <div class="header-container center relative">
       <div class="logo-container">
-        <router-link to="/" class="db no-underline">
+        <router-link to="/" class="db no-underline" exact>
           <img src="../assets/umi.png" alt="Umi player logo" class="logo db">
           <span class="b db ttu white f3 logo-text poppins">Umi!</span>
         </router-link>
@@ -124,11 +124,11 @@ export default {
     transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
-  .logo-container:hover .logo {
+  .logo-container:hover .logo, .router-link-active .logo {
     transform: translate(-35px, 0);
   }
 
-  .logo-container:hover .logo-text {
+  .logo-container:hover .logo-text, .router-link-active .logo-text {
     opacity: 1;
     transform: translate(35px, -39px) rotate(10deg);
   }

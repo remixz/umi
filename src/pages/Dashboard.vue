@@ -1,34 +1,41 @@
 <template>
   <div>
-    <img :src="time.icon" class="dib v-mid relative z-2" style="width: 75px;">
-    <div class="dib v-mid ml2">
-      <h1 class="near-black poppins mb0">{{time.greeting}}, <span :class="{editable: !displayName}" @click="editName">{{displayName || name}}</span>.</h1>
-      <p class="gray mt0 fw5">Here's your dashboard:</p>
-    </div>
     <div class="dashboard-section">
-      <h2 class="fw4 mv0 pb3 bb poppins"><i class="fa fa-play mr1" aria-hidden="true"></i> Continue watching</h2>
-      <div v-if="history.length > 0" class="center mt3" style="width: 798px;">
+      <div class="cf bb">
+        <h2 class="fw4 mv0 pb3 poppins fl"><i class="fa fa-play mr1" aria-hidden="true"></i> Continue watching</h2>
+        <router-link
+          to="/queue"
+          class="fr link f6 mt1 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph2 pv1 tc"
+        >
+          View more
+        </router-link>
+      </div>
+      <div v-if="history.length > 0" class="center mt3">
         <media-item v-for="d in history" :key="d.media.media_id" :id="d.media.media_id" :collectionName="d.collection.name" size="dashboard" />
-        <router-link class="link f5 fw6 db ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer pa3 tc" style="width: 782px;" to="/history">View full history</router-link>
       </div>
-      <div v-else class="center mt3" style="width: 798px;">
-        <div class="tc" style="height: 436px;">
-          <i class="fa fa-circle-o-notch fa-spin fa-3x silver" style="margin-top: 175px;"></i>
+      <div v-else class="center mt3">
+        <div class="tc" style="height: 215px;">
+          <i class="fa fa-circle-o-notch fa-spin fa-3x silver" style="margin-top: 65px;"></i>
         </div>
-        <router-link class="link f5 fw6 db ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer pa3 tc" style="width: 782px;" to="/history">View full history</router-link>
       </div>
     </div>
     <div class="dashboard-section">
-      <h2 class="fw4 mv0 pb3 bb poppins"><i class="fa fa-th-list mr1" aria-hidden="true"></i> Your queue</h2>
-      <div v-if="queue.length > 0" class="center mt3" style="width: 798px;">
-        <media-item v-for="d in queue" :key="d.most_likely_media.media_id" :id="d.most_likely_media.media_id" :collectionName="d.series.name" size="dashboard" />
-        <router-link class="link f5 fw6 db ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer pa3 tc" style="width: 782px;" to="/queue">View queue</router-link>
+      <div class="cf bb">
+        <h2 class="fw4 mv0 pb3 poppins fl"><i class="fa fa-th-list mr1" aria-hidden="true"></i> Your queue</h2>
+        <router-link
+          to="/queue"
+          class="fr link f6 mt1 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph2 pv1 tc"
+        >
+          View more
+        </router-link>
       </div>
-      <div v-else class="center mt3" style="width: 798px;">
-        <div class="tc" style="height: 436px;">
-          <i class="fa fa-circle-o-notch fa-spin fa-3x silver" style="margin-top: 175px;"></i>
+      <div v-if="queue.length > 0" class="center mt3">
+        <media-item v-for="d in queue" :key="d.most_likely_media.media_id" :id="d.most_likely_media.media_id" :collectionName="d.series.name" size="dashboard" />
+      </div>
+      <div v-else class="center mt3">
+        <div class="tc" style="height: 215px;">
+          <i class="fa fa-circle-o-notch fa-spin fa-3x silver" style="margin-top: 65px;"></i>
         </div>
-        <router-link class="link f5 fw6 db ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer pa3 tc" style="width: 782px;" to="/queue">View queue</router-link>
       </div>
     </div>
     <div class="dashboard-section">
@@ -36,13 +43,13 @@
       <div v-if="Object.keys(splits).length !== 0">
         <div v-for="(media, title) in splits">
           <h3 class="fw4 near-black pb2 bb b--silver">{{title}}</h3>
-          <div class="center" style="width: 798px;">
+          <div class="center">
             <media-item v-for="d in media" :key="d.media_id" :id="d.media_id" :collectionName="d.series_name" size="dashboard" />
           </div>
         </div>
-        <div v-if="!finishedLatest" class="center pointer f5 fw6 db ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer pa3 tc" @click="getRecent" style="width: 782px;">{{latestLoading ? 'Loading...' : 'Load more'}}</div>
+        <div v-if="!finishedLatest" class="center pointer f5 fw6 db ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer pa3 tc" @click="getRecent">{{latestLoading ? 'Loading...' : 'Load more'}}</div>
       </div>
-      <div v-else class="center mt3" style="width: 798px;">
+      <div v-else class="center mt3">
         <div class="tc" style="height: 436px;">
           <i class="fa fa-circle-o-notch fa-spin fa-3x silver" style="margin-top: 175px;"></i>
         </div>
@@ -74,29 +81,6 @@
       }
     },
     computed: {
-      time () {
-        const hours = (new Date()).getHours()
-
-        if (hours >= 5 && hours <= 11) {
-          return {
-            icon: require('../assets/morning.svg'),
-            greeting: 'Ohayō'
-          }
-        } else if (hours >= 12 && hours <= 17) {
-          return {
-            icon: require('../assets/afternoon.svg'),
-            greeting: 'Konnichiwa'
-          }
-        } else {
-          return {
-            icon: require('../assets/evening.svg'),
-            greeting: 'Konbanwa'
-          }
-        }
-      },
-      displayName () {
-        return this.$store.state.displayName
-      },
       name () {
         return this.$store.state.auth.username
       },
@@ -105,11 +89,6 @@
       }
     },
     methods: {
-      editName () {
-        if (this.displayName) return
-
-        this.$router.push('/settings')
-      },
       async getRecent () {
         this.latestLoading = true
         const recent = await this.$store.dispatch('getRecentInfo', {offset: this.offset})
@@ -141,7 +120,7 @@
       }
     },
     async created () {
-      const history = await this.$store.dispatch('getHistoryInfo', {limit: 50})
+      const history = await this.$store.dispatch('getHistoryInfo', {limit: 25})
       const obj = {}
       history.forEach((d) => {
         const seriesId = d.series.series_id
@@ -151,13 +130,13 @@
       })
       this.history = Object.values(obj)
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-        .slice(0, 6)
+        .slice(0, 4)
 
       const queue = await this.$store.dispatch('getQueueInfo')
       this.queue = queue
         .filter((d) => d.most_likely_media.available)
         .sort((a, b) => new Date(b.most_likely_media.available_time) - new Date(a.most_likely_media.available_time))
-        .slice(0, 6)
+        .slice(0, 4)
 
       this.getRecent()
     }
@@ -172,14 +151,15 @@
   }
 
   .dashboard-section {
-    border-left: 3px solid #e8e8e8;
+    /*border-left: 3px solid #e8e8e8;
     padding: 35px 50px 0 50px;
     position: relative;
     left: 36px;
-    top: -10px;
+    top: -10px;*/
+    padding-top: 15px;
   }
 
-  .dashboard-section h2:after {
+  /*.dashboard-section h2:after {
     position: absolute;
     width: 21px;
     height: 21px;
@@ -188,5 +168,5 @@
     content: '';
     left: -12px;
     top: 38px;
-  }
+  }*/
 </style>
