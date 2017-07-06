@@ -4,7 +4,7 @@
       <div class="cf bb">
         <h2 class="fw4 mv0 pb3 poppins fl"><i class="fa fa-play mr1" aria-hidden="true"></i> Continue watching</h2>
         <router-link
-          to="/queue"
+          to="/history"
           class="fr link f6 mt1 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph2 pv1 tc"
         >
           View more
@@ -72,8 +72,6 @@
     components: { MediaItem },
     data () {
       return {
-        history: [],
-        queue: [],
         splits: {},
         latestLoading: false,
         finishedLatest: false,
@@ -86,6 +84,26 @@
       },
       collections () {
         return this.$store.state.collections
+      },
+      queue () {
+        return this.$store.state.queueData
+          .filter((d) => d.most_likely_media.available)
+          .sort((a, b) => new Date(b.most_likely_media.available_time) - new Date(a.most_likely_media.available_time))
+          .slice(0, 4)
+      },
+      history () {
+        const initial = this.$store.state.initialHistory
+        const obj = {}
+        initial.forEach((d) => {
+          const seriesId = d.series.series_id
+          if (!obj[seriesId]) {
+            obj[seriesId] = d
+          }
+        })
+
+        return Object.values(obj)
+          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+          .slice(0, 4)
       }
     },
     methods: {
@@ -120,24 +138,8 @@
       }
     },
     async created () {
-      const history = await this.$store.dispatch('getHistoryInfo', {limit: 25})
-      const obj = {}
-      history.forEach((d) => {
-        const seriesId = d.series.series_id
-        if (!obj[seriesId]) {
-          obj[seriesId] = d
-        }
-      })
-      this.history = Object.values(obj)
-        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-        .slice(0, 4)
-
-      const queue = await this.$store.dispatch('getQueueInfo')
-      this.queue = queue
-        .filter((d) => d.most_likely_media.available)
-        .sort((a, b) => new Date(b.most_likely_media.available_time) - new Date(a.most_likely_media.available_time))
-        .slice(0, 4)
-
+      this.$store.dispatch('getHistoryInfo')
+      this.$store.dispatch('getQueueInfo')
       this.getRecent()
     }
   }

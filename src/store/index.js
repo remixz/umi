@@ -39,6 +39,8 @@ const store = new Vuex.Store({
     media: {},
     searchIds: [],
     searchQuery: '',
+    queueData: [],
+    initialHistory: [],
     roomId: '',
     roomConnected: false,
     connectedCount: 0,
@@ -136,12 +138,14 @@ const store = new Vuex.Store({
       })
     },
 
-    getQueueInfo ({commit, state}) {
+    getQueueInfo ({commit, state}, force) {
       const params = {
         session_id: state.auth.session_id,
         media_types: 'anime|drama',
         fields: [MEDIA_FIELDS, SERIES_FIELDS].join(',')
       }
+
+      if (state.queueData.length > 0 && !force) return Promise.resolve()
 
       return new Promise(async (resolve, reject) => {
         try {
@@ -149,19 +153,20 @@ const store = new Vuex.Store({
           if (resp.data.error) throw resp
 
           const data = resp.data.data
+          commit('SET_QUEUE_DATA', data)
           data.forEach((d) => {
             commit('ADD_SERIES', d.series)
             commit('ADD_MEDIA', d.most_likely_media)
             commit('ADD_MEDIA', d.last_watched_media)
           })
-          resolve(data)
+          resolve()
         } catch (err) {
           handleError(err, reject)
         }
       })
     },
 
-    getHistoryInfo ({commit, state}, {limit = 21, offset = 0} = {}) {
+    getHistoryInfo ({commit, state}, {limit = 24, offset = 0} = {}) {
       const params = {
         session_id: state.auth.session_id,
         media_types: 'anime|drama',
@@ -176,6 +181,9 @@ const store = new Vuex.Store({
           if (resp.data.error) throw resp
 
           const data = resp.data.data
+          if (offset === 0) {
+            commit('SET_INITIAL_HISTORY', data)
+          }
           data.forEach((d) => {
             commit('ADD_SERIES', d.series)
             commit('ADD_COLLECTION', d.collection)
@@ -265,7 +273,7 @@ const store = new Vuex.Store({
       })
     },
 
-    updateSeriesQueue ({commit, state}, {id, queueStatus}) {
+    updateSeriesQueue ({commit, state, dispatch}, {id, queueStatus}) {
       const form = new FormData()
       form.append('session_id', state.auth.session_id)
       form.append('locale', LOCALE())
@@ -273,6 +281,7 @@ const store = new Vuex.Store({
       form.append('series_id', id)
 
       commit('UPDATE_SERIES_QUEUE', {id, queueStatus})
+      dispatch('getQueueInfo', true)
 
       return new Promise(async (resolve, reject) => {
         try {
@@ -447,6 +456,14 @@ const store = new Vuex.Store({
 
     SET_SEARCH_QUERY (state, str) {
       state.searchQuery = str
+    },
+
+    SET_QUEUE_DATA (state, arr) {
+      Vue.set(state, 'queueData', arr)
+    },
+
+    SET_INITIAL_HISTORY (state, arr) {
+      Vue.set(state, 'initialHistory', arr)
     },
 
     ADD_SERIES (state, obj) {

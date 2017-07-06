@@ -1,7 +1,7 @@
 <template>
   <div class="mt2">
-    <div v-if="loaded" style="width: 948px" class="center">
-      <media-item v-for="d in data" :key="d.media.media_id" :id="d.media.media_id" :collectionName="d.collection.name" size="medium" />
+    <div v-if="allData.length > 0" style="width: 948px" class="center">
+      <media-item v-for="d in allData" :key="d.media.media_id" :id="d.media.media_id" :collectionName="d.collection.name" size="medium" />
       <div class="f5 fw6 db ba b--black-20 bg-animate hover-bg-light-gray black br1 pointer pa3 tc more-btn" :class="[paginationLoading ? 'bg-light-gray' : 'bg-white']" @click="handlePagination">
         {{paginationLoading ? 'Loading...' : 'Load more'}}
       </div>
@@ -24,9 +24,13 @@
     data () {
       return {
         data: [],
-        loaded: false,
         paginationLoading: false,
         offset: 0
+      }
+    },
+    computed: {
+      allData () {
+        return this.$store.state.initialHistory.concat(this.data)
       }
     },
     components: {
@@ -36,18 +40,14 @@
     methods: {
       async handlePagination () {
         this.paginationLoading = true
-        this.offset += 21
+        this.offset += 24
         const data = await this.$store.dispatch('getHistoryInfo', {offset: this.offset})
         this.data = this.data.concat(data)
         this.paginationLoading = false
       }
     },
-    async created () {
-      const {$store} = this
-
-      const data = await $store.dispatch('getHistoryInfo')
-      this.loaded = true
-      this.data = data
+    created () {
+      this.$store.dispatch('getHistoryInfo')
     }
   }
 </script>

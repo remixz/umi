@@ -33,12 +33,17 @@
     },
     data () {
       return {
-        data: [],
-        loaded: false,
+        requested: false,
         sort: localStorage.getItem('queue-sort') || 'recent'
       }
     },
     computed: {
+      data () {
+        return this.$store.state.queueData
+      },
+      loaded () {
+        return this.data.length > 0 || this.data.length === 0 && this.requested
+      },
       sortedData () {
         return this.sort === 'recent' ? this.data.slice(0).sort((a, b) => new Date(b.most_likely_media.available_time) - new Date(a.most_likely_media.available_time)) : this.data
       }
@@ -55,9 +60,8 @@
     async created () {
       const {$store} = this
 
-      const data = await $store.dispatch('getQueueInfo')
-      this.loaded = true
-      this.data = data
+      await $store.dispatch('getQueueInfo')
+      this.requested = true
     }
   }
 </script>
