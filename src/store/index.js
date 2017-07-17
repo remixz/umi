@@ -41,8 +41,10 @@ const store = new Vuex.Store({
     searchQuery: '',
     queueData: [],
     initialHistory: [],
+    recent: [],
     roomId: '',
     roomConnected: false,
+    roomMenu: false,
     connectedCount: 0,
     lights: false,
     updateAvailable: false,
@@ -196,15 +198,17 @@ const store = new Vuex.Store({
       })
     },
 
-    getRecentInfo ({commit, state}, {limit = 50, offset = 0} = {}) {
+    getRecentInfo ({commit, state}) {
       const params = {
         session_id: state.auth.session_id,
         media_type: 'anime',
         fields: [MEDIA_FIELDS, 'media.series_name', 'series.most_recent_media'].join(','),
-        limit,
-        offset,
+        limit: 50,
+        offset: 0,
         filter: 'updated'
       }
+
+      if (state.recent.length > 0) return Promise.resolve(state.recent)
 
       return new Promise(async (resolve, reject) => {
         try {
@@ -215,6 +219,7 @@ const store = new Vuex.Store({
           data.forEach((d) => {
             commit('ADD_MEDIA', d.most_recent_media)
           })
+          commit('SET_RECENT', data)
           resolve(data)
         } catch (err) {
           handleError(err, reject)
@@ -466,6 +471,10 @@ const store = new Vuex.Store({
       Vue.set(state, 'initialHistory', arr)
     },
 
+    SET_RECENT (state, arr) {
+      Vue.set(state, 'recent', arr)
+    },
+
     ADD_SERIES (state, obj) {
       if (obj && obj.series_id) Vue.set(state.series, obj.series_id, obj)
     },
@@ -496,6 +505,10 @@ const store = new Vuex.Store({
 
     UPDATE_CONNECTED_COUNT (state, int) {
       state.connectedCount = int
+    },
+
+    UPDATE_ROOM_MENU (state, bool) {
+      state.roomMenu = bool
     },
 
     UPDATE_SERIES_QUEUE (state, {id, queueStatus}) {

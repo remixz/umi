@@ -47,7 +47,6 @@
             <media-item v-for="d in media" :key="d.media_id" :id="d.media_id" :collectionName="d.series_name" size="dashboard" />
           </div>
         </div>
-        <div v-if="!finishedLatest" class="center pointer f5 fw6 db ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer pa3 tc" @click="getRecent">{{latestLoading ? 'Loading...' : 'Load more'}}</div>
       </div>
       <div v-else class="center mt3">
         <div class="tc" style="height: 436px;">
@@ -72,10 +71,7 @@
     components: { MediaItem },
     data () {
       return {
-        splits: {},
-        latestLoading: false,
-        finishedLatest: false,
-        offset: 0
+        splits: {}
       }
     },
     computed: {
@@ -108,13 +104,7 @@
     },
     methods: {
       async getRecent () {
-        this.latestLoading = true
-        const recent = await this.$store.dispatch('getRecentInfo', {offset: this.offset})
-        if (recent.length === 0) {
-          this.latestLoading = false
-          this.finishedLatest = true
-          return
-        }
+        const recent = await this.$store.dispatch('getRecentInfo')
         const splits = Object.assign({}, this.splits)
         recent.map((r) => r.most_recent_media).forEach((m) => {
           if (isToday(m.available_time)) {
@@ -130,11 +120,6 @@
           }
         })
         this.splits = splits
-        this.latestLoading = false
-        this.offset = this.offset + 50
-        if (recent.length < 50) {
-          this.finishedLatest = true
-        }
       }
     },
     async created () {
@@ -153,22 +138,6 @@
   }
 
   .dashboard-section {
-    /*border-left: 3px solid #e8e8e8;
-    padding: 35px 50px 0 50px;
-    position: relative;
-    left: 36px;
-    top: -10px;*/
     padding-top: 15px;
   }
-
-  /*.dashboard-section h2:after {
-    position: absolute;
-    width: 21px;
-    height: 21px;
-    background-color: #e8e8e8;
-    border-radius: 100%;
-    content: '';
-    left: -12px;
-    top: 38px;
-  }*/
 </style>

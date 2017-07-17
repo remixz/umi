@@ -19,6 +19,19 @@
           </router-link>
         </div>
         <div class="absolute search right-0" style="top: 8px;">
+          <span class="fa-stack dib pointer" @click="showTogether" v-if="connected">
+            <i class="fa fa-circle fa-stack-2x blue link menu-circle" :class="{active: roomMenu}"></i>
+            <i class="fa fa-users fa-stack-1x white" style="pointer-events: none"></i>
+          </span>
+          <div v-if="roomMenu" v-on-clickaway="hideTogether" class="absolute bg-white shadow-1 br2 pv2 ph3 together-menu">
+            <div class="mb2 cf">
+              <div class="fl fw6">{{roomText}}</div>
+              <div class="fr">Connected: {{connectedCount}}</div>
+            </div>
+            <input type="text" class="ph3 pv2 w-100 pointer" v-model="roomUrl" @click="handleRoomClick" readonly>
+            <button @click="leaveRoom" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph3 pv2 tc" style="width: 83%">Leave room</button>
+            <button @click="hideTogether" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph3 pv2 tc w-15 fr">Close</button>
+          </div>
           <search />
           <span class="fa-stack dib pointer" @click="showMenu">
             <i class="fa fa-circle fa-stack-2x blue link menu-circle" :class="{active: menu}"></i>
@@ -58,7 +71,8 @@ export default {
   mixins: [ clickaway ],
   data () {
     return {
-      menu: false
+      menu: false,
+      roomText: 'Click to copy URL:'
     }
   },
   computed: {
@@ -70,6 +84,26 @@ export default {
     },
     lights () {
       return this.$store.state.lights
+    },
+    connected () {
+      return this.$store.state.roomConnected
+    },
+    connectedCount () {
+      return this.$store.state.connectedCount
+    },
+    room () {
+      return this.$store.state.roomId
+    },
+    roomUrl () {
+      return `${window.location.origin}/room/${this.room.replace('umi//', '')}`
+    },
+    roomMenu: {
+      get () {
+        return this.$store.state.roomMenu
+      },
+      set (val) {
+        this.$store.commit('UPDATE_ROOM_MENU', val)
+      }
     }
   },
   methods: {
@@ -83,6 +117,27 @@ export default {
     },
     hideMenu () {
       this.menu = false
+    },
+    showTogether () {
+      this.roomMenu = true
+    },
+    hideTogether () {
+      this.roomMenu = false
+      this.roomText = 'Click to copy URL:'
+    },
+    handleRoomClick ({target}) {
+      target.select()
+      const didCopy = document.execCommand('copy')
+      if (didCopy) {
+        this.roomText = 'Copied!'
+      } else {
+        this.roomText = 'Couldn\'t copy, press ctrl-c'
+      }
+    },
+    leaveRoom () {
+      this.$store.commit('UPDATE_CONNECTED', false)
+      this.$store.dispatch('leaveRoom')
+      this.hideTogether()
     }
   }
 }
@@ -167,12 +222,17 @@ export default {
     color: #00449e;
   }
 
-  .menu {
+  .menu, .together-menu {
     top: 45px;
     width: 200px;
   }
 
-  .menu:after {
+  .together-menu {
+    right: 281px;
+    width: 500px;
+  }
+
+  .menu:after, .together-menu:after {
     bottom: 100%;
     right: 9px;
     border: solid transparent;

@@ -1,26 +1,26 @@
 <template>
   <div>
-    <div v-if="media && media.name">
+    <div v-if="media && media.created">
       <div v-if="loading" class="bg-black-60 absolute absolute--fill z-max player-height player-top-offset tc">
         <i class="fa fa-circle-o-notch fa-spin fa-3x white center" style="margin-top: 265px;"></i>
       </div>
-      <div v-if="internalSeek !== 0 && internalSeek < media.duration" class="bg-washed-green pa2 cf absolute left-0 right-0 center player-width shadow-4" style="z-index: 10000; top: 606px;">
-        <div class="fl">
-          <span @click="playerSeek"> <i class="fa fa-play-circle" aria-hidden="true"></i> <span class="fw6 underline pointer">Resume watching at {{prettyTime(internalSeek)}}?</span></span>
-        </div>
-        <div class="fr">
-          <i class="fa fa-times pointer grow" aria-hidden="true" @click="internalSeek = 0"></i>
+      <div v-if="shouldContinueWatching && !loading" @click="continueWatching" class="absolute z-max player-width player-top-offset left-0 right-0 center cf white">
+        <div class="fw5 f4 pa3 w-100 bg-black-60 hover-bg-black-70 bg-animate pointer absolute" style="top: 521px;">
+          <i class="fa fa-fast-forward mr2" aria-hidden="true"></i> Resume watching at {{prettyTime}}
         </div>
       </div>
-      <div v-if="nextEpisode && nextEpisodeId !== ''" class="bg-black-60 absolute absolute--fill z-max player-height player-top-offset"></div>
-      <div v-if="nextEpisode && nextEpisodeId !== ''" class="w-50 center bg-near-white pa2 pb0 cf mb3 absolute z-max left-0 right-0 shadow-1" style="top: 284px; height: 138px">
-        <div class="fl">
-          <strong class="mb2 db">Watch next episode:</strong>
-          <media-item :seriesId="$route.params.seriesId" :id="nextEpisodeId" size="inline-small" :noBorder="true" @click="nextEpisode = false" />
-        </div>
-        <div class="fr">
-          <i class="fa fa-times pointer" aria-hidden="true" @click="nextEpisode = false"></i>
-        </div>
+      <div v-if="shouldNextEpisode" class="absolute z-max player-width player-top-offset left-0 right-0 center cf white">
+        <router-link class="white" :to="`/series/${nextEpisodeMedia.series_id}/${nextEpisodeMedia.media_id}`">
+          <div class="fw5 f4 pa3 w-100 bg-black-60 hover-bg-black-70 bg-animate pointer absolute hide-child" style="top: 454px;">
+            <div class="child absolute bg-black-40 tc next-episode-overlay">
+              <i class="fa fa-play white tc play-icon" aria-hidden="true"></i>
+            </div>
+            <img :src="nextEpisodeMedia.screenshot_image.thumb_url" class="v-mid bg-dark-gray next-episode-image">
+            <div class="dib v-mid ml2">
+              Watch next episode: <br /> Episode {{nextEpisodeMedia.episode_number}} &mdash; {{nextEpisodeMedia.name}}
+            </div>          
+          </div>
+        </router-link>
       </div>
       <umi-video v-if="streamData && streamData.format" :duration="media.duration" :data="streamData" :poster="poster" :id="$route.params.id" :bif="media.bif_url" :seek="seek" @play="playerPlay" @ended="playerEnded" @loaded="loading = false" />
       <div v-else class="pv2">
@@ -33,7 +33,7 @@
         <div class="w-100">
           <h2 class="normal lh-title mb2 w-80 dib poppins"><span class="ttu fw6">Episode {{media.episode_number}}:</span> {{media.name}}</h2>
           <div class="dib fr pt3 z-9999 relative">
-            <div v-tooltip.bottom-center="'Watch with others'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2" :class="[lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate']" v-if="room === ''" @click="$store.dispatch('createRoom')"><i class="tc fa fa-users" aria-hidden="true"></i></div>
+            <div v-tooltip.bottom-center="'Watch with others'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2" :class="[lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate']" v-if="room === ''" @click="createRoom"><i class="tc fa fa-users" aria-hidden="true"></i></div>
             <div v-tooltip.bottom-center="'Toggle dark mode'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2" :class="[lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate']" @click="$store.commit('UPDATE_LIGHTS', !lights)"><i class="tc fa fa-moon-o" aria-hidden="true" style="width: 16px;"></i></div>
           </div>
         </div>
@@ -125,6 +125,9 @@
           return ''
         }
       },
+      nextEpisodeMedia () {
+        return this.$store.state.media[this.nextEpisodeId]
+      },
       lights () {
         return this.$store.state.lights
       },
@@ -136,6 +139,15 @@
       },
       poster () {
         return this.media && this.media.screenshot_image ? this.media.screenshot_image.full_url : ''
+      },
+      prettyTime () {
+        return prettyTime(this.internalSeek)
+      },
+      shouldContinueWatching () {
+        return this.internalSeek !== 0 && this.internalSeek < this.media.duration
+      },
+      shouldNextEpisode () {
+        return this.nextEpisode && this.nextEpisodeId !== ''
       }
     },
     methods: {
@@ -159,11 +171,9 @@
           }
         }
       },
-      prettyTime (time) {
-        return prettyTime(time)
-      },
       playerPlay () {
         this.internalSeek = 0
+        this.nextEpisode = false
         const shouldUpdateMal = (
           this.isMalAuthed &&
           this.malItem.id &&
@@ -190,7 +200,7 @@
           }, 1000 * 60 * 2) // 1000 * 60 * 2 = 2 minutes
         }
       },
-      playerSeek () {
+      continueWatching () {
         this.seek = this.internalSeek
         this.internalSeek = 0
       },
@@ -198,6 +208,10 @@
         this.nextEpisode = true
         const newMedia = Object.assign({}, this.media, {playhead: this.media.duration})
         this.$store.commit('ADD_MEDIA', newMedia)
+      },
+      createRoom () {
+        this.$store.dispatch('createRoom')
+        this.$store.commit('UPDATE_ROOM_MENU', true)
       }
     },
     watch: {
@@ -242,5 +256,18 @@
 <style scoped>
   .media-info {
     padding-top: 540px;
+  }
+
+  .next-episode-image, .next-episode-overlay {
+    width: 160px;
+    height: 90px;
+  }
+
+  .next-episode-overlay {
+    top: 16px;
+  }
+
+  .next-episode-overlay i {
+    margin-top: 37px;
   }
 </style>

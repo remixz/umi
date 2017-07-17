@@ -41,6 +41,12 @@
           })
         }
       })
+    },
+    destroyed () {
+      if (!this.$store.state.roomConnected) {
+        clearTimeout(this.timeout)
+        this.$store.dispatch('leaveRoom')
+      }
     }
   }
 </script>
