@@ -42,7 +42,7 @@
         return this.$store.state.queueData
       },
       loaded () {
-        return this.data.length > 0 || this.data.length === 0 && this.requested
+        return this.data.length > 0 || (this.data.length === 0 && this.requested)
       },
       sortedData () {
         return this.sort === 'recent' ? this.data.slice(0).sort((a, b) => new Date(b.most_likely_media.available_time) - new Date(a.most_likely_media.available_time)) : this.data

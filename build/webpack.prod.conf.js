@@ -82,7 +82,8 @@ var webpackConfig = merge(baseWebpackConfig, {
         events: true
       },
       AppCache: false
-    })
+    }),
+    new webpack.optimize.ModuleConcatenationPlugin()
   ]
 })
 

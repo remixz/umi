@@ -31,7 +31,7 @@
       </div>
       <div class="media-info">
         <div class="w-100">
-          <h2 class="normal lh-title mb2 w-80 dib poppins"><span class="ttu fw6">Episode {{media.episode_number}}:</span> {{media.name}}</h2>
+          <h2 class="normal lh-title mb2 w-80 dib"><span class="ttu fw6">Episode {{media.episode_number}}:</span> {{media.name}}</h2>
           <div class="dib fr pt3 z-9999 relative">
             <div v-tooltip.bottom-center="'Watch with others'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2" :class="[lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate']" v-if="room === ''" @click="createRoom"><i class="tc fa fa-users" aria-hidden="true"></i></div>
             <div v-tooltip.bottom-center="'Toggle dark mode'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2" :class="[lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate']" @click="$store.commit('UPDATE_LIGHTS', !lights)"><i class="tc fa fa-moon-o" aria-hidden="true" style="width: 16px;"></i></div>

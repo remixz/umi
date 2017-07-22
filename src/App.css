@@ -11,10 +11,6 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
-.poppins {
-  font-family: Poppins, sans-serif;
-}
-
 .emoji {
   height: 28px;
   user-select: none;

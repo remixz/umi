@@ -4,7 +4,7 @@
       <div class="logo-container">
         <router-link to="/" class="db no-underline" exact>
           <img src="../assets/umi.png" alt="Umi player logo" class="logo db">
-          <span class="b db ttu white f3 logo-text poppins">Umi!</span>
+          <span class="b db ttu white f3 logo-text">Umi!</span>
         </router-link>
       </div>
       <div v-if="username">

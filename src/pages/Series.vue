@@ -14,7 +14,7 @@
           <img :src="series.portrait_image.full_url" class="shadow-1 bg-light-gray" style="width: 198px; height: 298px;">
         </div>
         <div class="w-80 fl pl3">
-          <h1 class="series-title poppins white">{{series.name || '&nbsp;'}}</h1>
+          <h1 class="series-title white">{{series.name || '&nbsp;'}}</h1>
           <p class="lh-copy" style="margin-top: 2rem;">{{series.description}}</p>
           <div v-if="!loading">
             <queue-button :id="series.series_id" />

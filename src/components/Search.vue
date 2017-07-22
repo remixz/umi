@@ -31,10 +31,8 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import debounce from 'debounce'
   import { mixin as clickaway } from 'vue-clickaway'
-  import { UMI_SERVER } from 'lib/api'
 
   export default {
     name: 'search',

@@ -2,7 +2,7 @@
   <div>
     <div class="dashboard-section">
       <div class="cf bb">
-        <h2 class="fw4 mv0 pb3 poppins fl"><i class="fa fa-play mr1" aria-hidden="true"></i> Continue watching</h2>
+        <h2 class="fw4 mv0 pb3 fl"><i class="fa fa-play mr1" aria-hidden="true"></i> Continue watching</h2>
         <router-link
           to="/history"
           class="fr link f6 mt1 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph2 pv1 tc"
@@ -21,7 +21,7 @@
     </div>
     <div class="dashboard-section">
       <div class="cf bb">
-        <h2 class="fw4 mv0 pb3 poppins fl"><i class="fa fa-th-list mr1" aria-hidden="true"></i> Your queue</h2>
+        <h2 class="fw4 mv0 pb3 fl"><i class="fa fa-th-list mr1" aria-hidden="true"></i> Your queue</h2>
         <router-link
           to="/queue"
           class="fr link f6 mt1 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph2 pv1 tc"
@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="dashboard-section">
-      <h2 class="fw4 mv0 pb3 bb poppins"><i class="fa fa-calendar-o mr1" aria-hidden="true"></i> Latest releases</h2>
+      <h2 class="fw4 mv0 pb3 bb"><i class="fa fa-calendar-o mr1" aria-hidden="true"></i> Latest releases</h2>
       <div v-if="Object.keys(splits).length !== 0">
         <div v-for="(media, title) in splits">
           <h3 class="fw4 near-black pb2 bb b--silver">{{title}}</h3>
