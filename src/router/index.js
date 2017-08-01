@@ -6,6 +6,7 @@ import {authGuard, loginGuard} from 'lib/auth'
 import {cancelCurrentRequests} from 'lib/api'
 
 import Dashboard from 'pages/Dashboard'
+import Migrate from 'pages/Migrate'
 import Queue from 'pages/Queue'
 import Settings from 'pages/Settings'
 import History from 'pages/History'
@@ -33,6 +34,11 @@ const router = new Router({
       name: 'dashboard',
       component: Dashboard,
       beforeEnter: authGuard
+    },
+    {
+      path: '/migrate',
+      name: 'migrate',
+      component: Migrate
     },
     {
       path: '/queue',

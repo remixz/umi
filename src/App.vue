@@ -130,6 +130,18 @@ export default {
       this.$socket.on('app-update', () => {
         runtime.update()
       })
+
+      if (location.hostname === 'umi.bruggie.com' && location.pathname !== '/migrate') {
+        if (localStorage.getItem('migrated')) return location.replace(location.href.replace('umi.bruggie.com', 'umi.party'))
+
+        const obj = {}
+        Object.keys(localStorage).forEach((key) => {
+          obj[key] = localStorage.getItem(key)
+        })
+        const query = encodeURIComponent(JSON.stringify(obj))
+        localStorage.setItem('migrated', true)
+        location.replace(`https://umi.party/migrate?info=${query}&route=${encodeURIComponent(this.$route.fullPath)}`)
+      }
     }
   }
 }
