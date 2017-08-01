@@ -1,6 +1,11 @@
 <template>
   <div class="sans-serif" id="app">
     <umi-header />
+    <div v-if="newDomain" class="fixed bottom-0 right-0 z-max bg-light-blue pa3 code shadow-1 br2 br--top br--left">
+      <span>📢 <b>UPDATE:</b> umi.bruggie.com is now umi.party! 🎉</span>
+      <span class="f6 fw5 dib ml1 ba b--black bg-transparent bg-animate hover-bg-blue hover-white br1 pointer ph2 pv1 tc" @click="newDomain = false">Close</span>
+
+    </div>
     <main class="bg-white center pv1 ph3 mv3">
       <router-view v-if="loaded"></router-view>
       <div v-else-if="error">
@@ -44,7 +49,8 @@ export default {
   data () {
     return {
       loaded: false,
-      error: false
+      error: false,
+      newDomain: false
     }
   },
   metaInfo () {
@@ -127,7 +133,14 @@ export default {
         })
         const query = encodeURIComponent(JSON.stringify(obj))
         localStorage.setItem('migrated', true)
-        location.replace(`https://umi.party/migrate?info=${query}&route=${encodeURIComponent(this.$route.fullPath)}`)
+        return location.replace(`https://umi.party/migrate?info=${query}&route=${encodeURIComponent(this.$route.fullPath)}`)
+      }
+
+      // accidentally broke migration, so volume would be set as the string `undefined`
+      // this breaks the player, so i'll check for it here before the app mounts
+      const volume = localStorage.getItem('clappr.umi.party.volume')
+      if (volume && volume === 'undefined') {
+        localStorage.setItem('clappr.umi.party.volume', '100')
       }
 
       await this.$store.dispatch('startSession')
@@ -142,6 +155,11 @@ export default {
       this.$socket.on('app-update', () => {
         runtime.update()
       })
+
+      if (localStorage.getItem('new-domain')) {
+        this.newDomain = true
+        localStorage.removeItem('new-domain')
+      }
     }
   }
 }

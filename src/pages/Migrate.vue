@@ -14,13 +14,15 @@
         const parsed = JSON.parse(info)
 
         Object.keys(parsed).forEach((key) => {
+          let newKey = key
           if (key.contains('clappr')) {
-            key = key.replace('umi.bruggie.com', 'umi.party')
+            newKey = key.replace('umi.bruggie.com', 'umi.party')
           }
 
-          localStorage.setItem(key, parsed[key])
+          localStorage.setItem(newKey, parsed[key])
         })
 
+        localStorage.setItem('new-domain', true)
         location.replace(route || '/')
       } catch (err) {
         location.replace('/')
