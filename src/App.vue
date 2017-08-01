@@ -118,6 +118,18 @@ export default {
   },
   async created () {
     try {
+      if (process.env.NODE_ENV === 'production' && location.hostname === 'umi.bruggie.com' && location.pathname !== '/migrate') {
+        if (localStorage.getItem('migrated') || !localStorage.getItem('umi-uuid')) return location.replace(location.href.replace('umi.bruggie.com', 'umi.party'))
+
+        const obj = {}
+        Object.keys(localStorage).forEach((key) => {
+          obj[key] = localStorage.getItem(key)
+        })
+        const query = encodeURIComponent(JSON.stringify(obj))
+        localStorage.setItem('migrated', true)
+        location.replace(`https://umi.party/migrate?info=${query}&route=${encodeURIComponent(this.$route.fullPath)}`)
+      }
+
       await this.$store.dispatch('startSession')
       this.loaded = true
     } catch (err) {
@@ -130,18 +142,6 @@ export default {
       this.$socket.on('app-update', () => {
         runtime.update()
       })
-
-      if (location.hostname === 'umi.bruggie.com' && location.pathname !== '/migrate') {
-        if (localStorage.getItem('migrated')) return location.replace(location.href.replace('umi.bruggie.com', 'umi.party'))
-
-        const obj = {}
-        Object.keys(localStorage).forEach((key) => {
-          obj[key] = localStorage.getItem(key)
-        })
-        const query = encodeURIComponent(JSON.stringify(obj))
-        localStorage.setItem('migrated', true)
-        location.replace(`https://umi.party/migrate?info=${query}&route=${encodeURIComponent(this.$route.fullPath)}`)
-      }
     }
   }
 }
