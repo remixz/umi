@@ -14,12 +14,11 @@
         const parsed = JSON.parse(info)
 
         Object.keys(parsed).forEach((key) => {
-          let val = parsed[key]
-          if (val.contains('clappr')) {
-            val = val.replace('umi.bruggie.com', 'umi.party')
+          if (key.contains('clappr')) {
+            key = key.replace('umi.bruggie.com', 'umi.party')
           }
 
-          localStorage.setItem(key, val)
+          localStorage.setItem(key, parsed[key])
         })
 
         location.replace(route || '/')
