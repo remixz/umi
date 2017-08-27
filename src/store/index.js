@@ -98,7 +98,7 @@ const store = new Vuex.Store({
 
           const data = resp.data.data
           if (data.user.premium.indexOf('anime') === -1) {
-            return reject(new Error('Your Crunchyroll account must be premium to use Umi.'))
+            return reject(new Error('You must have a premium Crunchyroll account to use Umi.'))
           }
           commit('UPDATE_AUTH', {
             token: data.auth,
@@ -107,7 +107,7 @@ const store = new Vuex.Store({
           })
           resolve()
         } catch (err) {
-          handleError(err, reject)
+          reject(err)
         }
       })
     },

@@ -10,7 +10,7 @@
       <queue-item v-for="d in sortedData" :key="d.queue_entry_id" :data="d" />
     </div>
     <div v-else>
-      <div v-for="n in 10" class="bg-near-white w-100 mb2 pa3 cf bb bw2 b--light-gray">
+      <div v-for="n in 10" :key="n" class="bg-near-white w-100 mb2 pa3 cf bb bw2 b--light-gray">
         <div class="animated-background">
           <div class="bg-near-white absolute mask vid-sep"></div>
           <div class="bg-near-white absolute mask vid-below-line"></div>
@@ -19,7 +19,7 @@
         </div>
       </div>
     </div>
-    <h2 class="tc" v-else>Loading your queue...</h2>
+    <h2 class="tc">Loading your queue...</h2>
   </div>
 </template>
 

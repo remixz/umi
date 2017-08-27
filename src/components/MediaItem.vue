@@ -7,7 +7,7 @@
           <i class="fa fa-question-circle-o black-40 missing-icon" aria-hidden="true"></i>
         </div>
         <div class="bg-gray playhead" style="margin-top: -4px;">
-          <div class="bg-blue playhead" :style="`width: ${Math.min(100, (data.playhead / data.duration) * 100)}%`"></div>
+          <div class="bg-blue playhead" :style="playheadStyle"></div>
         </div>
         <div class="child absolute bg-black-40 top-0 image-size">
           <i class="fa fa-play white tc play-icon" aria-hidden="true"></i>
@@ -38,6 +38,11 @@
     computed: {
       data () {
         return this.$store.state.media[this.id]
+      },
+      playheadStyle () {
+        return {
+          width: `${Math.min(100, (this.data.playhead / this.data.duration) * 100)}%`
+        }
       }
     }
   }
@@ -46,6 +51,10 @@
 <style scoped>
   .playhead {
     height: 4px;
+  }
+
+  .playhead > div {
+    width: 0;
   }
 
   .media-item.medium {

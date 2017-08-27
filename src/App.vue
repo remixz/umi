@@ -1,12 +1,12 @@
 <template>
   <div class="sans-serif" id="app">
-    <umi-header />
+    <umi-header v-if="routeName !== 'login'" />
     <div v-if="newDomain" class="fixed bottom-0 right-0 z-max bg-light-blue pa3 code shadow-1 br2 br--top br--left">
       <span>📢 <b>UPDATE:</b> umi.bruggie.com is now umi.party! 🎉</span>
       <span class="f6 fw5 dib ml1 ba b--black bg-transparent bg-animate hover-bg-blue hover-white br1 pointer ph2 pv1 tc" @click="newDomain = false">Close</span>
-
     </div>
-    <main class="bg-white center pv1 ph3 mv3">
+    <router-view v-if="routeName === 'login'"></router-view>
+    <main class="bg-white center pv1 ph3 mv3" v-else>
       <router-view v-if="loaded"></router-view>
       <div v-else-if="error">
         <img src="https://my.mixtape.moe/gazrbv.gif" class="fl pr3">

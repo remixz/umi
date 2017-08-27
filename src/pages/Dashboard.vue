@@ -41,7 +41,7 @@
     <div class="dashboard-section">
       <h2 class="fw4 mv0 pb3 bb"><i class="fa fa-calendar-o mr1" aria-hidden="true"></i> Latest releases</h2>
       <div v-if="Object.keys(splits).length !== 0">
-        <div v-for="(media, title) in splits">
+        <div v-for="(media, title) in splits" :key="title">
           <h3 class="fw4 near-black pb2 bb b--silver">{{title}}</h3>
           <div class="center">
             <media-item v-for="d in media" :key="d.media_id" :id="d.media_id" :collectionName="d.series_name" size="dashboard" />
