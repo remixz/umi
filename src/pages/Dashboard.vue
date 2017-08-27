@@ -131,12 +131,6 @@
 </script>
 
 <style scoped>
-  .editable {
-    border-bottom: 1px dashed black;
-    display: inline-block;
-    cursor: pointer;
-  }
-
   .dashboard-section {
     padding-top: 15px;
   }

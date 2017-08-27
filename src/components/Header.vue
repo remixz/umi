@@ -7,7 +7,7 @@
           <span class="b db ttu white f3 logo-text">Umi!</span>
         </router-link>
       </div>
-      <div v-if="username">
+      <div>
         <div class="absolute nav" style="left: 95px; top: 16px;">
           <router-link to="/queue" class="white no-underline bg-animate">
             <i class="fa fa-th-list v-mid mr2" aria-hidden="true"></i>
