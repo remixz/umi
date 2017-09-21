@@ -3,8 +3,6 @@ const compression = require('compression')
 const cors = require('cors')
 
 const setupIo = require('./io')
-const autocomplete = require('./routes/autocomplete')
-const bif = require('./routes/bif')
 const opening = require('./routes/opening')
 const mal = require('./routes/mal')
 
@@ -29,8 +27,6 @@ app.post('/update/:token', (req, res) => {
   io.emit('app-update')
   res.send({status: 'ok'})
 })
-app.get('/autocomplete/:country', autocomplete)
-app.get('/bif', bif)
 app.get('/opening', opening)
 app.use('/mal', mal)
 
