@@ -1,5 +1,5 @@
 <template>
-  <div class="sans-serif" id="app">
+  <div id="app">
     <umi-header v-if="routeName !== 'login'" />
     <div v-if="newDomain" class="fixed bottom-0 right-0 z-max bg-light-blue pa3 code shadow-1 br2 br--top br--left">
       <span>📢 <b>UPDATE:</b> umi.bruggie.com is now umi.party! 🎉</span>

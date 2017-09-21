@@ -19,7 +19,6 @@
         </div>
       </div>
     </div>
-    <h2 class="tc">Loading your queue...</h2>
   </div>
 </template>
 
