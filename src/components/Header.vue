@@ -19,16 +19,16 @@
           </router-link>
         </div>
         <div class="absolute search right-0" style="top: 8px;">
-          <span class="fa-stack dib pointer" @click="showTogether" v-if="connected">
+          <span class="fa-stack dib pointer" @click="showTogether" v-if="connected" @mouseover="roomHover = true" @mouseout="roomHover = false">
             <i class="fa fa-circle fa-stack-2x blue link menu-circle" :class="{active: roomMenu}"></i>
             <i class="fa fa-users fa-stack-1x white" style="pointer-events: none"></i>
           </span>
+          <span class="absolute bg-dark-blue white pa1 tc br2 f7 fw7 nowrap counter" v-if="connected">{{connectedCount}}</span>
           <div v-if="roomMenu" v-on-clickaway="hideTogether" class="absolute bg-white shadow-1 br2 pv2 ph3 together-menu">
-            <div class="mb2 cf">
-              <div class="fl fw6">{{roomText}}</div>
-              <div class="fr">Connected: {{connectedCount}}</div>
+            <div class="mb2">
+              <div class="fw6">{{roomText}}</div>
             </div>
-            <input type="text" class="ph3 pv2 w-100 pointer" v-model="roomUrl" @click="handleRoomClick" readonly>
+            <input type="text" class="pa2 w-100 pointer" v-model="roomUrl" @click="handleRoomClick" readonly>
             <button @click="leaveRoom" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph3 pv2 tc" style="width: 83%">Leave room</button>
             <button @click="hideTogether" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph3 pv2 tc w-15 fr">Close</button>
           </div>
@@ -72,7 +72,8 @@ export default {
   data () {
     return {
       menu: false,
-      roomText: 'Click to copy URL:'
+      roomText: 'Click to copy URL:',
+      roomHover: false
     }
   },
   computed: {
@@ -89,7 +90,8 @@ export default {
       return this.$store.state.roomConnected
     },
     connectedCount () {
-      return this.$store.state.connectedCount
+      const count = this.$store.state.connectedCount
+      return (this.roomHover || this.roomMenu) ? `${count} ${count === 1 ? 'person' : 'people'} connected` : count
     },
     room () {
       return this.$store.state.roomId
@@ -245,5 +247,25 @@ export default {
     border-bottom-color: #fff;
     border-width: 8px;
     margin-left: -8px;
+  }
+
+  .counter {
+    top: 7px;
+    right: 318px;
+    height: 13px;
+  }
+
+  .counter:after {
+    left: 100%;
+    top: 50%;
+    border: solid transparent;
+    content: "";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-left-color: #00449e;
+    border-width: 4px;
+    margin-top: -4px;
   }
 </style>
