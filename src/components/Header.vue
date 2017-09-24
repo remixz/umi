@@ -1,41 +1,41 @@
 <template>
-  <header class="bg-blue absolute top-0 w-100 bw1 bb b--dark-blue" :class="[lights ? 'z-3' : 'z-max']">
+  <header class="bg-white-90 fixed top-0 w-100" :class="[lights ? 'z-3' : 'z-max', {'series-header': routeName === 'series', 'media-header': routeName === 'media'}]">
     <div class="header-container center relative">
       <div class="logo-container">
         <router-link to="/" class="db no-underline" exact>
           <img src="../assets/umi.png" alt="Umi player logo" class="logo db">
-          <span class="b db ttu white f3 logo-text">Umi!</span>
+          <span class="b db ttu blue f3 logo-text">Umi!</span>
         </router-link>
       </div>
       <div>
-        <div class="absolute nav" style="left: 95px; top: 16px;">
-          <router-link to="/queue" class="white no-underline bg-animate">
+        <div class="absolute nav">
+          <router-link to="/queue" class="dark-gray no-underline">
             <i class="fa fa-th-list v-mid mr2" aria-hidden="true"></i>
             <span class="fw6">Queue</span>
           </router-link>
-          <router-link to="/history" class="white no-underline bg-animate">
+          <router-link to="/history" class="dark-gray no-underline">
             <i class="fa fa-history v-mid mr2" aria-hidden="true"></i>
             <span class="fw6">History</span>
           </router-link>
         </div>
-        <div class="absolute search right-0" style="top: 8px;">
+        <div class="absolute search right-0">
           <span class="fa-stack dib pointer" @click="showTogether" v-if="connected" @mouseover="roomHover = true" @mouseout="roomHover = false">
-            <i class="fa fa-circle fa-stack-2x blue link menu-circle" :class="{active: roomMenu}"></i>
-            <i class="fa fa-users fa-stack-1x white" style="pointer-events: none"></i>
+            <i class="fa fa-circle fa-stack-2x transparent link menu-circle" :class="{active: roomMenu}"></i>
+            <i class="fa fa-users fa-stack-1x dark-gray pointer-events-none"></i>
           </span>
-          <span class="absolute bg-dark-blue white pa1 tc br2 f7 fw7 nowrap counter" v-if="connected">{{connectedCount}}</span>
+          <span class="absolute bg-dark-gray white pa1 tc br2 f7 fw7 nowrap counter" v-if="connected">{{connectedCount}}</span>
           <div v-if="roomMenu" v-on-clickaway="hideTogether" class="absolute bg-white shadow-1 br2 pv2 ph3 together-menu">
             <div class="mb2">
               <div class="fw6">{{roomText}}</div>
             </div>
             <input type="text" class="pa2 w-100 pointer" v-model="roomUrl" @click="handleRoomClick" readonly>
-            <button @click="leaveRoom" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph3 pv2 tc" style="width: 83%">Leave room</button>
+            <button @click="leaveRoom" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph3 pv2 tc leave-room">Leave room</button>
             <button @click="hideTogether" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph3 pv2 tc w-15 fr">Close</button>
           </div>
           <search />
           <span class="fa-stack dib pointer" @click="showMenu">
-            <i class="fa fa-circle fa-stack-2x blue link menu-circle" :class="{active: menu}"></i>
-            <i class="fa fa-ellipsis-v fa-stack-1x white" style="pointer-events: none"></i>
+            <i class="fa fa-circle fa-stack-2x transparent link menu-circle" :class="{active: menu}"></i>
+            <i class="fa fa-ellipsis-v fa-stack-1x dark-gray pointer-events-none"></i>
           </span>
           <div v-if="menu" v-on-clickaway="hideMenu" class="absolute bg-white shadow-1 right-0 br2 pv2 menu">
             <div class="pv2 mh2 fw6 bb mb2 b--gray">
@@ -48,10 +48,10 @@
                 <span>{{malUsername}}</span>
               </a>
             </div>
-            <router-link @click.native="hideMenu" to="/settings" class="db pointer bg-white hover-bg-blue hover-white pa2 no-underline black">
+            <router-link @click.native="hideMenu" to="/settings" class="db bg-white bg-animate hover-bg-light-gray pa2 no-underline black">
               <i class="fa fa-cog mr1"></i> Settings
             </router-link>
-            <div @click="logout" class="pointer bg-white hover-bg-blue hover-white pa2">
+            <div @click="logout" class="pointer bg-white bg-animate hover-bg-light-gray pa2">
               <i class="fa fa-sign-out mr1"></i> Sign out
             </div>
           </div>
@@ -106,6 +106,9 @@ export default {
       set (val) {
         this.$store.commit('UPDATE_ROOM_MENU', val)
       }
+    },
+    routeName () {
+      return this.$store.state.route.name
     }
   },
   methods: {
@@ -147,7 +150,14 @@ export default {
 
 <style scoped>
   header {
+    background-color: rgba(255, 255, 255, 0.95);
     height: 4rem;
+    border-top: 0.125rem solid #357edd;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  .pointer-events-none {
+    pointer-events: none;
   }
 
   .header-container {
@@ -194,34 +204,36 @@ export default {
     transform: translate(35px, -36px) rotate(10deg);
   }
 
+  .nav {
+    left: 95px;
+    top: 14px;
+  }
+
   .nav a {
     height: 62px;
     display: inline-block;
     margin-right: -5px;
     position: relative;
-    top: -23px;
+    top: -21px;
     padding: 1.4rem 1rem;
-    border-bottom: 0 solid #00449e;
     transition: all 0.2s ease-in-out;
+    border-bottom: 0 solid transparent;
   }
 
-  .nav a:hover {
-    border-bottom-width: 0.25rem;
+  .nav a:hover, .nav .router-link-active {
+    border-bottom: .25rem solid #357edd;
   }
 
   .nav .fa {
     font-size: 1.25rem;
   }
 
-  .nav .router-link-active {
-    border-bottom: 0.25rem solid #00449e;
-  }
-  .logout:hover {
-    background-color: #00449e;
+  .search {
+    top: 8px;
   }
 
   .menu-circle:hover, .menu-circle.active {
-    color: #00449e;
+    color: #f4f4f4;
   }
 
   .menu, .together-menu {
@@ -249,6 +261,10 @@ export default {
     margin-left: -8px;
   }
 
+  .leave-room {
+    width: 83%;
+  }
+
   .counter {
     top: 7px;
     right: 318px;
@@ -264,8 +280,68 @@ export default {
     width: 0;
     position: absolute;
     pointer-events: none;
-    border-left-color: #00449e;
+    border-left-color: #333;
     border-width: 4px;
     margin-top: -4px;
+  }
+
+  /* styles on a series page */
+  .series-header {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-top-color: transparent;
+  }
+
+  .series-header .bg-blue {
+    background-color: transparent;
+  }
+
+  .series-header .dark-gray, .series-header .blue {
+    color: #fff;
+  }
+
+  .series-header .white {
+    color: transparent;
+  }
+
+  .series-header .bg-dark-blue {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .series-header .counter:after {
+    border-left-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .media-header {
+    background-color: #333;
+    box-shadow: none;
+    border-top-color: transparent;
+    border-bottom: 0;
+  }
+
+  .media-header .dark-gray, .media-header .blue {
+    color: #fff;
+  }
+
+  .media-header .white {
+    color: #333;
+  }
+
+  .series-header .menu-circle:hover, .series-header .menu-circle.active,
+  .media-header .menu-circle:hover, .media-header .menu-circle.active {
+    color: transparent;
+  }
+
+  .series-header .counter, .media-header .counter {
+    background-color: #fff;
+    color: #333;
+  }
+
+  .series-header .counter:after, .media-header .counter:after {
+    border-left-color: #fff;
+  }
+
+  .series-header .nav a:hover, .series-header .nav .router-link-active,
+  .media-header .nav a:hover, .media-header .nav .router-link-active {
+    border-bottom: .25rem solid #fff;
   }
 </style>

@@ -48,7 +48,7 @@
       }
     },
     components: {
-      'queue-item': QueueItem
+      QueueItem
     },
     methods: {
       sortQueue ({target}) {

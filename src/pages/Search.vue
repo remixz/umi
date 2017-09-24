@@ -4,7 +4,7 @@
       <span class="small-caps" v-if="loading && searchIds.length > 0">Loading...</span>
       <span class="small-caps" v-else-if="searchIds.length > 0">{{searchIds.length}} result{{searchIds.length !== 1 ? 's' : ''}}</span>
     </div>
-    <div class="center" style="width: 880px;">
+    <div class="center results-container">
         <series-item v-for="id in searchIds" :key="id" :id="id" class="pr1" />
         <h3 class="fw5 dark-gray tc" v-if="loading && searchIds.length === 0">Loading...</h3>
         <h3 class="fw5 dark-gray tc" v-if="searchIds.length === 0 && !loading">No results found.</h3>
@@ -23,7 +23,7 @@
       }
     },
     components: {
-      'series-item': SeriesItem
+      SeriesItem
     },
     data () {
       return {
@@ -69,3 +69,9 @@
     }
   }
 </script>
+
+<style scoped>
+  .results {
+    width: 880px;
+  }
+</style>

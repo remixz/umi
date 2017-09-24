@@ -1,30 +1,28 @@
 <template>
   <router-link :to="`/series/${data.series_id}/${id}`" class="black" v-if="data.available">
-    <div class="media-item dib v-top h-100 bg-near-white mr3 mb2" :class="[{'bb bw2 b--light-gray': !noBorder, 'hide-child': !selected}, size]" @click="$emit('click')">
-      <div class="relative" :class="{dib: size === 'inline-small'}">
+    <div class="media-item dib v-top h-100 mr3 mb2 br2" :class="[{'hide-child': !selected}, size]" @click="$emit('click')">
+      <div class="relative">
         <img v-if="data.screenshot_image" :src="data.screenshot_image.full_url" class="w-100 image-size">
-        <div v-else class="w-100 image-size tc" style="margin-bottom: 3px;">
+        <div v-else class="w-100 image-size tc placeholder-image">
           <i class="fa fa-question-circle-o black-40 missing-icon" aria-hidden="true"></i>
         </div>
-        <div class="bg-gray playhead" style="margin-top: -4px;">
+        <div class="bg-gray playhead playhead-container">
           <div class="bg-blue playhead" :style="playheadStyle"></div>
         </div>
         <div class="child absolute bg-black-40 top-0 image-size">
           <i class="fa fa-play white tc play-icon" aria-hidden="true"></i>
         </div>
       </div>
-      <div class="pa2" :class="{'div v-top': size === 'inline-small'}">
+      <div class="pa2">
         <div v-if="collectionName">
-          <span class="truncate db fw6">{{collectionName}}</span> <br>
-          <small class="gray truncate db lh-copy">Episode {{data.episode_number}} &mdash; {{data.name}}</small>
+          <span class="truncate db fw6 mb1">{{collectionName}}</span>
+          <small class="gray truncate db lh-copy">#{{data.episode_number}} &bull; {{data.name}}</small>
         </div>
         <div v-else>
-          <span class="fw6" v-if="data.episode_number !== ''">Episode {{data.episode_number}}</span>
-          <span class="fw6" v-else>{{data.name}}</span>
-          <br>
-          <small class="gray truncate db lh-copy" :style="noBorder ? 'width: 290px;' : ''" v-if="data.episode_number !== ''">{{data.name}}</small>
-          <small class="gray truncate db lh-copy" :style="noBorder ? 'width: 290px;' : ''" v-else>&nbsp;</small>
-          <small class="truncate db mt2" style="width: 290px;" v-if="size === 'inline-small'">{{data.description}}</small>
+          <span class="fw6 mb1" v-if="data.episode_number !== ''">Episode {{data.episode_number}}</span>
+          <span class="fw6 mb1" v-else>{{data.name}}</span>
+          <small class="gray truncate db lh-copy" v-if="data.episode_number !== ''">{{data.name}}</small>
+          <small class="gray truncate db lh-copy" v-else>&nbsp;</small>
         </div>
       </div>
     </div>
@@ -49,6 +47,9 @@
 </script>
 
 <style scoped>
+  .media-item {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
   .playhead {
     height: 4px;
   }
@@ -57,12 +58,21 @@
     width: 0;
   }
 
+  .playhead-container {
+    margin-top: -4px;
+  }
+
   .media-item.medium {
     width: 300px;
   }
 
   .media-item.dashboard {
+    transition: transform 0.2s ease-in-out;
     width: 230px;
+  }
+
+  .media-item.dashboard:hover {
+    transform: scale(1.1);
   }
 
   .media-item.small {
@@ -79,7 +89,7 @@
     height: 129px;
   }
 
-  .small .image-size, .inline-small .image-size {
+  .small .image-size {
     width: 150px;
     height: 84px;
   }
@@ -96,7 +106,7 @@
     margin: 55px auto;
   }
 
-  .small .play-icon, .inline-small .play-icon {
+  .small .play-icon {
     display: block !important;
     font-size: 1.5rem !important;
     margin: 30px auto;
@@ -112,8 +122,12 @@
     margin-top: 55px;
   }
 
-  .small .missing-icon, .inline-small .missing-icon {
+  .small .missing-icon {
     font-size: 1.5rem !important;
     margin-top: 30px;
+  }
+
+  .placeholder-image {
+    margin-bottom: 3px;
   }
 </style>

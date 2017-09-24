@@ -8,7 +8,7 @@
     <div v-if="!playerInit" class="bg-black absolute w-100 left-0 player-height player-top-offset">
       <div class="bg-dark-gray center player-width player-height"></div>
     </div>
-    <reactotron v-show="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron relative z-9999" style="top: 565px;" @emoji="handleEmoji" />
+    <reactotron v-show="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron relative z-9999" @emoji="handleEmoji" />
   </div>
 </template>
 
@@ -18,7 +18,7 @@
   import anime from 'animejs'
   import api, {LOCALE, VERSION} from 'lib/api'
   import emoji from 'lib/emoji'
-  import bif from 'lib/bif'
+  // import bif from 'lib/bif'
   import Reactotron from './Reactotron'
 
   export default {
@@ -78,14 +78,12 @@
             onReady () {
               self.$emit('loaded')
               if (self.container) {
-                this.core.el.appendChild(self.container)
-                return
+                return this.core.el.appendChild(self.container)
               }
               self.container = document.createElement('div')
               self.reactions = document.createElement('div')
               self.reactions.className = 'reaction-canvas absolute absolute--fill z-9999 tl'
               self.tron = self.$el.querySelector('.reactotron').cloneNode(true)
-              self.tron.style.cssText = ''
               self.tron.className = `${self.tron.className} z-max player-tron`
               Array.from(self.tron.querySelectorAll('img')).forEach((e) => { e.onclick = self.handleEmoji.bind(self, e.id, true) })
               self.container.appendChild(self.reactions)
@@ -238,16 +236,16 @@
           }
         })
       },
-      async loadBif () {
-        const thumbnailsPlugin = this.player.getPlugin('scrub-thumbnails')
-        if (this.frames.length > 0) {
-          thumbnailsPlugin.removeThumbnail(this.frames)
-        }
-        try {
-          this.frames = await bif(this.bif)
-          thumbnailsPlugin.addThumbnail(this.frames)
-        } catch (err) {}
-      },
+      // async loadBif () {
+      //   const thumbnailsPlugin = this.player.getPlugin('scrub-thumbnails')
+      //   if (this.frames.length > 0) {
+      //     thumbnailsPlugin.removeThumbnail(this.frames)
+      //   }
+      //   try {
+      //     this.frames = await bif(this.bif)
+      //     thumbnailsPlugin.addThumbnail(this.frames)
+      //   } catch (err) {}
+      // },
       wsJoinRoom () {
         const time = parseInt(this.$route.query.wsTime, 10)
         const playing = this.$route.query.wsPlaying
@@ -347,6 +345,7 @@
 
   .player-tron.full {
     display: block !important;
+    top: 0 !important;
   }
   .player-tron.show {
     transform: translateY(0);
@@ -368,5 +367,9 @@
     position: relative;
     top: -300px;
     width: 100%;
+  }
+
+  .reactotron {
+    top: 565px;
   }
 </style>

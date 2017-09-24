@@ -13,11 +13,7 @@
       <div v-if="history.length > 0" class="center mt3">
         <media-item v-for="d in history" :key="d.media.media_id" :id="d.media.media_id" :collectionName="d.collection.name" size="dashboard" />
       </div>
-      <div v-else class="center mt3">
-        <div class="tc" style="height: 215px;">
-          <i class="fa fa-circle-o-notch fa-spin fa-3x silver" style="margin-top: 65px;"></i>
-        </div>
-      </div>
+      <dashboard-loading-section v-else />
     </div>
     <div class="dashboard-section">
       <div class="cf bb">
@@ -32,11 +28,7 @@
       <div v-if="queue.length > 0" class="center mt3">
         <media-item v-for="d in queue" :key="d.most_likely_media.media_id" :id="d.most_likely_media.media_id" :collectionName="d.series.name" size="dashboard" />
       </div>
-      <div v-else class="center mt3">
-        <div class="tc" style="height: 215px;">
-          <i class="fa fa-circle-o-notch fa-spin fa-3x silver" style="margin-top: 65px;"></i>
-        </div>
-      </div>
+      <dashboard-loading-section v-else />
     </div>
     <div class="dashboard-section">
       <h2 class="fw4 mv0 pb3 bb"><i class="fa fa-calendar-o mr1" aria-hidden="true"></i> Latest releases</h2>
@@ -48,11 +40,7 @@
           </div>
         </div>
       </div>
-      <div v-else class="center mt3">
-        <div class="tc" style="height: 436px;">
-          <i class="fa fa-circle-o-notch fa-spin fa-3x silver" style="margin-top: 175px;"></i>
-        </div>
-      </div>
+      <dashboard-loading-section v-else />
     </div>
   </div>
 </template>
@@ -62,13 +50,17 @@
   import isYesterday from 'date-fns/is_yesterday'
   import difference from 'date-fns/difference_in_calendar_days'
   import MediaItem from 'components/MediaItem'
+  import DashboardLoadingSection from 'components/DashboardLoadingSection'
 
   export default {
     name: 'dashboard',
     metaInfo: {
       title: 'Home'
     },
-    components: { MediaItem },
+    components: {
+      MediaItem,
+      DashboardLoadingSection
+    },
     data () {
       return {
         splits: {}

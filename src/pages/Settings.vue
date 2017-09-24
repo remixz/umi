@@ -22,11 +22,11 @@
       <form class="fr" @submit.prevent="loginMal" v-if="!malAuth.username">
         <input type="text" placeholder="Username" class="ph3 pv2" required v-model="malUsername" />
         <input type="password" placeholder="Password" class="ph3 pv2" required v-model="malPassword" />
-        <input type="submit" :value="malLoading ? 'Loading...' : 'Sign in'" class="fw6 ph3 pv2 input-reset ba b--black-20 bg-white bg-animate hover-bg-blue black hover-white br1 pointer f6 dib">
+        <input type="submit" :value="malLoading ? 'Loading...' : 'Sign in'" class="fw6 ph3 pv2 input-reset ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer f6 dib">
         <div class="red mt1" v-if="malError">Invalid username/password</div>
       </form>
       <div class="fr" v-else>
-        <button @click="logoutMal" class="fw6 ph3 pv2 ba b--black-20 bg-white bg-animate hover-bg-blue black hover-white br1 pointer f6 dib">Sign out</button>
+        <button @click="logoutMal" class="fw6 ph3 pv2 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer f6 dib">Sign out</button>
       </div>
     </div>
   </div>

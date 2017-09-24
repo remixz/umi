@@ -1,12 +1,12 @@
 <template>
   <div class="mt2">
-    <div v-if="allData.length > 0" style="width: 948px" class="center">
+    <div v-if="allData.length > 0" class="center container-width">
       <media-item v-for="d in allData" :key="d.media.media_id" :id="d.media.media_id" :collectionName="d.collection.name" size="medium" />
       <div class="f5 fw6 db ba b--black-20 bg-animate hover-bg-light-gray black br1 pointer pa3 tc more-btn" :class="[paginationLoading ? 'bg-light-gray' : 'bg-white']" @click="handlePagination">
         {{paginationLoading ? 'Loading...' : 'Load more'}}
       </div>
     </div>
-    <div v-else style="width: 948px" class="center">
+    <div v-else class="center container-width">
       <loading-media-item v-for="n in 15" :key="n" />
     </div>
   </div>
@@ -34,8 +34,8 @@
       }
     },
     components: {
-      'media-item': MediaItem,
-      'loading-media-item': LoadingMediaItem
+      MediaItem,
+      LoadingMediaItem
     },
     methods: {
       async handlePagination () {

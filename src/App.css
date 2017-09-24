@@ -11,6 +11,10 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
+.transparent {
+  color: transparent;
+}
+
 .emoji {
   height: 28px;
   user-select: none;
@@ -75,4 +79,8 @@
 
 .player-height {
   height: 576px;
+}
+
+.container-width {
+  width: 948px;
 }

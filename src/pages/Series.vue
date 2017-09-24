@@ -3,19 +3,19 @@
     <div v-if="seriesError">
       <h1 class="fw6">This series is not available.</h1>
     </div>
-    <div class="absolute w-100 player-top-offset left-0 overflow-hidden" style="height: 300px;">
+    <div id="video-banner" class="absolute w-100 top-0 left-0 overflow-hidden video-banner-height">
       <video v-if="opening" class="w-100 absolute top-0" :src="opening" @playing="playing = true" muted loop autoplay></video>
-      <div class="w-100 cover bg-center absolute video-banner" :class="{away: playing}" :style="`background-image: url(${series.landscape_image.full_url});`"></div>
-      <div class="w-100 bg-black o-40 absolute" style="height: 300px;"></div>
+      <div class="w-100 cover bg-center absolute video-banner" :class="{away: playing}" :style="videoBannerStyle"></div>
+      <div class="w-100 bg-black o-40 absolute video-banner-height"></div>
     </div>
-    <div class="relative z-9999" style="margin-top: 150px;">
+    <div class="relative z-9999 info-container">
       <div class="cf">
         <div class="w-20 fl pt2">
-          <img :src="series.portrait_image.full_url" class="shadow-1 bg-light-gray" style="width: 198px; height: 298px;">
+          <img :src="series.portrait_image.full_url" class="shadow-1 bg-light-gray portrait-image">
         </div>
         <div class="w-80 fl pl3">
-          <h1 class="series-title white">{{series.name || '&nbsp;'}}</h1>
-          <p class="lh-copy" style="margin-top: 2rem;">{{series.description}}</p>
+          <h1 class="series-title white fw6">{{series.name || '&nbsp;'}}</h1>
+          <p class="lh-copy mt4">{{series.description}}</p>
           <div v-if="!loading">
             <queue-button :id="series.series_id" />
             <a class="link f6 fw6 dib ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph2 pv1" target="_blank" :href="`https://myanimelist.net/search/all?q=${encodeURIComponent(series.name)}`">Find on MyAnimeList</a>
@@ -33,7 +33,7 @@
       </div>
       <div v-if="collections && !loading">
         <div v-for="id in sortedCollections" :key="id">
-          <div class="collection-header cf bg-light-gray pa3 mv2 pointer bb bw2 b--black-10" :data-id="id" @click="selectCollection">
+          <div class="collection-header bg-near-white cf pa3 mv2 pointer br2" :data-id="id" @click="selectCollection">
             <div class="fl">
               <span class="fw6">{{collectionData[id].name}}</span>
             </div>
@@ -41,7 +41,7 @@
               <i class="fa" :class="[`fa-caret-${selectedCollection === id ? 'up' : 'down'}`]" aria-hidden="true"></i>
             </div>
           </div>
-          <collection :id="id" :hide="selectedCollection !== id" :sort="sort" class="center" style="width: 948px" />
+          <collection :id="id" :hide="selectedCollection !== id" :sort="sort" class="center container-width" />
         </div>
       </div>
     </div>
@@ -67,8 +67,8 @@
       }
     },
     components: {
-      collection: Collection,
-      'queue-button': QueueButton
+      Collection,
+      QueueButton
     },
     data () {
       return {
@@ -100,6 +100,11 @@
       },
       collectionData () {
         return this.$store.state.collections
+      },
+      videoBannerStyle () {
+        return {
+          'background-image': `url(${this.series.landscape_image.full_url})`
+        }
       }
     },
     methods: {
@@ -133,6 +138,16 @@
         this.sort = target.dataset.sort
         this.selectedCollection = this.sortedCollections[0]
         localStorage.setItem(`series-${this.seriesId}-sort`, target.dataset.sort)
+      },
+      intersectCallback ([entry]) {
+        const header = document.querySelector('header')
+        header.classList.add('bg-animate')
+
+        if (entry.isIntersecting) {
+          header.classList.add('series-header')
+        } else {
+          header.classList.remove('series-header')
+        }
       }
     },
     watch: {
@@ -146,11 +161,33 @@
     },
     created () {
       this.getSeriesInfo()
+    },
+    mounted () {
+      if (typeof window.IntersectionObserver === 'function') {
+        this.intersect = new IntersectionObserver(this.intersectCallback, {
+          threshold: [0, 1]
+        })
+
+        const banner = document.querySelector('#video-banner')
+        this.intersect.observe(banner)
+      }
+    },
+    beforeDestroy () {
+      if (this.intersect) {
+        const header = document.querySelector('header')
+        header.classList.remove('bg-animate')
+
+        this.intersect.disconnect()
+      }
     }
   }
 </script>
 
 <style scoped>
+  .collection-header {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
   .collection-header * {
     pointer-events: none;
   }
@@ -160,7 +197,7 @@
   }
 
   .video-banner {
-    height: 300px;
+    height: 364px;
     opacity: 1;
     transition: opacity 0.3s ease-in-out;
   }
@@ -169,8 +206,21 @@
     opacity: 0;
   }
 
+  .video-banner-height {
+    height: 364px;
+  }
+
+  .info-container {
+    margin-top: 150px;
+  }
+
   .series-title {
     text-shadow: 0px 4px 3px rgba(0,0,0,0.4), 0px 8px 13px rgba(0,0,0,0.1), 0px 18px 23px rgba(0,0,0,0.1);
     margin-top: 5rem;
+  }
+
+  .portrait-image {
+    width: 198px;
+    height: 298px;
   }
 </style>

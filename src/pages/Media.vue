@@ -2,16 +2,16 @@
   <div>
     <div v-if="media && media.created">
       <div v-if="loading" class="bg-black-60 absolute absolute--fill z-max player-height player-top-offset tc">
-        <i class="fa fa-circle-o-notch fa-spin fa-3x white center" style="margin-top: 265px;"></i>
+        <i class="fa fa-circle-o-notch fa-spin fa-3x white center loading-spinner"></i>
       </div>
       <div v-if="shouldContinueWatching && !loading" @click="continueWatching" class="absolute z-max player-width player-top-offset left-0 right-0 center cf white">
-        <div class="fw5 f4 pa3 w-100 bg-black-60 hover-bg-black-70 bg-animate pointer absolute" style="top: 521px;">
+        <div class="fw5 f4 pa3 w-100 bg-black-60 hover-bg-black-70 bg-animate pointer absolute resume-container">
           <i class="fa fa-fast-forward mr2" aria-hidden="true"></i> Resume watching at {{prettyTime}}
         </div>
       </div>
       <div v-if="shouldNextEpisode" class="absolute z-max player-width player-top-offset left-0 right-0 center cf white">
         <router-link class="white" :to="`/series/${nextEpisodeMedia.series_id}/${nextEpisodeMedia.media_id}`">
-          <div class="fw5 f4 pa3 w-100 bg-black-60 hover-bg-black-70 bg-animate pointer absolute hide-child" style="top: 454px;">
+          <div class="fw5 f4 pa3 w-100 bg-black-60 hover-bg-black-70 bg-animate pointer absolute hide-child next-container">
             <div class="child absolute bg-black-40 tc next-episode-overlay">
               <i class="fa fa-play white tc play-icon" aria-hidden="true"></i>
             </div>
@@ -27,22 +27,29 @@
         <div class="bg-black absolute w-100 left-0 player-height player-top-offset">
           <div class="bg-dark-gray center player-width player-height"></div>
         </div>
-        <reactotron v-if="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron relative z-9999" style="top: 565px;" />
+        <reactotron v-if="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron relative z-9999"/>
       </div>
       <div class="media-info">
-        <div class="w-100">
-          <h2 class="normal lh-title mb2 w-80 dib"><span class="ttu fw6">Episode {{media.episode_number}}:</span> {{media.name}}</h2>
+        <div>
+          <h2 class="normal lh-title mb2 w-80 dib">{{media.name}}</h2>
           <div class="dib fr pt3 z-9999 relative">
-            <div v-tooltip.bottom-center="'Watch with others'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2" :class="[lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate']" v-if="room === ''" @click="createRoom"><i class="tc fa fa-users" aria-hidden="true"></i></div>
-            <div v-tooltip.bottom-center="'Toggle dark mode'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2" :class="[lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate']" @click="$store.commit('UPDATE_LIGHTS', !lights)"><i class="tc fa fa-moon-o" aria-hidden="true" style="width: 16px;"></i></div>
+            <div v-tooltip.bottom-center="'Watch with others'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2" :class="optionClasses" v-if="room === ''" @click="createRoom">
+              <i class="tc fa fa-users w-1" aria-hidden="true"></i>
+            </div>
+            <div v-tooltip.bottom-center="'Toggle dark mode'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2" :class="optionClasses" @click="$store.commit('UPDATE_LIGHTS', !lights)">
+              <i class="tc fa fa-moon-o w-1" aria-hidden="true"></i>
+            </div>
           </div>
         </div>
-        <div style="height: 21px;">
-          <router-link class="dark-gray fw6 no-underline bb pb1 b--dark-gray hover-blue link" :to="`/series/${media.series_id}`">{{media.collection_name}}</router-link>
-          <a v-if="isMalAuthed && malItem.id" :href="malItem.url" target="_blank" rel="noopener"><span class="mal-icon ml1" :class="{watched: malSynced}"></span></a>
+        <div class="fw6">
+          <router-link class="dark-gray no-underline bb pb1 b--dark-gray hover-blue link" :to="`/series/${media.series_id}`">
+            {{media.collection_name}}
+          </router-link>
+          &bull; Epsiode {{media.episode_number}}
+          &bull; <i class="fa fa-clock-o" aria-hidden="true"></i> {{duration}}
         </div>
+        <a v-if="isMalAuthed && malItem.id" :href="malItem.url" target="_blank" rel="noopener"><span class="mal-icon ml1" :class="{watched: malSynced}"></span></a>
         <p class="lh-copy">{{media.description}}</p>
-
         <h3 class="fw5">Episodes</h3>
         <episode-scroller v-if="collectionMedia && collectionMedia.length > 0" :ids="collectionMedia" :selected="$route.params.id" />
       </div>
@@ -52,7 +59,7 @@
         <div class="bg-black absolute w-100 left-0 player-height player-top-offset">
           <div class="bg-dark-gray center player-width player-height">
             <div class="bg-black-60 center player-width player-height tc">
-              <i class="fa fa-circle-o-notch fa-spin fa-3x white center" style="margin-top: 265px;"></i>
+              <i class="fa fa-circle-o-notch fa-spin fa-3x white center loading-spinner"></i>
             </div>
           </div>
         </div>
@@ -79,9 +86,9 @@
     },
     components: {
       'umi-video': Video,
-      'media-item': MediaItem,
-      'episode-scroller': EpisodeScroller,
-      'reactotron': Reactotron
+      MediaItem,
+      EpisodeScroller,
+      Reactotron
     },
     data () {
       return {
@@ -144,10 +151,16 @@
         return prettyTime(this.internalSeek)
       },
       shouldContinueWatching () {
-        return this.internalSeek !== 0 && this.internalSeek < this.media.duration
+        return this.internalSeek !== 0 && (this.media.duration - this.internalSeek >= 30)
       },
       shouldNextEpisode () {
         return this.nextEpisode && this.nextEpisodeId !== ''
+      },
+      duration () {
+        return prettyTime(this.media.duration)
+      },
+      optionClasses () {
+        return [this.lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate']
       }
     },
     methods: {
@@ -269,5 +282,25 @@
 
   .next-episode-overlay i {
     margin-top: 37px;
+  }
+
+  .duration {
+    z-index: 10000;
+  }
+
+  .loading-spinner {
+    margin-top: 265px;
+  }
+
+  .resume-container {
+    top: 521px;
+  }
+
+  .reactotron {
+    top: 565px;
+  }
+
+  .next-container {
+    top: 454px;
   }
 </style>

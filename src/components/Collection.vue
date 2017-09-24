@@ -1,6 +1,6 @@
 <template>
   <div v-if="!hide">
-    <div v-if="loading" style="width: 948px" class="center">
+    <div v-if="loading" class="center container-width">
       <loading-media-item v-for="n in 15" :key="n" />
     </div>
     <media-item v-else v-for="id in sortedMedia" :key="id" :id="id" size="medium" />
@@ -20,8 +20,8 @@
       }
     },
     components: {
-      'media-item': MediaItem,
-      'loading-media-item': LoadingMediaItem
+      MediaItem,
+      LoadingMediaItem
     },
     computed: {
       media () {

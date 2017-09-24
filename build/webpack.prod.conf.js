@@ -79,7 +79,8 @@ var webpackConfig = merge(baseWebpackConfig, {
     }),
     new OfflinePlugin({
       ServiceWorker: {
-        events: true
+        events: true,
+        navigateFallbackURL: '/'
       },
       AppCache: false
     }),

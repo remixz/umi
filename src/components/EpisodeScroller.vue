@@ -10,7 +10,7 @@
   export default {
     props: ['ids', 'selected'],
     components: {
-      'media-item': MediaItem
+      MediaItem
     },
     mounted () {
       if (this.selected) {

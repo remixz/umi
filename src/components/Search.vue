@@ -3,14 +3,15 @@
     <form @submit.prevent="search">
       <input
         type="text"
-        class="br2 br--left input-reset white bw0 bg-dark-blue pa2 search-bar"
+        class="br2 br--left input-reset black bg-white bt bb bl br-0 b--silver pa2 search-bar"
         placeholder="Search Crunchyroll"
         v-model="searchInput"
         ref="input"
         @keydown="keydown"
         @focus="focus"
       >
-      <button class="br2 br--right pointer bw0 button-reset bg-dark-blue pa2 search-btn"><i class="fa fa-search white"></i></button>
+      <button class="br2 br--right pointer button-reset bg-white bt bb br bl-0 b--silver pa2 search-btn"><i class="fa fa-search black-80 hover-black" aria-hidden="true"></i></button>
+      <i v-if="searchInput !== ''" class="fa fa-times black-80 hover-black absolute pointer clear-search" aria-hidden="true" @click="searchInput = ''"></i>
     </form>
     <div v-if="showResults" class="absolute br2 shadow-1 bg-white w-100 mt1">
       <router-link
@@ -145,12 +146,12 @@
 
 <style scoped>
   .search-bar::placeholder {
-    color: white;
+    color: black;
     opacity: 0.8;
   }
 
   .search-btn {
-    margin-left: -5px;
+    margin-left: -4px;
   }
 
   .search-bar:focus, .search-btn:active, .search-btn:focus {
@@ -179,5 +180,10 @@
 
   .search-result span {
     width: 170px;
+  }
+
+  .clear-search {
+    right: 35px;
+    top: 8px;
   }
 </style>
