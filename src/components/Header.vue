@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-white-90 fixed top-0 w-100" :class="[lights ? 'z-3' : 'z-max', {'series-header': routeName === 'series', 'media-header': routeName === 'media'}]">
+  <header class="fixed top-0 w-100" :class="[lights ? 'z-3' : 'z-max', {'alt-header': routeName === 'series' || routeName === 'media', 'box-shadow-umi': routeName !== 'media'}]">
     <div class="header-container center relative">
       <div class="logo-container">
         <router-link to="/" class="db no-underline" exact>
@@ -150,10 +150,9 @@ export default {
 
 <style scoped>
   header {
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: rgba(245, 245, 245, 0.95);
     height: 4rem;
     border-top: 0.125rem solid #357edd;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 
   .pointer-events-none {
@@ -285,63 +284,46 @@ export default {
     margin-top: -4px;
   }
 
-  /* styles on a series page */
-  .series-header {
+  /* styles on an alt page (series & media) */
+  .alt-header {
     background-color: rgba(0, 0, 0, 0.4);
     border-top-color: transparent;
   }
 
-  .series-header .bg-blue {
+  .alt-header .bg-blue {
     background-color: transparent;
   }
 
-  .series-header .dark-gray, .series-header .blue {
+  .alt-header .dark-gray, .alt-header .blue {
     color: #fff;
   }
 
-  .series-header .white {
+  .alt-header .white {
     color: transparent;
   }
 
-  .series-header .bg-dark-blue {
+  .alt-header .bg-dark-blue {
     background-color: rgba(0, 0, 0, 0.2);
   }
 
-  .series-header .counter:after {
+  .alt-header .counter:after {
     border-left-color: rgba(0, 0, 0, 0.2);
   }
 
-  .media-header {
-    background-color: #333;
-    box-shadow: none;
-    border-top-color: transparent;
-    border-bottom: 0;
-  }
-
-  .media-header .dark-gray, .media-header .blue {
-    color: #fff;
-  }
-
-  .media-header .white {
-    color: #333;
-  }
-
-  .series-header .menu-circle:hover, .series-header .menu-circle.active,
-  .media-header .menu-circle:hover, .media-header .menu-circle.active {
+  .alt-header .menu-circle:hover, .alt-header .menu-circle.active {
     color: transparent;
   }
 
-  .series-header .counter, .media-header .counter {
+  .alt-header .counter, .media-header .counter {
     background-color: #fff;
     color: #333;
   }
 
-  .series-header .counter:after, .media-header .counter:after {
+  .alt-header .counter:after, .media-header .counter:after {
     border-left-color: #fff;
   }
 
-  .series-header .nav a:hover, .series-header .nav .router-link-active,
-  .media-header .nav a:hover, .media-header .nav .router-link-active {
+  .alt-header .nav a:hover, .alt-header .nav .router-link-active {
     border-bottom: .25rem solid #fff;
   }
 </style>

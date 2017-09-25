@@ -33,7 +33,7 @@
       </div>
       <div v-if="collections && !loading">
         <div v-for="id in sortedCollections" :key="id">
-          <div class="collection-header bg-near-white cf pa3 mv2 pointer br2" :data-id="id" @click="selectCollection">
+          <div class="collection-header bg-near-white cf pa3 mv2 pointer br2 box-shadow-umi" :data-id="id" @click="selectCollection">
             <div class="fl">
               <span class="fw6">{{collectionData[id].name}}</span>
             </div>
@@ -140,13 +140,12 @@
         localStorage.setItem(`series-${this.seriesId}-sort`, target.dataset.sort)
       },
       intersectCallback ([entry]) {
-        const header = document.querySelector('header')
-        header.classList.add('bg-animate')
+        this.header.classList.add('bg-animate')
 
         if (entry.isIntersecting) {
-          header.classList.add('series-header')
+          this.header.classList.add('alt-header')
         } else {
-          header.classList.remove('series-header')
+          this.header.classList.remove('alt-header')
         }
       }
     },
@@ -164,6 +163,7 @@
     },
     mounted () {
       if (typeof window.IntersectionObserver === 'function') {
+        this.header = document.querySelector('header')
         this.intersect = new IntersectionObserver(this.intersectCallback, {
           threshold: [0, 1]
         })
@@ -174,8 +174,7 @@
     },
     beforeDestroy () {
       if (this.intersect) {
-        const header = document.querySelector('header')
-        header.classList.remove('bg-animate')
+        this.header.classList.remove('bg-animate')
 
         this.intersect.disconnect()
       }
@@ -184,10 +183,6 @@
 </script>
 
 <style scoped>
-  .collection-header {
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  }
-
   .collection-header * {
     pointer-events: none;
   }

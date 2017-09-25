@@ -1,6 +1,6 @@
 <template>
   <router-link :to="`/series/${data.most_likely_media.series_id}/${data.most_likely_media.media_id}`" class="link black" v-if="data.most_likely_media.available">
-    <div class="w-100 mb2 pa3 cf hide-child br2 queue-item">
+    <div class="w-100 mb2 pa3 cf hide-child br2 ba b--near-white box-shadow-umi">
       <div class="fl w-20 relative">
         <img :src="data.most_likely_media.screenshot_image.thumb_url" class="v-mid image-size">
         <div class="bg-gray mt1 playhead">
@@ -53,10 +53,6 @@
 </script>
 
 <style scoped>
-  .queue-item {
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  }
-
   .playhead {
     width: 160px;
     height: 4px;

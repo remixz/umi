@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="absolute w-100 bg-dark-gray top-0 left-0 header-bg"></div>
     <div v-if="media && media.created">
       <div v-if="loading" class="bg-black-60 absolute absolute--fill z-max player-height player-top-offset tc">
         <i class="fa fa-circle-o-notch fa-spin fa-3x white center loading-spinner"></i>
@@ -302,5 +303,9 @@
 
   .next-container {
     top: 454px;
+  }
+
+  .header-bg {
+    height: 4rem;
   }
 </style>
