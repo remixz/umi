@@ -15,12 +15,12 @@
       </div>
       <div class="pa2">
         <div v-if="collectionName">
-          <span class="truncate db fw6 mb1">{{collectionName}}</span>
+          <span class="truncate db fw6 mb1 lh-copy">{{collectionName}}</span>
           <small class="gray truncate db lh-copy">#{{data.episode_number}} &bull; {{data.name}}</small>
         </div>
         <div v-else>
-          <span class="fw6 mb1" v-if="data.episode_number !== ''">Episode {{data.episode_number}}</span>
-          <span class="fw6 mb1" v-else>{{data.name}}</span>
+          <span class="truncate db fw6 mb1 lh-copy" v-if="data.episode_number !== ''">Episode {{data.episode_number}}</span>
+          <span class="truncate db fw6 mb1 lh-copy" v-else>{{data.name}}</span>
           <small class="gray truncate db lh-copy" v-if="data.episode_number !== ''">{{data.name}}</small>
           <small class="gray truncate db lh-copy" v-else>&nbsp;</small>
         </div>
