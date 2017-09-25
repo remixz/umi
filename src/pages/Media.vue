@@ -34,10 +34,10 @@
         <div>
           <h2 class="normal lh-title mb2 w-80 dib">{{media.name}}</h2>
           <div class="dib fr pt3 z-9999 relative">
-            <div v-tooltip.bottom-center="'Watch with others'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2" :class="optionClasses" v-if="room === ''" @click="createRoom">
+            <div v-tooltip.bottom-center="'Watch with others'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2 box-shadow-umi" :class="optionClasses" v-if="room === ''" @click="createRoom">
               <i class="tc fa fa-users w-1" aria-hidden="true"></i>
             </div>
-            <div v-tooltip.bottom-center="'Toggle dark mode'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2" :class="optionClasses" @click="$store.commit('UPDATE_LIGHTS', !lights)">
+            <div v-tooltip.bottom-center="'Toggle dark mode'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2 box-shadow-umi" :class="optionClasses" @click="$store.commit('UPDATE_LIGHTS', !lights)">
               <i class="tc fa fa-moon-o w-1" aria-hidden="true"></i>
             </div>
           </div>

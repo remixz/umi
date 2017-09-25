@@ -29,8 +29,8 @@
               <div class="fw6">{{roomText}}</div>
             </div>
             <input type="text" class="pa2 w-100 pointer" v-model="roomUrl" @click="handleRoomClick" readonly>
-            <button @click="leaveRoom" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph3 pv2 tc leave-room">Leave room</button>
-            <button @click="hideTogether" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph3 pv2 tc w-15 fr">Close</button>
+            <button @click="leaveRoom" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br2 box-shadow-umi pointer ph3 pv2 tc leave-room">Leave room</button>
+            <button @click="hideTogether" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br2 box-shadow-umi pointer ph3 pv2 tc w-15 fr">Close</button>
           </div>
           <search />
           <span class="fa-stack dib pointer" @click="showMenu">
@@ -152,7 +152,8 @@ export default {
   header {
     background-color: rgba(245, 245, 245, 0.95);
     height: 4rem;
-    border-top: 0.125rem solid #357edd;
+    border-top: 2px solid #357edd;
+    transform: translateZ(0); /* hack fix for 1px jitter when a transform happens on the page */
   }
 
   .pointer-events-none {
@@ -232,7 +233,7 @@ export default {
   }
 
   .menu-circle:hover, .menu-circle.active {
-    color: #f4f4f4;
+    color: #e3e3e3;
   }
 
   .menu, .together-menu {
@@ -266,7 +267,7 @@ export default {
 
   .counter {
     top: 7px;
-    right: 318px;
+    right: 322px;
     height: 13px;
   }
 

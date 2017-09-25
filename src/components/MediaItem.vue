@@ -69,6 +69,9 @@
 
   .media-item.dashboard {
     transition: transform 0.2s ease-in-out;
+    -moz-osx-font-smoothing: grayscale;
+    backface-visibility: hidden;
+    transform: translateZ(0);
     width: 230px;
   }
 

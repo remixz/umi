@@ -18,7 +18,7 @@
           </div>
         </fieldset>
         <div>
-          <input class="fw6 ph3 pv2 input-reset ba b--black-20 bg-white bg-animate hover-bg-blue black hover-white br1 pointer f6 dib w-100" type="submit" :value="loading ? 'Signing in...' : 'Sign in'">
+          <input class="fw6 ph3 pv2 input-reset ba b--black-20 bg-white bg-animate hover-bg-blue black hover-white br2 box-shadow-umi pointer f6 dib w-100" type="submit" :value="loading ? 'Signing in...' : 'Sign in'">
         </div>
         <small class="pt3 db">
           <i class="fa fa-info-circle pr1" aria-hidden="true"></i> Your password is sent directly to Crunchyroll, and is never stored by Umi.

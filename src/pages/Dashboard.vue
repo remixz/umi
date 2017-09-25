@@ -5,7 +5,7 @@
         <h2 class="fw4 mv0 pb3 fl"><i class="fa fa-play mr1" aria-hidden="true"></i> Continue watching</h2>
         <router-link
           to="/history"
-          class="fr link f6 mt1 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph2 pv1 tc"
+          class="fr link f6 mt1 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph2 pv1 tc br2 box-shadow-umi"
         >
           View more
         </router-link>
@@ -20,7 +20,7 @@
         <h2 class="fw4 mv0 pb3 fl"><i class="fa fa-th-list mr1" aria-hidden="true"></i> Your queue</h2>
         <router-link
           to="/queue"
-          class="fr link f6 mt1 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph2 pv1 tc"
+          class="fr link f6 mt1 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br1 pointer ph2 pv1 tc br2 box-shadow-umi"
         >
           View more
         </router-link>
