@@ -85,10 +85,12 @@
       },
       searchInput: debounce(function (curr, prev) {
         const trimmed = curr.trim()
-        if (trimmed === '' || trimmed === prev || trimmed.length < 3) return
+        if (trimmed === '' || trimmed === prev || trimmed.length < 3) {
+          return this.$store.commit('SET_SEARCH_IDS', [])
+        }
 
         this.$store.dispatch('search', trimmed)
-      }, 250)
+      }, 100)
     },
     methods: {
       keydown (e) {
@@ -179,7 +181,7 @@
   }
 
   .search-result span {
-    width: 170px;
+    width: 145px;
   }
 
   .clear-search {

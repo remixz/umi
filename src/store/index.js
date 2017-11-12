@@ -286,13 +286,13 @@ const store = new Vuex.Store({
       form.append('series_id', id)
 
       commit('UPDATE_SERIES_QUEUE', {id, queueStatus})
-      dispatch('getQueueInfo', true)
 
       return new Promise(async (resolve, reject) => {
         try {
           const resp = await api({method: 'post', route: queueStatus ? 'add_to_queue' : 'remove_from_queue', data: form})
           if (resp.data.error) throw resp
 
+          dispatch('getQueueInfo', true)
           resolve()
         } catch (err) {
           handleError(err, reject)

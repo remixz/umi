@@ -1,15 +1,15 @@
 <template>
   <router-link :to="`/series/${data.series_id}/${id}`" class="black" v-if="data.available">
-    <div class="media-item dib v-top h-100 mr3 mb2 br2" :class="[{'hide-child': !selected}, size]" @click="$emit('click')">
+    <div class="media-item dib v-top h-100 mr3 mb2 br2 bg-white" :class="[{'hide-child': !selected}, size]" @click="$emit('click')">
       <div class="relative">
-        <img v-if="data.screenshot_image" :src="data.screenshot_image.full_url" class="w-100 image-size">
-        <div v-else class="w-100 image-size tc placeholder-image">
+        <img v-if="data.screenshot_image" :src="data.screenshot_image.full_url" class="w-100 image-size br2 br--top">
+        <div v-else class="w-100 image-size tc placeholder-image bg-light-gray">
           <i class="fa fa-question-circle-o black-40 missing-icon" aria-hidden="true"></i>
         </div>
         <div class="bg-gray playhead playhead-container">
           <div class="bg-blue playhead" :style="playheadStyle"></div>
         </div>
-        <div class="child absolute bg-black-40 top-0 image-size">
+        <div class="child absolute bg-black-40 top-0 image-size br2 br--top">
           <i class="fa fa-play white tc play-icon" aria-hidden="true"></i>
         </div>
       </div>
@@ -49,6 +49,7 @@
 <style scoped>
   .media-item {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    position: relative;
   }
 
   .playhead {
@@ -73,10 +74,12 @@
     backface-visibility: hidden;
     transform: translateZ(0);
     width: 230px;
+    z-index: 2;
   }
 
   .media-item.dashboard:hover {
     transform: scale(1.1);
+    z-index: 3;
   }
 
   .media-item.small {

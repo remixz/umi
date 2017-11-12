@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-x-scroll nowrap">
+  <div class="overflow-x-scroll nowrap ph1">
     <media-item v-for="id in ids" :key="id" :id="id" :data-id="id" :selected="id === selected" size="small" />
   </div>
 </template>

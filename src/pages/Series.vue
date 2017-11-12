@@ -4,7 +4,7 @@
       <h1 class="fw6">This series is not available.</h1>
     </div>
     <div id="video-banner" class="absolute w-100 top-0 left-0 overflow-hidden video-banner-height">
-      <video v-if="opening" class="w-100 absolute top-0" :src="opening" @playing="playing = true" muted loop autoplay></video>
+      <video v-if="opening" class="w-100 absolute top-0" :src="opening" @playing="playing = true" :muted="true" loop autoplay></video>
       <div class="w-100 cover bg-center absolute video-banner" :class="{away: playing}" :style="videoBannerStyle"></div>
       <div class="w-100 bg-black o-40 absolute video-banner-height"></div>
     </div>
