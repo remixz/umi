@@ -425,7 +425,7 @@ const store = new Vuex.Store({
           const roomRef = Firebase.getRef(`/rooms/${id}`)
           const usersRef = Firebase.getRef(`/roomUsers/${id}`)
           const connectedRef = Firebase.getRef(`/roomUsers/${id}/${Firebase.app.auth().currentUser.uid}`)
-          connectedRef.set(true)
+          await connectedRef.set(true)
           connectedRef.onDisconnect().remove()
 
           const room = await roomRef.once('value')
