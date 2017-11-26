@@ -12,12 +12,12 @@ const config = {
 }
 
 const Firebase = {
+  refs: {},
+  app: firebase.initializeApp(config),
+  connected: false,
+
   init () {
     if (this.connected) return Promise.resolve()
-
-    this.refs = {}
-    this.app = firebase.initializeApp(config)
-    this.database = this.app.database()
 
     return new Promise(async (resolve, reject) => {
       try {
@@ -32,7 +32,7 @@ const Firebase = {
 
   getRef (str) {
     if (!this.refs[str]) {
-      this.refs[str] = this.database.ref(str)
+      this.refs[str] = this.app.database().ref(str)
     }
 
     return this.refs[str]
