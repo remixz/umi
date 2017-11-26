@@ -12,9 +12,9 @@
     "compression": "^1.6.2",
     "cors": "^2.8.3",
     "express": "^4.15.2",
+    "firebase": "^4.6.2",
     "iron": "^4.0.4",
-    "popura": "^1.2.5",
-    "socket.io": "^2.0.1"
+    "popura": "^1.2.5"
   },
   "scripts": {
     "start": "node index.js",
@@ -24,7 +24,10 @@
     "alias": "umi-watch-api",
     "env": {
       "UPDATE_TOKEN": "@update-token",
-      "IRON_TOKEN": "@iron-token"
+      "IRON_TOKEN": "@iron-token",
+      "FIREBASE_EMAIL": "@firebase-email",
+      "FIREBASE_PASSWORD": "@firebase-password",
+      "NODE_ENV": "production"
     }
   }
 }

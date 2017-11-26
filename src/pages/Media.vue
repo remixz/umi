@@ -71,6 +71,7 @@
 
 <script>
   import axios from 'axios'
+  import uuid from 'uuid/v4'
   import api, { UMI_SERVER } from 'lib/api'
   import prettyTime from 'lib/prettyTime'
   import Video from 'components/Video'
@@ -224,7 +225,14 @@
         this.$store.commit('ADD_MEDIA', newMedia)
       },
       createRoom () {
-        this.$store.dispatch('createRoom')
+        // this.$store.dispatch('createRoom')
+        this.$store.dispatch('enterRoom', {
+          id: uuid(),
+          route: {
+            name: this.$route.name,
+            path: this.$route.path
+          }
+        })
         this.$store.commit('UPDATE_ROOM_MENU', true)
       }
     },
@@ -236,13 +244,12 @@
         this.timeout = 0
         this.getMediaInfo()
         if (this.room !== '') {
-          this.$socket.emit('change', this.$route.path)
-          this.$router.replace({path: this.$route.path, query: Object.assign({}, this.$route.query, {roomId: this.room.replace('umi//', '')})})
+          this.$router.replace({path: this.$route.path, query: Object.assign({}, this.$route.query, {roomId: this.room})})
         }
       },
       room (id) {
         if (id) {
-          const newRoute = Object.assign({}, this.$route, {query: {roomId: id.replace('umi//', '')}})
+          const newRoute = Object.assign({}, this.$route, {query: {roomId: id}})
           this.$router.replace(newRoute)
         } else {
           const newRoute = Object.assign({}, this.$route, {query: {}})
@@ -255,8 +262,7 @@
 
       this.getMediaInfo()
       if (this.room !== '') {
-        this.$socket.emit('change', this.$route.path)
-        this.$router.replace({path: this.$route.path, query: Object.assign({}, this.$route.query, {roomId: this.room.replace('umi//', '')})})
+        this.$router.replace({path: this.$route.path, query: Object.assign({}, this.$route.query, {roomId: this.room})})
       }
     },
     beforeDestroy () {

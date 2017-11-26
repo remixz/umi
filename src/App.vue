@@ -66,8 +66,14 @@ export default {
     room () {
       return this.$store.state.roomId
     },
+    roomData () {
+      return this.$store.state.roomData
+    },
     routeName () {
       return this.$route.name
+    },
+    routePath () {
+      return this.$route.path
     },
     lights () {
       return this.$store.state.lights
@@ -80,12 +86,6 @@ export default {
     }
   },
   methods: {
-    wsOnJoin () {
-      this.$store.commit('UPDATE_CONNECTED_COUNT', this.$store.state.connectedCount + 1)
-      this.$socket.emit('update-status', {
-        name: this.$route.name
-      })
-    },
     wsOnChange (path) {
       if (this.room !== '' && path !== this.$route.path) {
         this.$router.push({path, query: this.$route.query})
@@ -99,26 +99,25 @@ export default {
     }
   },
   watch: {
-    routeName (curr, prev) {
+    routePath () {
       if (this.room !== '') {
-        if (prev === 'media' && curr !== 'media') {
-          this.$socket.on('user-joined', this.wsOnJoin)
-        } else {
-          this.$socket.off('user-joined', this.wsOnJoin)
-        }
+        this.$store.dispatch('updateRoomData', {
+          route: {
+            name: this.$route.name,
+            path: this.$route.path
+          }
+        })
       }
     },
-    room () {
+    roomData (curr, prev) {
       if (this.room !== '') {
-        this.$socket.on('change', this.wsOnChange)
-        if (this.$route.name !== 'media') {
-          this.$socket.on('user-joined', this.wsOnJoin)
+        if (curr.route.name !== 'media') {
+          this.$store.dispatch('updateRoomData', {
+            playing: false
+          })
+        } else if (curr.route.path !== this.$route.path) {
+          this.$router.push({path: curr.route.path})
         }
-      }
-    },
-    connected (curr) {
-      if (!curr) {
-        this.$socket.off('change', this.wsOnChange)
       }
     }
   },
@@ -152,7 +151,8 @@ export default {
   mounted () {
     if (process.env.NODE_ENV === 'production') {
       const runtime = require('offline-plugin/runtime')
-      this.$socket.on('app-update', () => {
+      const updatedRef = this.$firebase.getRef('appUpdate')
+      updatedRef.on('value', () => {
         runtime.update()
       })
 

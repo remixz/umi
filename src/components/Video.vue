@@ -16,6 +16,7 @@
   /* global Clappr, LevelSelector */
   import $script from 'scriptjs'
   import anime from 'animejs'
+  import uuid from 'uuid/v4'
   import api, {LOCALE, VERSION} from 'lib/api'
   import emoji from 'lib/emoji'
   // import bif from 'lib/bif'
@@ -28,9 +29,8 @@
     data () {
       return {
         playerInit: false,
-        events: [],
-        lastEvent: null,
         showBlur: true,
+        firstEmoji: false,
         frames: []
       }
     },
@@ -43,6 +43,12 @@
       },
       lights () {
         return this.$store.state.lights
+      },
+      roomData () {
+        return this.$store.state.roomData
+      },
+      connectedCount () {
+        return this.$store.state.connectedCount
       }
     },
     mounted () {
@@ -131,6 +137,11 @@
         this.playback = this.player.core.getCurrentContainer().playback
         if (this.room !== '') {
           this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.wsHandlePlay)
+          this.$store.dispatch('updateRoomData', {
+            playing: false,
+            syncedTime: 0
+          })
+          this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.roomHandlePlay)
         }
         // this.loadBif()
       },
@@ -150,23 +161,24 @@
           this.player.play()
         }
       },
-      events () {
-        if (this.events.length <= 0) return
-        while (this.events.length > 0) {
-          const event = this.events[0]
+      roomData (curr, prev) {
+        console.log('==== data ====')
+        console.log(this.roomData)
 
-          if (event.id !== this.$socket.id) {
-            const playing = this.player.isPlaying()
-            if (event.method === 'pause' && !playing) {
-              return
-            }
+        if (curr.playing !== prev.playing) {
+          this.player[curr.playing ? 'play' : 'pause']()
+        }
 
-            this.lastEvent = event
-            this.player[event.method](...event.args)
-          } else {
-            this.$socket.emit('player-event', event)
-          }
-          this.events.shift()
+        if (curr.syncedTime !== prev.syncedTime) {
+          this.player.seek(curr.syncedTime)
+        }
+      },
+      connectedCount (curr, prev) {
+        if (this.room !== '' && curr > prev) {
+          this.$store.dispatch('updateRoomData', {
+            syncedTime: Math.round(this.player.getCurrentTime()),
+            playing: this.player.isPlaying()
+          })
         }
       }
     },
@@ -206,10 +218,16 @@
         if (show) {
           this.player.core.showMediaControl()
         }
-        this.$socket.emit('emoji', name)
-        this.displayEmoji(name)
+
+        const emojiRef = this.$firebase.getRef(`roomEmoji/${this.room}`)
+        emojiRef.set({
+          name,
+          eventId: uuid() // creates a unique event
+        })
       },
-      displayEmoji (name) {
+      displayEmoji (snapshot) {
+        if (!snapshot.exists() || !this.firstEmoji) return this.firstEmoji = true
+        const {name} = snapshot.val()
         const selected = emoji.find((e) => e.name === name)
         if (!selected) return
 
@@ -247,65 +265,52 @@
       //   } catch (err) {}
       // },
       wsJoinRoom () {
-        const time = parseInt(this.$route.query.wsTime, 10)
-        const playing = this.$route.query.wsPlaying
+        const {syncedTime, playing} = this.roomData
 
-        if (time > 0) {
-          this.player.seek(time)
+        if (syncedTime > 0) {
+          this.player.seek(syncedTime)
         }
 
         if (playing) {
           this.player.play()
         }
 
-        this.$router.replace({path: this.$route.path, query: {roomId: this.room.replace('umi//', '')}})
+        this.$router.replace({path: this.$route.path, query: {roomId: this.room}})
         this.wsRegisterEvents()
       },
-      wsRegisterEvents () {
-        this.$socket.on('user-joined', this.wsOnJoined)
-        this.$socket.on('player-event', this.wsOnEvent)
-        this.$socket.on('emoji', this.displayEmoji)
+      async wsRegisterEvents () {
+        const emojiRef = this.$firebase.getRef(`roomEmoji/${this.room}`)
+        emojiRef.on('value', this.displayEmoji)
 
-        this.wsHandlePlay = this.wsHandleEvent.bind(this, 'play')
-        this.wsHandlePause = this.wsHandleEvent.bind(this, 'pause')
-        this.wsHandleSeek = this.wsHandleEvent.bind(this, 'seek')
-        this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.wsHandlePlay)
-        this.player.on(Clappr.Events.PLAYER_PAUSE, this.wsHandlePause)
-        this.player.on(Clappr.Events.PLAYER_SEEK, this.wsHandleSeek)
+        this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.roomHandlePlay)
+        this.player.on(Clappr.Events.PLAYER_PAUSE, this.roomHandlePause)
+        this.player.on(Clappr.Events.PLAYER_SEEK, this.roomHandleSeek)
         this.player.on(Clappr.Events.PLAYER_FULLSCREEN, this.handleFullscreen)
         this.player.core.mediaControl.on(Clappr.Events.MEDIACONTROL_SHOW, this.handleShowControls)
         this.player.core.mediaControl.on(Clappr.Events.MEDIACONTROL_HIDE, this.handleHideControls)
       },
-      wsOnJoined () {
-        this.$store.commit('UPDATE_CONNECTED_COUNT', this.$store.state.connectedCount + 1)
-        this.$socket.emit('update-status', {
-          time: Math.round(this.player.getCurrentTime()),
-          playing: this.player.isPlaying(),
-          path: this.$route.path,
-          name: this.$route.name
+      roomHandlePause () {
+        this.$store.dispatch('updateRoomData', {
+          playing: false,
+          syncedTime: Math.round(this.player.getCurrentTime())
         })
       },
-      wsOnEvent (ev) {
-        this.events.push(ev)
+      roomHandlePlay () {
+        this.$store.dispatch('updateRoomData', {
+          playing: true
+        })
       },
-      wsHandleEvent (method, ...args) {
-        if (this.lastEvent) {
-          this.lastEvent = null
-          return
-        }
-
-        this.events.push({
-          id: this.$socket.id, method, args
+      roomHandleSeek (time) {
+        this.$store.dispatch('updateRoomData', {
+          syncedTime: Math.round(time)
         })
       },
       wsDestroy () {
-        this.$socket.off('user-joined', this.wsOnJoined)
-        this.$socket.off('player-event', this.wsOnEvent)
-        this.$socket.off('emoji', this.displayEmoji)
-
-        this.playback.off(Clappr.Events.PLAYBACK_PLAY_INTENT, this.wsHandlePlay)
-        this.player.off(Clappr.Events.PLAYER_PAUSE, this.wsHandlePause)
-        this.player.off(Clappr.Events.PLAYER_SEEK, this.wsHandleSeek)
+        const emojiRef = this.$firebase.getRef(`roomEmoji/${this.room}`)
+        emojiRef.off('value', this.displayEmoji)
+        this.playback.off(Clappr.Events.PLAYBACK_PLAY_INTENT, this.roomHandlePlay)
+        this.player.off(Clappr.Events.PLAYER_PAUSE, this.roomHandlePause)
+        this.player.off(Clappr.Events.PLAYER_SEEK, this.roomHandleSeek)
         this.player.off(Clappr.Events.PLAYER_FULLSCREEN, this.handleFullscreen)
         this.player.core.mediaControl.off(Clappr.Events.MEDIACONTROL_SHOW, this.handleShowControls)
         this.player.core.mediaControl.off(Clappr.Events.MEDIACONTROL_HIDE, this.handleHideControls)
@@ -314,13 +319,6 @@
     beforeDestroy () {
       this.logTime()
       this.player.destroy()
-      if (this.room !== '') {
-        this.$socket.emit('player-event', {
-          id: this.$socket.id,
-          method: 'pause',
-          args: []
-        })
-      }
     }
   }
 </script>

@@ -2,6 +2,53 @@
 # yarn lockfile v1
 
 
+"@firebase/app@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@firebase/app/-/app-0.1.2.tgz#b00565ed04686055e783695bb817ef618bf08bf6"
+  dependencies:
+    "@firebase/util" "^0.1.2"
+
+"@firebase/auth@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@firebase/auth/-/auth-0.2.2.tgz#27af36f565dec5ca6ed6814e8310d78156c5d02c"
+
+"@firebase/database@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@firebase/database/-/database-0.1.3.tgz#50c67e0b2b29c7c9e2ed176450b9223b7befef92"
+  dependencies:
+    "@firebase/util" "^0.1.2"
+    faye-websocket "0.11.1"
+
+"@firebase/firestore@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@firebase/firestore/-/firestore-0.1.4.tgz#e8301ddf329a9643219bc4c9cb6e1ae4e0586c27"
+  dependencies:
+    "@firebase/webchannel-wrapper" "^0.2.4"
+
+"@firebase/messaging@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@firebase/messaging/-/messaging-0.1.3.tgz#fdc405fc41d0e49390a4b9d8e7a5db3c25ae9dd7"
+  dependencies:
+    "@firebase/util" "^0.1.2"
+
+"@firebase/polyfill@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@firebase/polyfill/-/polyfill-0.1.2.tgz#6192c0b7896bc54044c50ff5bc715f6b8fc34820"
+  dependencies:
+    promise-polyfill "^6.0.2"
+
+"@firebase/storage@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@firebase/storage/-/storage-0.1.2.tgz#fc3b2571aa88903bebc81a0f5faef0f45aadaeb9"
+
+"@firebase/util@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@firebase/util/-/util-0.1.2.tgz#1953962d7939b70d31a8c19f9ca17e0bd61a1d9f"
+
+"@firebase/webchannel-wrapper@^0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@firebase/webchannel-wrapper/-/webchannel-wrapper-0.2.4.tgz#ec8438b780baff09254076efe345f30fdb41243e"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -1519,6 +1566,10 @@ dom-serializer@0:
     domelementtype "~1.1.1"
     entities "~1.1.1"
 
+dom-storage@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/dom-storage/-/dom-storage-2.0.2.tgz#ed17cbf68abd10e0aef8182713e297c5e4b500b0"
+
 domain-browser@^1.1.1:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-1.1.7.tgz#867aa4b093faa05f1de08c06f4d7b21fdf8698bc"
@@ -2022,6 +2073,12 @@ fastparse@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/fastparse/-/fastparse-1.1.1.tgz#d1e2643b38a94d7583b479060e6c4affc94071f8"
 
+faye-websocket@0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/faye-websocket/-/faye-websocket-0.11.1.tgz#f0efe18c4f56e4f40afc7e06c719fd5ee6188f38"
+  dependencies:
+    websocket-driver ">=0.5.1"
+
 figures@^1.3.5:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/figures/-/figures-1.7.0.tgz#cbe1e3affcf1cd44b80cadfed28dc793a9701d2e"
@@ -2100,6 +2157,20 @@ find-up@^2.0.0, find-up@^2.1.0:
   resolved "https://registry.yarnpkg.com/find-up/-/find-up-2.1.0.tgz#45d1b7e506c717ddd482775a2b77920a3c0c57a7"
   dependencies:
     locate-path "^2.0.0"
+
+firebase@^4.6.2:
+  version "4.6.2"
+  resolved "https://registry.yarnpkg.com/firebase/-/firebase-4.6.2.tgz#d4d983d975b98ee27588b25791238a1a1e01a71d"
+  dependencies:
+    "@firebase/app" "^0.1.2"
+    "@firebase/auth" "^0.2.2"
+    "@firebase/database" "^0.1.3"
+    "@firebase/firestore" "^0.1.4"
+    "@firebase/messaging" "^0.1.3"
+    "@firebase/polyfill" "^0.1.2"
+    "@firebase/storage" "^0.1.2"
+    dom-storage "^2.0.2"
+    xmlhttprequest "^1.8.0"
 
 flat-cache@^1.2.1:
   version "1.3.0"
@@ -2441,6 +2512,10 @@ http-errors@1.6.2, http-errors@~1.6.2:
     inherits "2.0.3"
     setprototypeof "1.0.3"
     statuses ">= 1.3.1 < 2"
+
+http-parser-js@>=0.4.0:
+  version "0.4.9"
+  resolved "https://registry.yarnpkg.com/http-parser-js/-/http-parser-js-0.4.9.tgz#ea1a04fb64adff0242e9974f297dd4c3cad271e1"
 
 http-proxy-middleware@^0.17.3:
   version "0.17.4"
@@ -3791,6 +3866,10 @@ progress@^1.1.8:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/progress/-/progress-1.1.8.tgz#e260c78f6161cdd9b0e56cc3e0a85de17c7a57be"
 
+promise-polyfill@^6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/promise-polyfill/-/promise-polyfill-6.0.2.tgz#d9c86d3dc4dc2df9016e88946defd69b49b41162"
+
 proxy-addr@~2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/proxy-addr/-/proxy-addr-2.0.2.tgz#6571504f47bb988ec8180253f85dd7e14952bdec"
@@ -4903,6 +4982,17 @@ webpack@^3.3.0:
     webpack-sources "^1.0.1"
     yargs "^8.0.2"
 
+websocket-driver@>=0.5.1:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/websocket-driver/-/websocket-driver-0.7.0.tgz#0caf9d2d755d93aee049d4bdd0d3fe2cca2a24eb"
+  dependencies:
+    http-parser-js ">=0.4.0"
+    websocket-extensions ">=0.1.1"
+
+websocket-extensions@>=0.1.1:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.3.tgz#5d2ff22977003ec687a4b87073dfbbac146ccf29"
+
 whet.extend@~0.9.9:
   version "0.9.9"
   resolved "https://registry.yarnpkg.com/whet.extend/-/whet.extend-0.9.9.tgz#f877d5bf648c97e5aa542fadc16d6a259b9c11a1"
@@ -4967,6 +5057,10 @@ xml-char-classes@^1.0.0:
 xmlhttprequest-ssl@~1.5.4:
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/xmlhttprequest-ssl/-/xmlhttprequest-ssl-1.5.4.tgz#04f560915724b389088715cc0ed7813e9677bf57"
+
+xmlhttprequest@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/xmlhttprequest/-/xmlhttprequest-1.8.0.tgz#67fe075c5c24fef39f9d65f5f7b7fe75171968fc"
 
 xtend@^4.0.0:
   version "4.0.1"
