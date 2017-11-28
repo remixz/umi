@@ -12,7 +12,6 @@
     "compression": "^1.6.2",
     "cors": "^2.8.3",
     "express": "^4.15.2",
-    "firebase": "^4.6.2",
     "iron": "^4.0.4",
     "popura": "^1.2.5",
     "socket.io": "^2.0.1"

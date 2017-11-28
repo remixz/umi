@@ -25,7 +25,8 @@ if (process.env.NODE_ENV === 'production') {
       runtime.applyUpdate()
     },
     onUpdated () {
-      store.commit('SET_UPDATE_AVAILABLE')
+      localStorage.setItem('updated', Date.now())
+      location.reload()
     }
   })
 }

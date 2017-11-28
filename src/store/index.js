@@ -443,7 +443,6 @@ const store = new Vuex.Store({
           }
 
           roomRef.on('value', (snapshot) => {
-            console.log('ROOM UPDATE RECEIVED', snapshot.val())
             commit('UPDATE_ROOM_DATA', snapshot.val())
           })
 
@@ -462,7 +461,6 @@ const store = new Vuex.Store({
     },
 
     updateRoomData ({state}, obj) {
-      console.log('ROOM UPDATE SENT', obj)
       return new Promise(async (resolve, reject) => {
         try {
           const roomRef = Firebase.getRef(`/rooms/${state.roomId}`)

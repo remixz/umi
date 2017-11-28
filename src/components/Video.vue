@@ -162,9 +162,6 @@
         }
       },
       roomData (curr, prev) {
-        console.log('==== data ====')
-        console.log(this.roomData)
-
         if (curr.playing !== prev.playing) {
           this.player[curr.playing ? 'play' : 'pause']()
         }
@@ -220,9 +217,11 @@
         }
 
         const emojiRef = this.$firebase.getRef(`roomEmoji/${this.room}`)
-        emojiRef.set({
-          name,
-          eventId: uuid() // creates a unique event
+        emojiRef.transaction(() => {
+          return {
+            name,
+            eventId: uuid() // creates a unique event
+          }
         })
       },
       displayEmoji (snapshot) {

@@ -1,9 +1,17 @@
 <template>
   <div id="app">
     <umi-header v-if="routeName !== 'login'" />
-    <div v-if="newDomain" class="fixed bottom-0 right-0 z-max bg-light-blue pa3 code shadow-1 br2 br--top br--left">
-      <span>📢 <b>UPDATE:</b> umi.bruggie.com is now umi.party! 🎉</span>
-      <span class="f6 fw5 dib ml1 ba b--black bg-transparent bg-animate hover-bg-blue hover-white br1 pointer ph2 pv1 tc" @click="newDomain = false">Close</span>
+    <div class="fixed top-1 right-1 z-max">
+      <div v-if="updated" class="bg-white pa3 shadow-1 br2 notification success">
+        <div class="mb3 fw6 tc"><span class="normal">✅</span> Umi has updated successfully!</div>
+        <router-link to="/changelog" class="db f6 fw5 ml1 bg-white ba b--black-20 box-shadow-umi bg-animate hover-bg-light-gray br1 pointer ph2 pv1 tc mb2 black no-underline" @click.native="dismissUpdated">View changelog</router-link>
+        <div class="db f6 fw5 ml1 bg-white ba b--black-20 box-shadow-umi bg-animate hover-bg-light-gray br1 pointer ph2 pv1 tc" @click="dismissUpdated">Dismiss</div>
+      </div>
+      <div v-if="error" class="bg-white pa3 shadow-1 br2 notification error">
+        <div class="tc mb3 fw6"><span class="normal">❌</span> Something went wrong when contacting Crunchyroll.</div>
+        <div class="f6 fw5 ml1 bg-white ba b--black-20 box-shadow-umi bg-animate hover-bg-light-gray br1 pointer ph2 pv1 tc mb2" @click="refresh">Refresh</div>
+        <div class="f6 fw5 ml1 bg-white ba b--black-20 box-shadow-umi bg-animate hover-bg-light-gray br1 pointer ph2 pv1 tc" @click="dismissError">Dismiss</div>
+      </div>
     </div>
     <router-view v-if="routeName === 'login'"></router-view>
     <main class="bg-white center pv1 ph3 mv3" v-else>
@@ -27,15 +35,6 @@
         Created by <a href="https://twitter.com/zachbruggeman" target="_blank" rel="noopener">Zach Bruggeman</a>. <a href="https://github.com/remixz/umi" target="_blank" rel="noopener">View source on GitHub</a>. <br />
       </p>
     </footer>
-    <div v-if="updateAvailable" class="fixed left-0 right-0 bottom-0 bg-light-yellow pa3 fw6 br1 shadow-1 tc">
-      <span>An update is ready to be installed.</span>
-      <span class="f6 fw5 dib ml1 ba b--black bg-transparent bg-animate hover-bg-black hover-light-yellow br1 pointer ph2 pv1 tc" @click="refresh">Install and refresh</span>
-    </div>
-    <div v-if="stateError" class="fixed right-0 left-0 bottom-0 bg-light-red pa3 fw6 br1 shadow-1 tc">
-      <span>Something went wrong when contacting Crunchyroll.</span>
-      <span class="f6 fw5 dib ml1 ba b--black bg-transparent bg-animate hover-bg-black hover-light-red br1 pointer ph2 pv1 tc" @click="dismissError">Dismiss</span>
-      <span class="f6 fw5 dib ml1 ba b--black bg-transparent bg-animate hover-bg-black hover-light-red br1 pointer ph2 pv1 tc" @click="refresh">Refresh</span>
-    </div>
     <div class="fixed absolute--fill z-4" :class="[lights ? 'bg-black-90' : 'dn']"></div>
   </div>
 </template>
@@ -50,7 +49,8 @@ export default {
     return {
       loaded: false,
       error: false,
-      newDomain: false
+      newDomain: false,
+      updated: localStorage.getItem('updated') || false
     }
   },
   metaInfo () {
@@ -78,9 +78,6 @@ export default {
     lights () {
       return this.$store.state.lights
     },
-    updateAvailable () {
-      return this.$store.state.updateAvailable
-    },
     stateError () {
       return this.$store.state.error
     }
@@ -96,6 +93,10 @@ export default {
     },
     dismissError () {
       this.$store.commit('SET_ERROR', false)
+    },
+    dismissUpdated () {
+      this.updated = false
+      localStorage.removeItem('updated')
     }
   },
   watch: {
@@ -150,12 +151,6 @@ export default {
   },
   mounted () {
     if (process.env.NODE_ENV === 'production') {
-      const runtime = require('offline-plugin/runtime')
-      const updatedRef = this.$firebase.getRef('appUpdate')
-      updatedRef.on('value', () => {
-        runtime.update()
-      })
-
       if (localStorage.getItem('new-domain')) {
         this.newDomain = true
         localStorage.removeItem('new-domain')
@@ -172,5 +167,18 @@ export default {
     width: 64rem;
     min-height: calc(100vh - 5rem);
     margin-top: 77px;
+  }
+
+  .notification {
+    width: 280px;
+    margin-bottom: 1rem;
+  }
+
+  .notification.success {
+    border-top: 2px solid #19a974;
+  }
+
+  .notification.error {
+    border-top: 2px solid #ff4136;
   }
 </style>

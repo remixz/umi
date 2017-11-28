@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div v-if="expired" class="w-80 bg-washed-red pa2 mv3 center">
-      <strong>This room has expired. <router-link to="/">Return to your dashboard?</router-link></strong>
-    </div>
-    <h2 class="tc" v-else>Joining room...</h2>
+    <h1 class="tc fw6">Joining room...</h1>
   </div>
 </template>
 
@@ -31,12 +28,6 @@
             joinRoom: true
           }
         })
-      }
-    },
-    destroyed () {
-      if (!this.$store.state.roomConnected) {
-        clearTimeout(this.timeout)
-        this.$store.dispatch('leaveRoom')
       }
     }
   }
