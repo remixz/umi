@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <umi-header v-if="routeName !== 'login'" />
-    <div class="fixed top-1 right-1 z-max">
+    <div class="fixed top-1 right-1 z-max" v-if="routeName !== 'login'">
       <div v-if="updated" class="bg-white pa3 shadow-1 br2 notification success">
         <div class="mb3 fw6 tc"><span class="normal">✅</span> Umi has updated successfully!</div>
         <router-link to="/changelog" class="db f6 fw5 ml1 bg-white ba b--black-20 box-shadow-umi bg-animate hover-bg-light-gray br1 pointer ph2 pv1 tc mb2 black no-underline" @click.native="dismissUpdated">View changelog</router-link>

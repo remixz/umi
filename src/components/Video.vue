@@ -172,7 +172,7 @@
       connectedCount (curr, prev) {
         if (this.room !== '' && curr > prev) {
           this.$store.dispatch('updateRoomData', {
-            syncedTime: Math.round(this.player.getCurrentTime()),
+            syncedTime: this.player.getCurrentTime(),
             playing: this.player.isPlaying()
           })
         }
@@ -183,7 +183,7 @@
         target.select()
       },
       logTime (id, t) {
-        const time = t || Math.round(this.player.getCurrentTime())
+        const time = t || this.player.getCurrentTime()
         if (time !== 0 && process.env.NODE_ENV === 'production') {
           const data = new FormData()
           data.append('session_id', this.$store.state.auth.session_id)
@@ -291,7 +291,7 @@
       roomHandlePause () {
         this.$store.dispatch('updateRoomData', {
           playing: false,
-          syncedTime: Math.round(this.player.getCurrentTime())
+          syncedTime: this.player.getCurrentTime()
         })
       },
       roomHandlePlay () {
@@ -301,7 +301,7 @@
       },
       roomHandleSeek (time) {
         this.$store.dispatch('updateRoomData', {
-          syncedTime: Math.round(time)
+          syncedTime: time
         })
       },
       wsDestroy () {

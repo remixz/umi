@@ -43,6 +43,9 @@
             <li>
               Offline support (if Crunchyroll adds it; technically Umi will load now if you're offline)
             </li>
+            <li>
+              Improved reactions (choose custom reactions instead of the default set)
+            </li>
           </ul>
           If you have any suggestions or ideas for Umi, feel free to add them as issues <a href="https://github.com/remixz/umi/issues" target="_blank">on GitHub.</a> Happy watching!
         </li>
