@@ -23,7 +23,7 @@
           </div>
         </router-link>
       </div>
-      <umi-video v-if="streamData && streamData.format" :duration="media.duration" :data="streamData" :poster="poster" :id="$route.params.id" :bif="media.bif_url" :seek="seek" @play="playerPlay" @ended="playerEnded" @loaded="loading = false" />
+      <umi-video v-if="streamData && streamData.format" :duration="media.duration" :data="streamData" :poster="poster" :id="$route.params.id" :bif="media.bif_url" :seek="seek" @play="playerPlay" @ended="playerEnded" />
       <div v-else class="pv2">
         <div class="bg-black absolute w-100 left-0 player-height player-top-offset">
           <div class="bg-dark-gray center player-width player-height"></div>
@@ -174,6 +174,7 @@
         api({route: 'info', params: {session_id: $store.state.auth.session_id, media_id: $route.params.id, fields: 'media.stream_data'}})
           .then((res) => {
             this.streamData = res.data.data.stream_data
+            this.loading = false
             this.seek = 0
             this.internalSeek = this.media.playhead
           })

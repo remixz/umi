@@ -13,8 +13,8 @@
 </template>
 
 <script>
-  /* global Clappr, LevelSelector */
-  import $script from 'scriptjs'
+  import Clappr from 'clappr'
+  import LevelSelector from 'lib/clappr-level-selector'
   import anime from 'animejs'
   import uuid from 'uuid/v4'
   import api, {LOCALE, VERSION} from 'lib/api'
@@ -52,80 +52,76 @@
       }
     },
     mounted () {
-      // $script('//cdn.jsdelivr.net/g/clappr@0.2.65,clappr.level-selector@0.1.10,clappr.thumbnails-plugin@3.6.0', () => {
-      $script('//cdn.jsdelivr.net/g/clappr@0.2.65,clappr.level-selector@0.1.10', () => {
-        const self = this
-        this.playerInit = true
-        this.player = new Clappr.Player({
-          parent: this.$el.querySelector('#player'),
-          width: '1024px',
-          height: '576px',
-          source: this.streamUrl,
-          poster: this.poster,
-          disableVideoTagContextMenu: true,
-          // plugins: [LevelSelector, ClapprThumbnailsPlugin],
-          plugins: [LevelSelector],
-          levelSelectorConfig: {
-            title: 'Quality',
-            labels: {
-              4: '1080p',
-              3: '720p',
-              2: '480p',
-              1: '360p',
-              0: '240p'
-            }
-          },
-          // scrubThumbnails: {
-          //   backdropHeight: null,
-          //   spotlightHeight: 84,
-          //   thumbs: []
-          // },
-          events: {
-            onReady () {
-              self.$emit('loaded')
-              if (self.container) {
-                return this.core.el.appendChild(self.container)
-              }
-              self.container = document.createElement('div')
-              self.reactions = document.createElement('div')
-              self.reactions.className = 'reaction-canvas absolute absolute--fill z-9999 tl'
-              self.tron = self.$el.querySelector('.reactotron').cloneNode(true)
-              self.tron.className = `${self.tron.className} z-max player-tron`
-              Array.from(self.tron.querySelectorAll('img')).forEach((e) => { e.onclick = self.handleEmoji.bind(self, e.id, true) })
-              self.container.appendChild(self.reactions)
-              self.container.appendChild(self.tron)
-              this.core.el.appendChild(self.container)
-            }
+      const self = this
+      this.playerInit = true
+      this.player = new Clappr.Player({
+        parent: this.$el.querySelector('#player'),
+        width: '1024px',
+        height: '576px',
+        source: this.streamUrl,
+        poster: this.poster,
+        disableVideoTagContextMenu: true,
+        // plugins: [LevelSelector, ClapprThumbnailsPlugin],
+        plugins: [LevelSelector],
+        levelSelectorConfig: {
+          title: 'Quality',
+          labels: {
+            4: '1080p',
+            3: '720p',
+            2: '480p',
+            1: '360p',
+            0: '240p'
           }
-        })
-
-        this.playback = this.player.core.getCurrentContainer().playback
-        this.player.on(Clappr.Events.PLAYER_ENDED, () => {
-          this.showBlur = true
-          this.logTime(null, this.duration)
-          this.$emit('ended')
-        })
-        this.player.on(Clappr.Events.PLAYER_PLAY, () => {
-          this.showBlur = false
-          this.$emit('play')
-        })
-        this.player.on(Clappr.Events.PLAYER_PAUSE, () => {
-          this.logTime()
-        })
-        if (this.seek && this.seek !== 0) {
-          this.player.seek(this.seek)
-        }
-
-        if (this.$route.query.joinRoom) {
-          this.wsJoinRoom()
-        } else if (this.room !== '') {
-          this.wsRegisterEvents()
-        }
-
-        if (this.bif) {
-          // this.loadBif()
+        },
+        // scrubThumbnails: {
+        //   backdropHeight: null,
+        //   spotlightHeight: 84,
+        //   thumbs: []
+        // },
+        events: {
+          onReady () {
+            if (self.container) {
+              return this.core.el.appendChild(self.container)
+            }
+            self.container = document.createElement('div')
+            self.reactions = document.createElement('div')
+            self.reactions.className = 'reaction-canvas absolute absolute--fill z-9999 tl'
+            self.tron = self.$el.querySelector('.reactotron').cloneNode(true)
+            self.tron.className = `${self.tron.className} z-max player-tron`
+            Array.from(self.tron.querySelectorAll('img')).forEach((e) => { e.onclick = self.handleEmoji.bind(self, e.id, true) })
+            self.container.appendChild(self.reactions)
+            self.container.appendChild(self.tron)
+            this.core.el.appendChild(self.container)
+          }
         }
       })
+
+      this.playback = this.player.core.getCurrentContainer().playback
+      this.player.on(Clappr.Events.PLAYER_ENDED, () => {
+        this.showBlur = true
+        this.logTime(null, this.duration)
+        this.$emit('ended')
+      })
+      this.player.on(Clappr.Events.PLAYER_PLAY, () => {
+        this.showBlur = false
+        this.$emit('play')
+      })
+      this.player.on(Clappr.Events.PLAYER_PAUSE, () => {
+        this.logTime()
+      })
+      if (this.seek && this.seek !== 0) {
+        this.player.seek(this.seek)
+      }
+
+      if (this.$route.query.joinRoom) {
+        this.wsJoinRoom()
+      } else if (this.room !== '') {
+        this.wsRegisterEvents()
+      }
+
+      if (this.bif) {
+        // this.loadBif()
+      }
     },
     watch: {
       data () {
