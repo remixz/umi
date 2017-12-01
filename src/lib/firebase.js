@@ -20,7 +20,7 @@ const Firebase = {
 
     return new Promise(async (resolve, reject) => {
       try {
-        this.app = firebase.initializeApp(config)
+        if (!this.app) this.app = firebase.initializeApp(config)
         await this.app.auth().signInAnonymously()
         this.connected = true
         resolve()

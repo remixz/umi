@@ -8,7 +8,7 @@
     <div v-if="!playerInit" class="bg-black absolute w-100 left-0 player-height player-top-offset">
       <div class="bg-dark-gray center player-width player-height"></div>
     </div>
-    <reactotron v-show="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron relative z-9999" @emoji="handleEmoji" />
+    <reactotron v-show="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron relative z-9999" :class="{disabled: !roomConnected}" @emoji="handleEmoji" />
   </div>
 </template>
 
@@ -49,6 +49,9 @@
       },
       connectedCount () {
         return this.$store.state.connectedCount
+      },
+      roomConnected () {
+        return this.$store.state.roomConnected
       }
     },
     mounted () {
@@ -274,15 +277,16 @@
         this.wsRegisterEvents()
       },
       async wsRegisterEvents () {
-        const emojiRef = this.$firebase.getRef(`roomEmoji/${this.room}`)
-        emojiRef.on('value', this.displayEmoji)
-
         this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.roomHandlePlay)
         this.player.on(Clappr.Events.PLAYER_PAUSE, this.roomHandlePause)
         this.player.on(Clappr.Events.PLAYER_SEEK, this.roomHandleSeek)
         this.player.on(Clappr.Events.PLAYER_FULLSCREEN, this.handleFullscreen)
         this.player.core.mediaControl.on(Clappr.Events.MEDIACONTROL_SHOW, this.handleShowControls)
         this.player.core.mediaControl.on(Clappr.Events.MEDIACONTROL_HIDE, this.handleHideControls)
+
+        await this.$firebase.init()
+        const emojiRef = this.$firebase.getRef(`roomEmoji/${this.room}`)
+        emojiRef.on('value', this.displayEmoji)
       },
       roomHandlePause () {
         this.$store.dispatch('updateRoomData', {
@@ -364,5 +368,10 @@
 
   .reactotron {
     top: 565px;
+  }
+
+  .reactotron.disabled {
+    pointer-events: none;
+    filter: blur(2px);
   }
 </style>
