@@ -2,7 +2,7 @@
   <div>
     <h1 class="fw4">Changelog</h1>
 
-    <h2 class="fw6 f4 flex items-center update-title">2017-11-27: Rooms rewrite & more</h2>
+    <h2 class="fw6 f4 flex items-center update-title">2017-11-30: Rooms rewrite & more</h2>
     <div class="lh-copy">
       <ul class="changelog-list">
         <li>
