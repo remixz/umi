@@ -8,14 +8,15 @@
     <div v-if="!playerInit" class="bg-black absolute w-100 left-0 player-height player-top-offset">
       <div class="bg-dark-gray center player-width player-height"></div>
     </div>
-    <reactotron v-show="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron relative z-9999" @emoji="handleEmoji" />
+    <reactotron v-show="room !== ''" class="dib v-mid ml1 nowrap overflow-hidden reactotron relative z-9999" :class="{disabled: !roomConnected}" @emoji="handleEmoji" />
   </div>
 </template>
 
 <script>
-  /* global Clappr, LevelSelector */
-  import $script from 'scriptjs'
+  import Clappr from 'clappr'
+  import LevelSelector from 'lib/clappr-level-selector'
   import anime from 'animejs'
+  import uuid from 'uuid/v4'
   import api, {LOCALE, VERSION} from 'lib/api'
   import emoji from 'lib/emoji'
   // import bif from 'lib/bif'
@@ -28,9 +29,8 @@
     data () {
       return {
         playerInit: false,
-        events: [],
-        lastEvent: null,
         showBlur: true,
+        firstEmoji: false,
         frames: []
       }
     },
@@ -43,83 +43,88 @@
       },
       lights () {
         return this.$store.state.lights
+      },
+      roomData () {
+        return this.$store.state.roomData
+      },
+      connectedCount () {
+        return this.$store.state.connectedCount
+      },
+      roomConnected () {
+        return this.$store.state.roomConnected
       }
     },
     mounted () {
-      // $script('//cdn.jsdelivr.net/g/clappr@0.2.65,clappr.level-selector@0.1.10,clappr.thumbnails-plugin@3.6.0', () => {
-      $script('//cdn.jsdelivr.net/g/clappr@0.2.65,clappr.level-selector@0.1.10', () => {
-        const self = this
-        this.playerInit = true
-        this.player = new Clappr.Player({
-          parent: this.$el.querySelector('#player'),
-          width: '1024px',
-          height: '576px',
-          source: this.streamUrl,
-          poster: this.poster,
-          disableVideoTagContextMenu: true,
-          // plugins: [LevelSelector, ClapprThumbnailsPlugin],
-          plugins: [LevelSelector],
-          levelSelectorConfig: {
-            title: 'Quality',
-            labels: {
-              4: '1080p',
-              3: '720p',
-              2: '480p',
-              1: '360p',
-              0: '240p'
-            }
-          },
-          // scrubThumbnails: {
-          //   backdropHeight: null,
-          //   spotlightHeight: 84,
-          //   thumbs: []
-          // },
-          events: {
-            onReady () {
-              self.$emit('loaded')
-              if (self.container) {
-                return this.core.el.appendChild(self.container)
-              }
-              self.container = document.createElement('div')
-              self.reactions = document.createElement('div')
-              self.reactions.className = 'reaction-canvas absolute absolute--fill z-9999 tl'
-              self.tron = self.$el.querySelector('.reactotron').cloneNode(true)
-              self.tron.className = `${self.tron.className} z-max player-tron`
-              Array.from(self.tron.querySelectorAll('img')).forEach((e) => { e.onclick = self.handleEmoji.bind(self, e.id, true) })
-              self.container.appendChild(self.reactions)
-              self.container.appendChild(self.tron)
-              this.core.el.appendChild(self.container)
-            }
+      const self = this
+      this.playerInit = true
+      this.player = new Clappr.Player({
+        parent: this.$el.querySelector('#player'),
+        width: '1024px',
+        height: '576px',
+        source: this.streamUrl,
+        poster: this.poster,
+        disableVideoTagContextMenu: true,
+        // plugins: [LevelSelector, ClapprThumbnailsPlugin],
+        plugins: [LevelSelector],
+        levelSelectorConfig: {
+          title: 'Quality',
+          labels: {
+            4: '1080p',
+            3: '720p',
+            2: '480p',
+            1: '360p',
+            0: '240p'
           }
-        })
-
-        this.playback = this.player.core.getCurrentContainer().playback
-        this.player.on(Clappr.Events.PLAYER_ENDED, () => {
-          this.showBlur = true
-          this.logTime(null, this.duration)
-          this.$emit('ended')
-        })
-        this.player.on(Clappr.Events.PLAYER_PLAY, () => {
-          this.showBlur = false
-          this.$emit('play')
-        })
-        this.player.on(Clappr.Events.PLAYER_PAUSE, () => {
-          this.logTime()
-        })
-        if (this.seek && this.seek !== 0) {
-          this.player.seek(this.seek)
-        }
-
-        if (this.$route.query.joinRoom) {
-          this.wsJoinRoom()
-        } else if (this.room !== '') {
-          this.wsRegisterEvents()
-        }
-
-        if (this.bif) {
-          // this.loadBif()
+        },
+        // scrubThumbnails: {
+        //   backdropHeight: null,
+        //   spotlightHeight: 84,
+        //   thumbs: []
+        // },
+        events: {
+          onReady () {
+            if (self.container) {
+              return this.core.el.appendChild(self.container)
+            }
+            self.container = document.createElement('div')
+            self.reactions = document.createElement('div')
+            self.reactions.className = 'reaction-canvas absolute absolute--fill z-9999 tl'
+            self.tron = self.$el.querySelector('.reactotron').cloneNode(true)
+            self.tron.className = `${self.tron.className} z-max player-tron`
+            Array.from(self.tron.querySelectorAll('img')).forEach((e) => { e.onclick = self.handleEmoji.bind(self, e.id, true) })
+            self.container.appendChild(self.reactions)
+            self.container.appendChild(self.tron)
+            this.core.el.appendChild(self.container)
+          }
         }
       })
+
+      this.playback = this.player.core.getCurrentContainer().playback
+      this.player.on(Clappr.Events.PLAYER_ENDED, () => {
+        this.showBlur = true
+        this.logTime(null, this.duration)
+        this.$emit('ended')
+      })
+      this.player.on(Clappr.Events.PLAYER_PLAY, () => {
+        this.showBlur = false
+        this.$emit('play')
+      })
+      this.player.on(Clappr.Events.PLAYER_PAUSE, () => {
+        this.logTime()
+      })
+      if (this.seek && this.seek !== 0) {
+        this.player.seek(this.seek)
+      }
+
+      if (this.$route.query.joinRoom) {
+        this.wsJoinRoom()
+      } else if (this.room !== '') {
+        this.wsRegisterEvents()
+      }
+
+      if (this.bif) {
+        // this.loadBif()
+      }
     },
     watch: {
       data () {
@@ -131,6 +136,11 @@
         this.playback = this.player.core.getCurrentContainer().playback
         if (this.room !== '') {
           this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.wsHandlePlay)
+          this.$store.dispatch('updateRoomData', {
+            playing: false,
+            syncedTime: 0
+          })
+          this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.roomHandlePlay)
         }
         // this.loadBif()
       },
@@ -150,23 +160,21 @@
           this.player.play()
         }
       },
-      events () {
-        if (this.events.length <= 0) return
-        while (this.events.length > 0) {
-          const event = this.events[0]
+      roomData (curr, prev) {
+        if (curr.playing !== prev.playing) {
+          this.player[curr.playing ? 'play' : 'pause']()
+        }
 
-          if (event.id !== this.$socket.id) {
-            const playing = this.player.isPlaying()
-            if (event.method === 'pause' && !playing) {
-              return
-            }
-
-            this.lastEvent = event
-            this.player[event.method](...event.args)
-          } else {
-            this.$socket.emit('player-event', event)
-          }
-          this.events.shift()
+        if (curr.syncedTime !== prev.syncedTime) {
+          this.player.seek(curr.syncedTime)
+        }
+      },
+      connectedCount (curr, prev) {
+        if (this.room !== '' && curr > prev) {
+          this.$store.dispatch('updateRoomData', {
+            syncedTime: this.player.getCurrentTime(),
+            playing: this.player.isPlaying()
+          })
         }
       }
     },
@@ -175,7 +183,7 @@
         target.select()
       },
       logTime (id, t) {
-        const time = t || Math.round(this.player.getCurrentTime())
+        const time = t || this.player.getCurrentTime()
         if (time !== 0 && process.env.NODE_ENV === 'production') {
           const data = new FormData()
           data.append('session_id', this.$store.state.auth.session_id)
@@ -206,10 +214,18 @@
         if (show) {
           this.player.core.showMediaControl()
         }
-        this.$socket.emit('emoji', name)
-        this.displayEmoji(name)
+
+        const emojiRef = this.$firebase.getRef(`roomEmoji/${this.room}`)
+        emojiRef.transaction(() => {
+          return {
+            name,
+            eventId: uuid() // creates a unique event
+          }
+        })
       },
-      displayEmoji (name) {
+      displayEmoji (snapshot) {
+        if (!snapshot.exists() || !this.firstEmoji) return this.firstEmoji = true
+        const {name} = snapshot.val()
         const selected = emoji.find((e) => e.name === name)
         if (!selected) return
 
@@ -247,65 +263,53 @@
       //   } catch (err) {}
       // },
       wsJoinRoom () {
-        const time = parseInt(this.$route.query.wsTime, 10)
-        const playing = this.$route.query.wsPlaying
+        const {syncedTime, playing} = this.roomData
 
-        if (time > 0) {
-          this.player.seek(time)
+        if (syncedTime > 0) {
+          this.player.seek(syncedTime)
         }
 
         if (playing) {
           this.player.play()
         }
 
-        this.$router.replace({path: this.$route.path, query: {roomId: this.room.replace('umi//', '')}})
+        this.$router.replace({path: this.$route.path, query: {roomId: this.room}})
         this.wsRegisterEvents()
       },
-      wsRegisterEvents () {
-        this.$socket.on('user-joined', this.wsOnJoined)
-        this.$socket.on('player-event', this.wsOnEvent)
-        this.$socket.on('emoji', this.displayEmoji)
-
-        this.wsHandlePlay = this.wsHandleEvent.bind(this, 'play')
-        this.wsHandlePause = this.wsHandleEvent.bind(this, 'pause')
-        this.wsHandleSeek = this.wsHandleEvent.bind(this, 'seek')
-        this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.wsHandlePlay)
-        this.player.on(Clappr.Events.PLAYER_PAUSE, this.wsHandlePause)
-        this.player.on(Clappr.Events.PLAYER_SEEK, this.wsHandleSeek)
+      async wsRegisterEvents () {
+        this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.roomHandlePlay)
+        this.player.on(Clappr.Events.PLAYER_PAUSE, this.roomHandlePause)
+        this.player.on(Clappr.Events.PLAYER_SEEK, this.roomHandleSeek)
         this.player.on(Clappr.Events.PLAYER_FULLSCREEN, this.handleFullscreen)
         this.player.core.mediaControl.on(Clappr.Events.MEDIACONTROL_SHOW, this.handleShowControls)
         this.player.core.mediaControl.on(Clappr.Events.MEDIACONTROL_HIDE, this.handleHideControls)
+
+        await this.$firebase.init()
+        const emojiRef = this.$firebase.getRef(`roomEmoji/${this.room}`)
+        emojiRef.on('value', this.displayEmoji)
       },
-      wsOnJoined () {
-        this.$store.commit('UPDATE_CONNECTED_COUNT', this.$store.state.connectedCount + 1)
-        this.$socket.emit('update-status', {
-          time: Math.round(this.player.getCurrentTime()),
-          playing: this.player.isPlaying(),
-          path: this.$route.path,
-          name: this.$route.name
+      roomHandlePause () {
+        this.$store.dispatch('updateRoomData', {
+          playing: false,
+          syncedTime: this.player.getCurrentTime()
         })
       },
-      wsOnEvent (ev) {
-        this.events.push(ev)
+      roomHandlePlay () {
+        this.$store.dispatch('updateRoomData', {
+          playing: true
+        })
       },
-      wsHandleEvent (method, ...args) {
-        if (this.lastEvent) {
-          this.lastEvent = null
-          return
-        }
-
-        this.events.push({
-          id: this.$socket.id, method, args
+      roomHandleSeek (time) {
+        this.$store.dispatch('updateRoomData', {
+          syncedTime: time
         })
       },
       wsDestroy () {
-        this.$socket.off('user-joined', this.wsOnJoined)
-        this.$socket.off('player-event', this.wsOnEvent)
-        this.$socket.off('emoji', this.displayEmoji)
-
-        this.playback.off(Clappr.Events.PLAYBACK_PLAY_INTENT, this.wsHandlePlay)
-        this.player.off(Clappr.Events.PLAYER_PAUSE, this.wsHandlePause)
-        this.player.off(Clappr.Events.PLAYER_SEEK, this.wsHandleSeek)
+        const emojiRef = this.$firebase.getRef(`roomEmoji/${this.room}`)
+        emojiRef.off('value', this.displayEmoji)
+        this.playback.off(Clappr.Events.PLAYBACK_PLAY_INTENT, this.roomHandlePlay)
+        this.player.off(Clappr.Events.PLAYER_PAUSE, this.roomHandlePause)
+        this.player.off(Clappr.Events.PLAYER_SEEK, this.roomHandleSeek)
         this.player.off(Clappr.Events.PLAYER_FULLSCREEN, this.handleFullscreen)
         this.player.core.mediaControl.off(Clappr.Events.MEDIACONTROL_SHOW, this.handleShowControls)
         this.player.core.mediaControl.off(Clappr.Events.MEDIACONTROL_HIDE, this.handleHideControls)
@@ -314,13 +318,6 @@
     beforeDestroy () {
       this.logTime()
       this.player.destroy()
-      if (this.room !== '') {
-        this.$socket.emit('player-event', {
-          id: this.$socket.id,
-          method: 'pause',
-          args: []
-        })
-      }
     }
   }
 </script>
@@ -371,5 +368,10 @@
 
   .reactotron {
     top: 565px;
+  }
+
+  .reactotron.disabled {
+    pointer-events: none;
+    filter: blur(2px);
   }
 </style>

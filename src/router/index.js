@@ -15,6 +15,7 @@ import Login from 'pages/Login'
 import Series from 'pages/Series'
 import Media from 'pages/Media'
 import Room from 'pages/Room'
+import Changelog from 'pages/Changelog'
 
 Vue.use(Router)
 Vue.use(Meta)
@@ -86,6 +87,12 @@ const router = new Router({
       path: '/room/:id',
       name: 'room',
       component: Room,
+      beforeEnter: authGuard
+    },
+    {
+      path: '/changelog',
+      name: 'changelog',
+      component: Changelog,
       beforeEnter: authGuard
     }
   ]

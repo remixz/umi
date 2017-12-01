@@ -5,7 +5,7 @@ import axios, {isCancel} from 'axios'
 
 import api, {ACCESS_TOKEN, DEVICE_TYPE, LOCALE, VERSION, UMI_SERVER} from 'lib/api'
 import {getUuid} from 'lib/auth'
-import WS from 'lib/websocket'
+import Firebase from 'lib/firebase'
 
 const MEDIA_FIELDS = 'media.media_id,media.available,media.available_time,media.collection_id,media.collection_name,media.series_id,media.type,media.episode_number,media.name,media.description,media.screenshot_image,media.created,media.duration,media.playhead,media.bif_url'
 const SERIES_FIELDS = 'series.series_id,series.name,series.portrait_image,series.landscape_image,series.description,series.in_queue'
@@ -45,6 +45,7 @@ const store = new Vuex.Store({
     roomId: '',
     roomConnected: false,
     roomMenu: false,
+    roomData: {},
     connectedCount: 0,
     lights: false,
     updateAvailable: false,
@@ -401,30 +402,75 @@ const store = new Vuex.Store({
       })
     },
 
-    createRoom ({commit}) {
-      const room = `umi//${uuid()}`
-      commit('UPDATE_ROOM', room)
-      WS.socket.emit('join-room', room)
-      commit('UPDATE_CONNECTED', true)
-      commit('UPDATE_CONNECTED_COUNT', 1)
-      WS.socket.on('room-count', (c) => {
-        commit('UPDATE_CONNECTED_COUNT', c)
-      })
-    },
+    leaveRoom ({state, commit}) {
+      const roomRef = Firebase.getRef(`/rooms/${state.roomId}`)
+      const usersRef = Firebase.getRef(`/roomUsers/${state.roomId}`)
+      const connectedRef = Firebase.getRef(`/roomUsers/${state.roomId}/${Firebase.app.auth().currentUser.uid}`)
 
-    joinRoom ({commit}, id) {
-      const room = `umi//${id}`
-      commit('UPDATE_ROOM', room)
-      WS.socket.emit('join-room', room)
-      WS.socket.on('room-count', (c) => {
-        commit('UPDATE_CONNECTED_COUNT', c)
-      })
-    },
+      roomRef.off()
+      usersRef.off()
+      connectedRef.remove()
 
-    leaveRoom ({commit}) {
       commit('UPDATE_ROOM', '')
-      WS.socket.emit('leave-room')
-      WS.socket.off('room-count')
+      commit('UPDATE_CONNECTED', false)
+      commit('UPDATE_CONNECTED_COUNT', 1)
+    },
+
+    enterRoom ({state, commit}, {id = uuid()}) {
+      commit('UPDATE_ROOM', id)
+
+      return new Promise(async (resolve, reject) => {
+        try {
+          await Firebase.init()
+          const roomRef = Firebase.getRef(`/rooms/${id}`)
+          const usersRef = Firebase.getRef(`/roomUsers/${id}`)
+          const connectedRef = Firebase.getRef(`/roomUsers/${id}/${Firebase.app.auth().currentUser.uid}`)
+          await connectedRef.set(true)
+          connectedRef.onDisconnect().remove()
+
+          const room = await roomRef.once('value')
+          const value = room.val() || {
+            playing: false,
+            syncedTime: 0,
+            route: {
+              path: state.route.path,
+              name: state.route.name
+            }
+          }
+
+          if (!room.val()) {
+            await roomRef.set(value)
+          }
+
+          roomRef.on('value', (snapshot) => {
+            commit('UPDATE_ROOM_DATA', snapshot.val())
+          })
+
+          commit('UPDATE_CONNECTED', true)          
+          usersRef.on('value', (snapshot) => {
+            if (snapshot.exists()) {
+              commit('UPDATE_CONNECTED_COUNT', Object.keys(snapshot.val()).length)
+            }
+          })
+
+          resolve(value)
+        } catch (err) {
+          reject(err)
+        }
+      })
+    },
+
+    updateRoomData ({state}, obj) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const roomRef = Firebase.getRef(`/rooms/${state.roomId}`)
+
+          await roomRef.update(obj)
+          resolve()
+        } catch (err) {
+          reject(err)
+        }
+      })
     }
   },
 
@@ -497,6 +543,10 @@ const store = new Vuex.Store({
 
     UPDATE_ROOM (state, str) {
       state.roomId = str
+    },
+
+    UPDATE_ROOM_DATA (state, obj) {
+      Vue.set(state, 'roomData', obj)
     },
 
     UPDATE_CONNECTED (state, bool) {

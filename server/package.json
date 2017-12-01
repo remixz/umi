@@ -24,7 +24,8 @@
     "alias": "umi-watch-api",
     "env": {
       "UPDATE_TOKEN": "@update-token",
-      "IRON_TOKEN": "@iron-token"
+      "IRON_TOKEN": "@iron-token",
+      "NODE_ENV": "production"
     }
   }
 }

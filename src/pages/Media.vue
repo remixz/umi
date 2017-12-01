@@ -23,7 +23,7 @@
           </div>
         </router-link>
       </div>
-      <umi-video v-if="streamData && streamData.format" :duration="media.duration" :data="streamData" :poster="poster" :id="$route.params.id" :bif="media.bif_url" :seek="seek" @play="playerPlay" @ended="playerEnded" @loaded="loading = false" />
+      <umi-video v-if="streamData && streamData.format" :duration="media.duration" :data="streamData" :poster="poster" :id="$route.params.id" :bif="media.bif_url" :seek="seek" @play="playerPlay" @ended="playerEnded" />
       <div v-else class="pv2">
         <div class="bg-black absolute w-100 left-0 player-height player-top-offset">
           <div class="bg-dark-gray center player-width player-height"></div>
@@ -71,6 +71,7 @@
 
 <script>
   import axios from 'axios'
+  import uuid from 'uuid/v4'
   import api, { UMI_SERVER } from 'lib/api'
   import prettyTime from 'lib/prettyTime'
   import Video from 'components/Video'
@@ -173,6 +174,7 @@
         api({route: 'info', params: {session_id: $store.state.auth.session_id, media_id: $route.params.id, fields: 'media.stream_data'}})
           .then((res) => {
             this.streamData = res.data.data.stream_data
+            this.loading = false
             this.seek = 0
             this.internalSeek = this.media.playhead
           })
@@ -224,7 +226,14 @@
         this.$store.commit('ADD_MEDIA', newMedia)
       },
       createRoom () {
-        this.$store.dispatch('createRoom')
+        // this.$store.dispatch('createRoom')
+        this.$store.dispatch('enterRoom', {
+          id: uuid(),
+          route: {
+            name: this.$route.name,
+            path: this.$route.path
+          }
+        })
         this.$store.commit('UPDATE_ROOM_MENU', true)
       }
     },
@@ -236,13 +245,12 @@
         this.timeout = 0
         this.getMediaInfo()
         if (this.room !== '') {
-          this.$socket.emit('change', this.$route.path)
-          this.$router.replace({path: this.$route.path, query: Object.assign({}, this.$route.query, {roomId: this.room.replace('umi//', '')})})
+          this.$router.replace({path: this.$route.path, query: Object.assign({}, this.$route.query, {roomId: this.room})})
         }
       },
       room (id) {
         if (id) {
-          const newRoute = Object.assign({}, this.$route, {query: {roomId: id.replace('umi//', '')}})
+          const newRoute = Object.assign({}, this.$route, {query: {roomId: id}})
           this.$router.replace(newRoute)
         } else {
           const newRoute = Object.assign({}, this.$route, {query: {}})
@@ -255,8 +263,7 @@
 
       this.getMediaInfo()
       if (this.room !== '') {
-        this.$socket.emit('change', this.$route.path)
-        this.$router.replace({path: this.$route.path, query: Object.assign({}, this.$route.query, {roomId: this.room.replace('umi//', '')})})
+        this.$router.replace({path: this.$route.path, query: Object.assign({}, this.$route.query, {roomId: this.room})})
       }
     },
     beforeDestroy () {

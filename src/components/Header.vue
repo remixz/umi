@@ -19,16 +19,17 @@
           </router-link>
         </div>
         <div class="absolute search right-0">
-          <span class="fa-stack dib pointer" @click="showTogether" v-if="connected" @mouseover="roomHover = true" @mouseout="roomHover = false">
+          <span class="fa-stack dib pointer" @click="showTogether" v-if="room !== ''" @mouseover="roomHover = true" @mouseout="roomHover = false">
             <i class="fa fa-circle fa-stack-2x transparent link menu-circle" :class="{active: roomMenu}"></i>
             <i class="fa fa-users fa-stack-1x dark-gray pointer-events-none"></i>
           </span>
-          <span class="absolute bg-dark-gray white pa1 tc br2 f7 fw7 nowrap counter" v-if="connected">{{connectedCount}}</span>
+          <span class="relative fl bg-dark-gray white pa1 tc br2 f7 fw7 nowrap counter" v-if="room !== ''">{{connectedCount}}</span>
           <div v-if="roomMenu" v-on-clickaway="hideTogether" class="absolute bg-white shadow-1 br2 pv2 ph3 together-menu">
             <div class="mb2">
               <div class="fw6">{{roomText}}</div>
             </div>
-            <input type="text" class="pa2 w-100 pointer" v-model="roomUrl" @click="handleRoomClick" readonly>
+            <input type="text" class="pa2 w-100 pointer" v-model="roomUrl" @click="handleRoomClick" readonly v-if="connected">
+            <input type="text" class="pa2 w-100 i" value="Connecting..." readonly v-else>
             <button @click="leaveRoom" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br2 box-shadow-umi pointer ph3 pv2 tc leave-room">Leave room</button>
             <button @click="hideTogether" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br2 box-shadow-umi pointer ph3 pv2 tc w-15 fr">Close</button>
           </div>
@@ -50,6 +51,9 @@
             </div>
             <router-link @click.native="hideMenu" to="/settings" class="db bg-white bg-animate hover-bg-light-gray pa2 no-underline black">
               <i class="fa fa-cog mr1"></i> Settings
+            </router-link>
+            <router-link @click.native="hideMenu" to="/changelog" class="db bg-white bg-animate hover-bg-light-gray pa2 no-underline black">
+              <i class="fa fa-plus-square mr1"></i> Changelog
             </router-link>
             <div @click="logout" class="pointer bg-white bg-animate hover-bg-light-gray pa2">
               <i class="fa fa-sign-out mr1"></i> Sign out
@@ -266,8 +270,9 @@ export default {
   }
 
   .counter {
-    top: 7px;
-    right: 322px;
+    top: 9px;
+    right: 5px;
+    min-width: 7px;
     height: 13px;
   }
 

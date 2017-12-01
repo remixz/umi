@@ -1,3 +1,6 @@
+@import '~tachyons';
+@import '~font-awesome/css/font-awesome.css';
+
 @keyframes loading-shimmer {
   0% {
     background-position: -992px 0

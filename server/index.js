@@ -13,6 +13,7 @@ app.use(compression())
 app.use(cors())
 
 // setup socket.io
+// @TODO - remove io code once enough have updated
 const io = require('socket.io')(srv)
 io.origins('*:*')
 setupIo(io)
