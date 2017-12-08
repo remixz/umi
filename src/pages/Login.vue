@@ -6,7 +6,10 @@
       <h3 class="tc white fw5 mt0">Watch together online, sync to MyAnimeList, and more.</h3>
       <form class="measure center bg-white shadow-2 br2 pa3" @submit.prevent="login">
         <span class="dark-red mb2 dib" v-if="formError">{{ formError }}</span>
-        <legend class="f4 fw6 ph0 mt0 mb1">Sign in with Crunchyroll</legend>
+        <legend class="f4 fw6 ph0 mt0 mb1" v-if="!expiredSession">Sign in with Crunchyroll</legend>
+        <div class="pa3 bg-yellow br2 mb1 box-shadow-umi" v-if="expiredSession">
+          <i class="fa fa-info-circle" aria-hidden="true"></i> Your session expired. Please sign in again:
+        </div>
         <fieldset class="ba b--transparent ph0 mh0 pb2">
           <div>
             <label class="db fw6 lh-copy f6 dark-gray" for="username">Username / Email</label>
@@ -20,9 +23,7 @@
         <div>
           <input class="fw6 ph3 pv2 input-reset ba b--black-20 bg-white bg-animate hover-bg-blue black hover-white br2 box-shadow-umi pointer f6 dib w-100" type="submit" :value="loading ? 'Signing in...' : 'Sign in'">
         </div>
-        <small class="pt3 db">
-          <i class="fa fa-info-circle pr1" aria-hidden="true"></i> Your password is sent directly to Crunchyroll, and is never stored by Umi.
-          </small>
+        <small class="pt3 db">Your password is sent directly to Crunchyroll, and is never stored by Umi.</small>
       </form>
     </div>
     <img class="absolute left-0 right-0 center umi-illustration" src="../assets/umi-login.png" alt="Illustration of the character Umi Sonoda">
@@ -37,10 +38,15 @@
     },
     data () {
       return {
-        username: '',
+        username: this.$store.state.expiredSession || '',
         password: '',
         formError: '',
         loading: false
+      }
+    },
+    computed: {
+      expiredSession () {
+        return this.$store.state.expiredSession
       }
     },
     methods: {
@@ -56,6 +62,11 @@
           this.formError = typeof err.message === 'string' ? err.message : err.data.message
           this.loading = false
         }
+      }
+    },
+    mounted () {
+      if (this.expiredSession) {
+        this.$el.querySelector('input[name="password"]').focus()
       }
     }
   }
@@ -73,7 +84,7 @@
     0% {
       transform: translateY(0);
     }
-    
+
     50% {
       transform: translateY(-15px);
     }

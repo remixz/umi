@@ -118,8 +118,17 @@ export default {
   },
   async created () {
     try {
-
       await this.$store.dispatch('startSession')
+
+      if (
+        this.$route.name !== 'login' &&
+        Object.keys(this.$store.state.auth).length > 0 &&
+        (!this.$store.state.auth.token || !this.$store.state.auth.expires || new Date() > new Date(this.$store.state.auth.expires))
+      ) {
+        await this.$store.dispatch('logout', true)
+        this.$router.replace(`/login?next=${encodeURIComponent(this.$route.fullPath)}`)
+      }
+
       this.loaded = true
     } catch (err) {
       this.error = true

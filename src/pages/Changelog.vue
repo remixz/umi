@@ -2,6 +2,24 @@
   <div>
     <h1 class="fw4">Changelog</h1>
 
+    <h2 class="fw6 f4 flex items-center update-title">2017-12-07: Minor updates</h2>
+    <div class="lh-copy">
+      <ul class="changelog-list">
+        <li>
+          Umi will now prompt you if you need to sign in again due to your session expiring. A session might expire if you change your password, or if you don't use Umi for a little while.
+          <ul class="mv1">
+            <li>This fixes a bug where your queue and history data wouldn't load properly.</li>
+          </ul>
+        </li>
+        <li>
+          Minor design updates.
+        </li>
+        <li>
+          Happy holidays! <img src="https://cdn.frankerfacez.com/emoticon/108591/1" class="v-mid">
+        </li>
+      </ul>
+    </div>
+
     <h2 class="fw6 f4 flex items-center update-title">2017-11-30: Rooms rewrite & more</h2>
     <div class="lh-copy">
       <ul class="changelog-list">
@@ -23,13 +41,13 @@
               <span v-else>Install and refresh</span>
             </div>
           </div>
-          As a brief explanation of why this would happen: To make Umi even faster, the website caches a copy of all its code, so it doesn't even need to contact the Umi servers to run. Since the website doesn't contact the server when you first open it, the website has to check for updates after it's loaded. This is when you'd get the update notification.
+          As a brief explanation of why this would happen: To make Umi even faster, the website stores a copy of all its code on your device, so it doesn't need to contact the Umi servers to load. Since the website doesn't contact the server when you first open it, the website has to check for updates after it has loaded. This is when you'd get the update notification.
           <div class="mb2"></div>
-          I set the old system up to continually check for updates, including while you're using the player. Part of this was because of the rooms system, as it was very fickle with people leaving, so I didn't want to make it so auto updated while in a room. Now that rooms are a lot more stable, Umi will just check for updates when you first open the site, and automatically refresh if there's an update. You'll get a notification that links you here for details on the updates.
+          I setup the old system to continually check for updates, including while you were using the player. Part of this was because of the old rooms system, as it was very fickle with people leaving, so I didn't want to make it so auto-update while you in a room. Now that rooms are a lot more stable, Umi will just check for updates when you first open the site, and automatically refresh if there's an update. You'll get a notification that links you here for details on the update.
         </li>
         <li>
           <b class="fw6">What's next:</b>
-          I'm generally pretty happy with how Umi has progressed so far, and I hope you're enjoying using it. I do still have some ideas for the future, though! Here are some, in no particular planned order of adding them:
+          I'm generally pretty happy with how Umi has progressed so far, and I hope you're enjoying using it. I do still have some ideas for the future though! Here are some, in no particular order of adding them:
           <ul class="mv1">
             <li>
               Spoilers mode (hides all thumbnails and episode titles)

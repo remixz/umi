@@ -48,8 +48,8 @@ const store = new Vuex.Store({
     roomData: {},
     connectedCount: 0,
     lights: false,
-    updateAvailable: false,
-    error: false
+    error: false,
+    expiredSession: ''
   },
 
   actions: {
@@ -106,6 +106,7 @@ const store = new Vuex.Store({
             expires: data.expires,
             username: data.user.username
           })
+          commit('SET_EXPIRED_SESSION', '')
           resolve()
         } catch (err) {
           reject(err)
@@ -113,12 +114,17 @@ const store = new Vuex.Store({
       })
     },
 
-    logout ({commit, dispatch}) {
+    logout ({commit, dispatch, state}, didExpire) {
       return new Promise(async (resolve, reject) => {
         try {
+          if (didExpire) {
+            commit('SET_EXPIRED_SESSION', state.auth.username)
+          }
           commit('REMOVE_AUTH')
           await dispatch('startSession')
           resolve()
+          commit('SET_INITIAL_HISTORY', [])
+          commit('SET_QUEUE_DATA', [])
         } catch (err) {
           handleError(err, reject)
         }
@@ -446,7 +452,7 @@ const store = new Vuex.Store({
             commit('UPDATE_ROOM_DATA', snapshot.val())
           })
 
-          commit('UPDATE_CONNECTED', true)          
+          commit('UPDATE_CONNECTED', true)
           usersRef.on('value', (snapshot) => {
             if (snapshot.exists()) {
               commit('UPDATE_CONNECTED_COUNT', Object.keys(snapshot.val()).length)
@@ -569,12 +575,12 @@ const store = new Vuex.Store({
       state.lights = bool
     },
 
-    SET_UPDATE_AVAILABLE (state) {
-      state.updateAvailable = true
-    },
-
     SET_ERROR (state, bool) {
       state.error = bool
+    },
+
+    SET_EXPIRED_SESSION (state, str) {
+      state.expiredSession = str
     }
   }
 })

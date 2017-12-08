@@ -19,7 +19,7 @@
             <img :src="nextEpisodeMedia.screenshot_image.thumb_url" class="v-mid bg-dark-gray next-episode-image">
             <div class="dib v-mid ml2">
               Watch next episode: <br /> Episode {{nextEpisodeMedia.episode_number}} &mdash; {{nextEpisodeMedia.name}}
-            </div>          
+            </div>
           </div>
         </router-link>
       </div>
@@ -33,11 +33,10 @@
       <div class="media-info">
         <div>
           <h2 class="normal lh-title mb2 w-80 dib">{{media.name}}</h2>
-          <div class="dib fr pt3 z-9999 relative">
-            <div v-tooltip.bottom-center="'Watch with others'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2 box-shadow-umi" :class="optionClasses" v-if="room === ''" @click="createRoom">
+          <div class="dib fr mt3 z-9999 relative box-shadow-umi br2 ba b--black-20">
+            <div v-tooltip.bottom-center="'Watch with others'" class="f8 fw6 dib bg-transparent black pointer ph3 pv2 br b--black-20" :class="optionClasses" v-if="room === ''" @click="createRoom">
               <i class="tc fa fa-users w-1" aria-hidden="true"></i>
-            </div>
-            <div v-tooltip.bottom-center="'Toggle dark mode'" class="f5 fw6 dib ba bg-transparent br2 black pointer ph3 pv2 box-shadow-umi" :class="optionClasses" @click="$store.commit('UPDATE_LIGHTS', !lights)">
+            </div><div v-tooltip.bottom-center="'Toggle dark mode'" class="f8 fw6 dib bg-transparent black pointer ph3 pv2" :class="optionClasses" @click="$store.commit('UPDATE_LIGHTS', !lights)">
               <i class="tc fa fa-moon-o w-1" aria-hidden="true"></i>
             </div>
           </div>
