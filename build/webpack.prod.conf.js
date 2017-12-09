@@ -8,6 +8,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OfflinePlugin = require('offline-plugin')
 const PurifyCSSPlugin = require('purifycss-webpack')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const glob = require('glob')
 const env = config.build.env
 
@@ -29,11 +30,14 @@ const webpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       'process.env': env
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
+    new UglifyJsPlugin({
+      uglifyOptions: {
+        compress: {
+          warnings: false
+        }
       },
-      sourceMap: true
+      sourceMap: config.build.productionSourceMap,
+      parallel: true
     }),
     // extract css into its own file
     new ExtractTextPlugin({
@@ -63,6 +67,8 @@ const webpackConfig = merge(baseWebpackConfig, {
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
       chunksSortMode: 'dependency'
     }),
+    // enable scope hoisting
+    new webpack.optimize.ModuleConcatenationPlugin(),
     // split vendor js into its own file
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
@@ -92,8 +98,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         navigateFallbackURL: '/'
       },
       AppCache: false
-    }),
-    new webpack.optimize.ModuleConcatenationPlugin()
+    })
   ]
 })
 

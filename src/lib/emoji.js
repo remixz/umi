@@ -27,7 +27,7 @@ const emoji = [
   { name: 'KumikoW', id: '92979' },
   { name: 'FelixThink', id: '199843' },
   { name: 'FrostyFridays', image: require('emoji/FrostyFridays.png') },
-  { name: 'Tsuyu~~', image: require('emoji/TsuyuW.png') },
+  { name: 'Tsuyu~~', image: require('emoji/TsuyuW.png') }
 ]
 
 export default emoji

@@ -1,3 +1,4 @@
+/* eslint-disable */
 !function(e,t){"object"==typeof exports&&"object"==typeof module?module.exports=t(require("Clappr")):"function"==typeof define&&define.amd?define(["Clappr"],t):"object"==typeof exports?exports.LevelSelector=t(require("Clappr")):e.LevelSelector=t(e.Clappr)}(this,function(e){return function(e){function t(n){if(l[n])return l[n].exports;var o=l[n]={exports:{},id:n,loaded:!1};return e[n].call(o.exports,o,o.exports,t),o.loaded=!0,o.exports}var l={};return t.m=e,t.c=l,t.p="<%=baseUrl%>/",t(0)}([/*!******************!*\
   !*** ./index.js ***!
   \******************/

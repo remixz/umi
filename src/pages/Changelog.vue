@@ -2,7 +2,7 @@
   <div>
     <h1 class="fw4">Changelog</h1>
 
-    <h2 class="fw6 f4 flex items-center update-title">2017-12-07: Minor updates</h2>
+    <h2 class="fw6 f4 flex items-center update-title">2017-12-08: Minor updates</h2>
     <div class="lh-copy">
       <ul class="changelog-list">
         <li>
@@ -10,6 +10,15 @@
           <ul class="mv1">
             <li>This fixes a bug where your queue and history data wouldn't load properly.</li>
           </ul>
+        </li>
+        <li>
+          Improve player time syncing in rooms.
+        </li>
+        <li>
+          Fix bug where language settings wouldn't load properly.
+        </li>
+        <li>
+          Fix reaction selector being blurry when in fullscreen.
         </li>
         <li>
           Minor design updates.
@@ -119,5 +128,3 @@
     top: 2px;
   }
 </style>
-
-

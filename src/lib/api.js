@@ -19,7 +19,7 @@ export default function api (opts) {
       connectivity_type: CONNECTIVITY_TYPE
     }) : null,
     data: opts.data,
-    cancelToken: opts.route !== 'start_session' ? source.token : null
+    cancelToken: !opts.noCancel ? source.token : null
   }
 
   return axios(config)

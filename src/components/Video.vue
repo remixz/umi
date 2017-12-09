@@ -90,7 +90,7 @@
             self.reactions = document.createElement('div')
             self.reactions.className = 'reaction-canvas absolute absolute--fill z-9999 tl'
             self.tron = self.$el.querySelector('.reactotron').cloneNode(true)
-            self.tron.className = `${self.tron.className} z-max player-tron`
+            self.tron.className = `${self.tron.className.replace('disabled', '')} z-max player-tron`
             Array.from(self.tron.querySelectorAll('img')).forEach((e) => { e.onclick = self.handleEmoji.bind(self, e.id, true) })
             self.container.appendChild(self.reactions)
             self.container.appendChild(self.tron)
@@ -161,11 +161,11 @@
         }
       },
       roomData (curr, prev) {
-        if (curr.playing !== prev.playing) {
+        if (curr.playing !== prev.playing && curr.playing !== this.player.isPlaying()) {
           this.player[curr.playing ? 'play' : 'pause']()
         }
 
-        if (curr.syncedTime !== prev.syncedTime) {
+        if (curr.syncedTime !== prev.syncedTime && curr.syncedTime !== this.player.getCurrentTime()) {
           this.player.seek(curr.syncedTime)
         }
       },
@@ -224,7 +224,10 @@
         })
       },
       displayEmoji (snapshot) {
-        if (!snapshot.exists() || !this.firstEmoji) return this.firstEmoji = true
+        if (!snapshot.exists() || !this.firstEmoji) {
+          this.firstEmoji = true
+          return
+        }
         const {name} = snapshot.val()
         const selected = emoji.find((e) => e.name === name)
         if (!selected) return
@@ -300,6 +303,7 @@
         })
       },
       roomHandleSeek (time) {
+        if (time === this.roomData.syncedTime) return
         this.$store.dispatch('updateRoomData', {
           syncedTime: time
         })

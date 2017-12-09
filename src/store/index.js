@@ -66,7 +66,7 @@ const store = new Vuex.Store({
 
       return new Promise(async (resolve, reject) => {
         try {
-          const resp = await api({route: 'start_session', params})
+          const resp = await api({route: 'start_session', params, noCancel: true})
           const data = resp.data.data
           commit('UPDATE_AUTH', {
             session_id: data.session_id,
@@ -76,7 +76,12 @@ const store = new Vuex.Store({
           })
           resolve()
           // fetch locales in the background
-          const localeResp = await api({route: 'list_locales', version: '1', params: {session_id: data.session_id}})
+          const localeResp = await api({
+            route: 'list_locales',
+            version: '1',
+            params: {session_id: data.session_id},
+            noCancel: true
+          })
           commit('UPDATE_LOCALES', localeResp.data.data.locales)
         } catch (err) {
           reject(err)

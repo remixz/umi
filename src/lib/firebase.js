@@ -40,7 +40,7 @@ const Firebase = {
 
   install (Vue) {
     Object.defineProperty(Vue.prototype, '$firebase', {
-      get() {
+      get () {
         return Firebase
       }
     })
