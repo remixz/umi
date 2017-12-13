@@ -141,7 +141,7 @@ export default {
 
 <style scoped>
   main {
-    width: 64rem;
+    max-width: 64rem;
     min-height: calc(100vh - 5rem);
     margin-top: 77px;
   }
