@@ -7,7 +7,7 @@
           <span class="b db ttu blue f3 logo-text">Umi!</span>
         </router-link>
       </div>
-      <div class="v-mid mid-gray link dim dib w-40-l w-60-m mb0-l tc pl4 tl-l nav">
+      <div class="v-mid mid-gray link dim dib w-30-l w-80-m w-100 mb0-l tc pl4-l tl-l nav">
         <router-link to="/queue" class="dark-gray no-underline">
           <i class="fa fa-th-list v-mid mr2" aria-hidden="true"></i>
           <span class="fw6">Queue</span>
@@ -17,48 +17,52 @@
           <span class="fw6">History</span>
         </router-link>
       </div>
-      <div class="v-mid w-100 w-40-l fr-l tc mt3 tr-l">
-        <span class="fa-stack dib pointer" @click="showTogether" v-if="room !== ''" @mouseover="roomHover = true" @mouseout="roomHover = false">
-          <i class="fa fa-circle fa-stack-2x transparent link menu-circle" :class="{active: roomMenu}"></i>
-          <i class="fa fa-users fa-stack-1x dark-gray pointer-events-none"></i>
-        </span>
-        <span class="relative fl bg-dark-gray white pa1 tc br2 f7 fw7 nowrap counter" v-if="room !== ''">{{connectedCount}}</span>
-        <div v-if="roomMenu" v-on-clickaway="hideTogether" class="absolute bg-white shadow-1 br2 pv2 ph3 together-menu">
-          <div class="mb2">
-            <div class="fw6">{{roomText}}</div>
+      <div class="v-mid w-100 w-50-l fr-l tc mt3 mr4 tr-l">
+        <div class="dib together-button">
+          <span class="fa-stack dib pointer" @click="showTogether" v-if="room !== ''" @mouseover="roomHover = true" @mouseout="roomHover = false">
+            <i class="fa fa-circle fa-stack-2x transparent link menu-circle" :class="{active: roomMenu}"></i>
+            <i class="fa fa-users fa-stack-1x dark-gray pointer-events-none"></i>
+          </span>
+          <span class="relative fl bg-dark-gray white pa1 tc br2 f7 fw7 nowrap counter" v-if="room !== ''">{{connectedCount}}</span>
+          <div v-if="roomMenu" v-on-clickaway="hideTogether" class="absolute bg-white shadow-1 br2 pv2 ph3 together-menu">
+            <div class="mb2">
+              <div class="fw6">{{roomText}}</div>
+            </div>
+            <input type="text" class="pa2 w-100 pointer" v-model="roomUrl" @click="handleRoomClick" readonly v-if="connected">
+            <input type="text" class="pa2 w-100 i" value="Connecting..." readonly v-else>
+            <button @click="leaveRoom" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br2 box-shadow-umi pointer ph3 pv2 tc leave-room">Leave room</button>
+            <button @click="hideTogether" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br2 box-shadow-umi pointer ph3 pv2 tc w-15 fr">Close</button>
           </div>
-          <input type="text" class="pa2 w-100 pointer" v-model="roomUrl" @click="handleRoomClick" readonly v-if="connected">
-          <input type="text" class="pa2 w-100 i" value="Connecting..." readonly v-else>
-          <button @click="leaveRoom" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br2 box-shadow-umi pointer ph3 pv2 tc leave-room">Leave room</button>
-          <button @click="hideTogether" class="f6 mt2 fw6 ba b--black-20 bg-white bg-animate hover-bg-light-gray black br2 box-shadow-umi pointer ph3 pv2 tc w-15 fr">Close</button>
         </div>
         <search />
-        <span class="fa-stack dib pointer" @click="showMenu">
-          <i class="fa fa-circle fa-stack-2x transparent link menu-circle" :class="{active: menu}"></i>
-          <i class="fa fa-ellipsis-v fa-stack-1x dark-gray pointer-events-none"></i>
-        </span>
-        <div v-if="menu" v-on-clickaway="hideMenu" class="absolute bg-white shadow-1 right-0 br2 pv2 menu">
-          <div class="pv2 mh2 fw6 bb mb2 b--gray">
-            <div class="db">
-              <svg class="v-mid mr1" xmlns="http://www.w3.org/2000/svg" width="34" height="25" viewBox="0 0 250.9 278.8"><g fill="#f78b24"><path d="M115.4 209.8c-3.6-.3-13-2-16.3-2.8-29-7.7-55-28-68-55.4-7-15-10-28.4-10-45.6 0-17 3-30.8 10.6-45.5C36 49.5 42 41 51 32 67.4 16 88.3 5.8 112 2.7c7.8-1 24.2-.7 31.4.6 15 2.8 28.6 8 40.7 16.2 26 16.8 42 42.5 46 71.8 1 6.3 2 19.5 1 20.5l-.2-2.6c-1-12.7-6.5-28.2-14.2-40C192.6 34 149 19 109 32.5 77.8 42.8 54 69 47.8 101c-3 15.6-2 31 3 46.2 9 27 30 48.3 57.3 57.6 7 2.2 15 4 20 4.5 7 .6 5 1-3 1-4 0-9 0-9-.2z"/><path d="M137.7 196.8c-33.6-2.4-61.4-27.5-67.2-60.5-1-6-1.3-17.2-.5-22.7 5-33 30.3-57.8 63.3-62.4 6.7-1 18.6-.6 25 .7 5.5 1 11.7 3 16.5 5l3.8 1-3.6 2c-12.7 6-20.6 20-18.7 33.5 1.8 13.4 11.2 24 24.6 28 4 1.2 12 1.2 17 0 6-2 11-4.8 15-9.4 1-1.5 3-2.6 3-2.5l1 5c0 6 0 17-1 23-4 17.7-14 33-28 44-14 10.5-33 16-51 14.4z"/></g></svg>
-              <span>{{username}}</span>
+      </div>
+      <div class="menu-button">
+          <span class="fa-stack dib pointer" @click="showMenu">
+            <i class="fa fa-circle fa-stack-2x transparent link menu-circle" :class="{active: menu}"></i>
+            <i class="fa fa-ellipsis-v fa-stack-1x dark-gray pointer-events-none"></i>
+          </span>
+          <div v-if="menu" v-on-clickaway="hideMenu" class="absolute bg-white shadow-1 br2 pv2 menu">
+            <div class="pv2 mh2 fw6 bb mb2 b--gray">
+              <div class="db">
+                <svg class="v-mid mr1" xmlns="http://www.w3.org/2000/svg" width="34" height="25" viewBox="0 0 250.9 278.8"><g fill="#f78b24"><path d="M115.4 209.8c-3.6-.3-13-2-16.3-2.8-29-7.7-55-28-68-55.4-7-15-10-28.4-10-45.6 0-17 3-30.8 10.6-45.5C36 49.5 42 41 51 32 67.4 16 88.3 5.8 112 2.7c7.8-1 24.2-.7 31.4.6 15 2.8 28.6 8 40.7 16.2 26 16.8 42 42.5 46 71.8 1 6.3 2 19.5 1 20.5l-.2-2.6c-1-12.7-6.5-28.2-14.2-40C192.6 34 149 19 109 32.5 77.8 42.8 54 69 47.8 101c-3 15.6-2 31 3 46.2 9 27 30 48.3 57.3 57.6 7 2.2 15 4 20 4.5 7 .6 5 1-3 1-4 0-9 0-9-.2z"/><path d="M137.7 196.8c-33.6-2.4-61.4-27.5-67.2-60.5-1-6-1.3-17.2-.5-22.7 5-33 30.3-57.8 63.3-62.4 6.7-1 18.6-.6 25 .7 5.5 1 11.7 3 16.5 5l3.8 1-3.6 2c-12.7 6-20.6 20-18.7 33.5 1.8 13.4 11.2 24 24.6 28 4 1.2 12 1.2 17 0 6-2 11-4.8 15-9.4 1-1.5 3-2.6 3-2.5l1 5c0 6 0 17-1 23-4 17.7-14 33-28 44-14 10.5-33 16-51 14.4z"/></g></svg>
+                <span>{{username}}</span>
+              </div>
+              <a :href="`https://myanimelist.net/profile/${malUsername}`" target="_blank" rel="noopener" v-if="malUsername" class="mv2 db black no-underline">
+                <span class="mal-icon mr1"></span>
+                <span>{{malUsername}}</span>
+              </a>
             </div>
-            <a :href="`https://myanimelist.net/profile/${malUsername}`" target="_blank" rel="noopener" v-if="malUsername" class="mv2 db black no-underline">
-              <span class="mal-icon mr1"></span>
-              <span>{{malUsername}}</span>
-            </a>
-          </div>
-          <router-link @click.native="hideMenu" to="/settings" class="db bg-white bg-animate hover-bg-light-gray pa2 no-underline black">
-            <i class="fa fa-cog mr1"></i> Settings
-          </router-link>
-          <router-link @click.native="hideMenu" to="/changelog" class="db bg-white bg-animate hover-bg-light-gray pa2 no-underline black">
-            <i class="fa fa-plus-square mr1"></i> Changelog
-          </router-link>
-          <div @click="logout" class="pointer bg-white bg-animate hover-bg-light-gray pa2">
-            <i class="fa fa-sign-out mr1"></i> Sign out
+            <router-link @click.native="hideMenu" to="/settings" class="db bg-white bg-animate hover-bg-light-gray pa2 no-underline black">
+              <i class="fa fa-cog mr1"></i> Settings
+            </router-link>
+            <router-link @click.native="hideMenu" to="/changelog" class="db bg-white bg-animate hover-bg-light-gray pa2 no-underline black">
+              <i class="fa fa-plus-square mr1"></i> Changelog
+            </router-link>
+            <div @click="logout" class="pointer bg-white bg-animate hover-bg-light-gray pa2">
+              <i class="fa fa-sign-out mr1"></i> Sign out
+            </div>
           </div>
         </div>
-      </div>
     </div>
   </header>
 </template>
@@ -219,15 +223,7 @@ header {
   padding: 1.4rem 1rem;
   transition: all 0.2s ease-in-out;
   border-bottom: 0 solid transparent;
-}
-@media screen and (max-width: 479px) {
-  .nav a {
-    padding: 1.4rem 0.2rem;
-  }
-  .nav {
-    float: right;
-    padding-right: 0.3rem;
-  }
+  padding: 1.4rem 0.2rem;
 }
 
 .nav a:hover,
@@ -243,6 +239,21 @@ header {
   top: 8px;
 }
 
+.together-button {
+}
+
+.menu-button {
+  position: absolute;
+  height: 65px;
+  top: 18px;
+  right: 0px;
+}
+@media screen and (max-width: 959px) {
+  .menu-button {
+    width: 55px;
+  }
+}
+
 .menu-circle:hover,
 .menu-circle.active {
   color: #e3e3e3;
@@ -250,8 +261,14 @@ header {
 
 .menu,
 .together-menu {
-  top: 45px;
+  right: 40%;
   width: 200px;
+}
+@media screen and (min-width: 960px) {
+  .menu,
+  .together-menu {
+    right: 0px;
+  }
 }
 
 .together-menu {
