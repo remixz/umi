@@ -1,5 +1,5 @@
 <template>
-  <header class="db w-100 border-box ph5-l ph3" :class="[lights ? 'z-3' : 'z-max', {'alt-header': routeName === 'series' || routeName === 'media', 'box-shadow-umi': routeName !== 'media'}]">
+  <header class="fixed top-0 db w-100 border-box pl4" :class="[lights ? 'z-3' : 'z-max', {'alt-header': routeName === 'series' || routeName === 'media', 'box-shadow-umi': routeName !== 'media'}]">
     <div class="header-container center relative h3-l h5">
       <div class="v-mid mid-gray link dim dib-l tc tl-l mb2 mb0-l logo-container">
         <router-link to="/" class="db no-underline" exact>
