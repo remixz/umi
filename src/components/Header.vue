@@ -1,13 +1,13 @@
 <template>
-  <header class="fixed top-0 db w-100 border-box pl4" :class="[lights ? 'z-3' : 'z-max', {'alt-header': routeName === 'series' || routeName === 'media', 'box-shadow-umi': routeName !== 'media'}]">
-    <div class="header-container center relative h3-l h5">
-      <div class="v-mid mid-gray link dim dib-l tc tl-l mb2 mb0-l logo-container">
+  <header class="fixed top-0 db w-100 border-box pl4-l" :class="[lights ? 'z-3' : 'z-max', {'alt-header': routeName === 'series' || routeName === 'media', 'box-shadow-umi': routeName !== 'media'}]">
+    <div class="header-container center relative h3-l pb3 pb0-l">
+      <div class="v-mid mid-gray link dim dib tc tl-l mb2 mb0-l pl4 pl0-l logo-container">
         <router-link to="/" class="db no-underline" exact>
           <img src="../assets/umi.png" alt="Umi player logo" class="logo db">
           <span class="b db ttu blue f3 logo-text">Umi!</span>
         </router-link>
       </div>
-      <div class="v-mid mid-gray link dim dib-l w-100 w-40-l mb2 mb0-l tc pl4-l tl-l nav">
+      <div class="v-mid mid-gray link dim dib w-40-l w-60-m mb0-l tc pl4 tl-l nav">
         <router-link to="/queue" class="dark-gray no-underline">
           <i class="fa fa-th-list v-mid mr2" aria-hidden="true"></i>
           <span class="fw6">Queue</span>
@@ -219,6 +219,15 @@ header {
   padding: 1.4rem 1rem;
   transition: all 0.2s ease-in-out;
   border-bottom: 0 solid transparent;
+}
+@media screen and (max-width: 479px) {
+  .nav a {
+    padding: 1.4rem 0.2rem;
+  }
+  .nav {
+    float: right;
+    padding-right: 0.3rem;
+  }
 }
 
 .nav a:hover,

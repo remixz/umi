@@ -14,7 +14,7 @@
       </div>
     </div>
     <router-view v-if="routeName === 'login'"></router-view>
-    <main class="bg-white center pv1 ph3 mb3 mt5-l mt7" v-else>
+    <main class="bg-white center pv1 ph3 mb3 mt5-l mt6-m mt7" v-else>
       <router-view v-if="loaded"></router-view>
       <div v-else-if="error">
         <img src="https://my.mixtape.moe/gazrbv.gif" class="fl pr3">
