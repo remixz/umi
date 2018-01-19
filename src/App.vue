@@ -14,7 +14,7 @@
       </div>
     </div>
     <router-view v-if="routeName === 'login'"></router-view>
-    <main class="bg-white center pv1 ph3 mv3" v-else>
+    <main class="bg-white center pv1 ph3 mb3 mt5-l mt6-m mt7" v-else>
       <router-view v-if="loaded"></router-view>
       <div v-else-if="error">
         <img src="https://my.mixtape.moe/gazrbv.gif" class="fl pr3">
@@ -40,122 +40,125 @@
 </template>
 
 <script>
-import Header from 'components/Header'
+import Header from "components/Header";
 
 export default {
-  name: 'app',
-  components: { 'umi-header': Header },
-  data () {
+  name: "app",
+  components: { "umi-header": Header },
+  data() {
     return {
       loaded: false,
       error: false,
-      updated: localStorage.getItem('updated') || false
-    }
+      updated: localStorage.getItem("updated") || false
+    };
   },
-  metaInfo () {
+  metaInfo() {
     return {
-      titleTemplate: '%s - Umi',
-      title: this.error ? 'Error' : 'Loading...'
-    }
+      titleTemplate: "%s - Umi",
+      title: this.error ? "Error" : "Loading..."
+    };
   },
   computed: {
-    connected () {
-      return this.$store.state.roomConnected
+    connected() {
+      return this.$store.state.roomConnected;
     },
-    room () {
-      return this.$store.state.roomId
+    room() {
+      return this.$store.state.roomId;
     },
-    roomData () {
-      return this.$store.state.roomData
+    roomData() {
+      return this.$store.state.roomData;
     },
-    routeName () {
-      return this.$route.name
+    routeName() {
+      return this.$route.name;
     },
-    routePath () {
-      return this.$route.path
+    routePath() {
+      return this.$route.path;
     },
-    lights () {
-      return this.$store.state.lights
+    lights() {
+      return this.$store.state.lights;
     },
-    stateError () {
-      return this.$store.state.error
+    stateError() {
+      return this.$store.state.error;
     }
   },
   methods: {
-    refresh () {
-      location.reload()
+    refresh() {
+      location.reload();
     },
-    dismissError () {
-      this.$store.commit('SET_ERROR', false)
+    dismissError() {
+      this.$store.commit("SET_ERROR", false);
     },
-    dismissUpdated () {
-      this.updated = false
-      localStorage.removeItem('updated')
+    dismissUpdated() {
+      this.updated = false;
+      localStorage.removeItem("updated");
     }
   },
   watch: {
-    routePath () {
-      if (this.room !== '') {
-        this.$store.dispatch('updateRoomData', {
+    routePath() {
+      if (this.room !== "") {
+        this.$store.dispatch("updateRoomData", {
           route: {
             name: this.$route.name,
             path: this.$route.path
           }
-        })
+        });
       }
     },
-    roomData (curr, prev) {
-      if (this.room !== '') {
-        if (curr.route.name !== 'media') {
-          this.$store.dispatch('updateRoomData', {
+    roomData(curr, prev) {
+      if (this.room !== "") {
+        if (curr.route.name !== "media") {
+          this.$store.dispatch("updateRoomData", {
             playing: false
-          })
+          });
         } else if (curr.route.path !== this.$route.path) {
-          this.$router.push({path: curr.route.path})
+          this.$router.push({ path: curr.route.path });
         }
       }
     }
   },
-  async created () {
+  async created() {
     try {
-      await this.$store.dispatch('startSession')
+      await this.$store.dispatch("startSession");
 
       if (
-        this.$route.name !== 'login' &&
+        this.$route.name !== "login" &&
         Object.keys(this.$store.state.auth).length > 0 &&
-        (!this.$store.state.auth.token || !this.$store.state.auth.expires || new Date() > new Date(this.$store.state.auth.expires))
+        (!this.$store.state.auth.token ||
+          !this.$store.state.auth.expires ||
+          new Date() > new Date(this.$store.state.auth.expires))
       ) {
-        await this.$store.dispatch('logout', true)
-        this.$router.replace(`/login?next=${encodeURIComponent(this.$route.fullPath)}`)
+        await this.$store.dispatch("logout", true);
+        this.$router.replace(
+          `/login?next=${encodeURIComponent(this.$route.fullPath)}`
+        );
       }
 
-      this.loaded = true
+      this.loaded = true;
     } catch (err) {
-      this.error = true
+      this.error = true;
     }
   }
-}
+};
 </script>
 
 <style src="./App.css"></style>
 
 <style scoped>
-  main {
-    width: 64rem;
-    min-height: calc(100vh - 5rem);
-    margin-top: 77px;
-  }
+main {
+  max-width: 64rem;
+  min-height: calc(100vh - 5rem);
+}
 
-  .notification {
-    width: 280px;
-    margin-bottom: 1rem;
-  }
+.notification {
+  width: 280px;
+  margin-bottom: 1rem;
+}
 
-  .notification.success {
-    border-top: 2px solid #19a974;
-  }
+.notification.success {
+  border-top: 2px solid #19a974;
+}
 
-  .notification.error {
-    border-top: 2px solid #ff4136;
-  }
+.notification.error {
+  border-top: 2px solid #ff4136;
+}
 </style>
