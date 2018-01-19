@@ -45,7 +45,7 @@
           <router-link class="dark-gray no-underline bb pb1 b--dark-gray hover-blue link" :to="`/series/${media.series_id}`">
             {{media.collection_name}}
           </router-link>
-          &bull; Epsiode {{media.episode_number}}
+          &bull; Episode {{media.episode_number}}
           &bull; <i class="fa fa-clock-o" aria-hidden="true"></i> {{duration}}
         </div>
         <a v-if="isMalAuthed && malItem.id" :href="malItem.url" target="_blank" rel="noopener"><span class="mal-icon ml1" :class="{watched: malSynced}"></span></a>
