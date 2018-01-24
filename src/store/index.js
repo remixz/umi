@@ -49,7 +49,8 @@ const store = new Vuex.Store({
     connectedCount: 0,
     lights: false,
     error: false,
-    expiredSession: ''
+    expiredSession: '',
+    guestMessage: false
   },
 
   actions: {
@@ -443,6 +444,8 @@ const store = new Vuex.Store({
           const value = room.val() || {
             playing: false,
             syncedTime: 0,
+            host: Firebase.app.auth().currentUser.uid,
+            hostOnly: false,
             route: {
               path: state.route.path,
               name: state.route.name
@@ -471,7 +474,10 @@ const store = new Vuex.Store({
       })
     },
 
-    updateRoomData ({state}, obj) {
+    updateRoomData ({state, getters}, obj) {
+      const uid = Firebase.app.auth().currentUser.uid
+      if (state.roomData.hostOnly && !getters.isRoomHost) return Promise.resolve()
+
       return new Promise(async (resolve, reject) => {
         try {
           const roomRef = Firebase.getRef(`/rooms/${state.roomId}`)
@@ -482,6 +488,15 @@ const store = new Vuex.Store({
           reject(err)
         }
       })
+    },
+
+    flashGuestMessage ({state, commit}) {
+      if (state.guestMessage) return
+
+      commit('UPDATE_GUEST_MESSAGE', true)
+      setTimeout(() => {
+        commit('UPDATE_GUEST_MESSAGE', false)
+      }, 5000)
     }
   },
 
@@ -586,6 +601,16 @@ const store = new Vuex.Store({
 
     SET_EXPIRED_SESSION (state, str) {
       state.expiredSession = str
+    },
+
+    UPDATE_GUEST_MESSAGE (state, bool) {
+      state.guestMessage = bool
+    }
+  },
+
+  getters: {
+    isRoomHost (state) {
+      return state.roomConnected && state.roomData.host === Firebase.app.auth().currentUser.uid
     }
   }
 })

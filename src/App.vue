@@ -1,6 +1,9 @@
 <template>
   <div id="app">
     <umi-header v-if="routeName !== 'login'" />
+    <div class="fixed top-0 right-0 left-0 center tc pa3 z-max fw6 bg-yellow box-shadow-umi guest-message" :class="{active: guestMessage}">
+      You can't leave the player as a guest while in a room that's controlled by the host.
+    </div>
     <div class="fixed top-1 right-1 z-max" v-if="routeName !== 'login'">
       <div v-if="updated" class="bg-white pa3 shadow-1 br2 notification success">
         <div class="mb3 fw6 tc"><span class="normal">✅</span> Umi has updated successfully!</div>
@@ -79,6 +82,9 @@ export default {
     },
     stateError () {
       return this.$store.state.error
+    },
+    guestMessage () {
+      return this.$store.state.guestMessage
     }
   },
   methods: {
@@ -157,5 +163,14 @@ export default {
 
   .notification.error {
     border-top: 2px solid #ff4136;
+  }
+
+  .guest-message {
+    transform: translateY(-50px);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .guest-message.active {
+    transform: translateY(0);
   }
 </style>

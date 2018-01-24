@@ -2,6 +2,15 @@
   <div>
     <h1 class="fw4">Changelog</h1>
 
+    <h2 class="fw6 f4 flex items-center update-title">2018-01-23: Host-only mode for rooms</h2>
+    <div class="lh-copy">
+      <ul class="changelog-list">
+        <li>
+          As the title implies, rooms now have a new feature: <strong>Host-only mode.</strong> If you create a room, you'll now see a checkbox for this mode in the room popup. When toggled on, only you (the host) will be able to play/pause/change episode/etc. This is useful if you're doing a large group watch, and don't want people accidentally (or purposely 😈) messing with the video. It might still be a little rough around the edges, so if you find any bugs, please let me know <a href="https://github.com/remixz/umi/issues" target="_blank">on GitHub</a>. Happy watching!
+        </li>
+      </ul>
+    </div>
+
     <h2 class="fw6 f4 flex items-center update-title">2017-12-08: Minor updates</h2>
     <div class="lh-copy">
       <ul class="changelog-list">

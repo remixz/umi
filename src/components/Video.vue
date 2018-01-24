@@ -52,12 +52,15 @@
       },
       roomConnected () {
         return this.$store.state.roomConnected
+      },
+      roomHostOnly () {
+        return this.roomData.hostOnly
       }
     },
     mounted () {
       const self = this
       this.playerInit = true
-      this.player = new Clappr.Player({
+      this.player = window.player = new Clappr.Player({
         parent: this.$el.querySelector('#player'),
         width: '1024px',
         height: '576px',
@@ -108,6 +111,15 @@
       this.player.on(Clappr.Events.PLAYER_PLAY, () => {
         this.showBlur = false
         this.$emit('play')
+
+        if (this.$store.state.roomConnected && !this.$store.getters.isRoomHost) {
+          this.player.configure({
+            chromeless: this.roomHostOnly,
+            allowUserInteraction: !this.roomHostOnly
+          })
+
+          this.updatePlayerElements()
+        }
       })
       this.player.on(Clappr.Events.PLAYER_PAUSE, () => {
         this.logTime()
@@ -176,6 +188,16 @@
             playing: this.player.isPlaying()
           })
         }
+      },
+      roomHostOnly (curr) {
+        if (this.$store.getters.isRoomHost) return
+
+        this.player.configure({
+          chromeless: curr,
+          allowUserInteraction: !curr
+        })
+
+        this.updatePlayerElements()
       }
     },
     methods: {
@@ -268,6 +290,13 @@
       wsJoinRoom () {
         const {syncedTime, playing} = this.roomData
 
+        if (!this.$store.getters.isRoomHost) {
+          this.player.configure({
+            chromeless: this.roomHostOnly,
+            allowUserInteraction: !this.roomHostOnly
+          })
+        }
+
         if (syncedTime > 0) {
           this.player.seek(syncedTime)
         }
@@ -317,6 +346,14 @@
         this.player.off(Clappr.Events.PLAYER_FULLSCREEN, this.handleFullscreen)
         this.player.core.mediaControl.off(Clappr.Events.MEDIACONTROL_SHOW, this.handleShowControls)
         this.player.core.mediaControl.off(Clappr.Events.MEDIACONTROL_HIDE, this.handleHideControls)
+      },
+      updatePlayerElements () {
+        if (this.showBlur) return
+        const method = this.roomHostOnly ? 'hide' : 'show'
+
+        this.player.core.mediaControl.enable()
+        this.player.core.mediaControl.$playPauseToggle[method]()
+        this.player.core.mediaControl.$seekBarContainer[method]()
       }
     },
     beforeDestroy () {

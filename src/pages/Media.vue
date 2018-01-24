@@ -152,7 +152,11 @@
         return prettyTime(this.internalSeek)
       },
       shouldContinueWatching () {
-        return this.internalSeek !== 0 && (this.media.duration - this.internalSeek >= 30)
+        if (this.$store.state.roomConnected && this.$store.state.roomData.hostOnly) {
+          return this.internalSeek !== 0 && (this.media.duration - this.internalSeek >= 30) && this.$store.getters.isRoomHost
+        } else {
+          return this.internalSeek !== 0 && (this.media.duration - this.internalSeek >= 30)
+        }
       },
       shouldNextEpisode () {
         return this.nextEpisode && this.nextEpisodeId !== ''
