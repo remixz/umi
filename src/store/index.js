@@ -475,7 +475,6 @@ const store = new Vuex.Store({
     },
 
     updateRoomData ({state, getters}, obj) {
-      const uid = Firebase.app.auth().currentUser.uid
       if (state.roomData.hostOnly && !getters.isRoomHost) return Promise.resolve()
 
       return new Promise(async (resolve, reject) => {

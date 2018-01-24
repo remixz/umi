@@ -45,11 +45,6 @@
       isRoomGuest () {
         return this.$store.state.roomConnected && this.$store.state.roomData.hostOnly && !this.$store.getters.isRoomHost
       }
-    },
-    methods: {
-      checkIfGuest (ev) {
-        ev.preventDefault()
-      }
     }
   }
 </script>

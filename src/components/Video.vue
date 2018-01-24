@@ -60,7 +60,7 @@
     mounted () {
       const self = this
       this.playerInit = true
-      this.player = window.player = new Clappr.Player({
+      this.player = new Clappr.Player({
         parent: this.$el.querySelector('#player'),
         width: '1024px',
         height: '576px',

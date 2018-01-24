@@ -71,7 +71,6 @@
 
 <script>
 import { mixin as clickaway } from 'vue-clickaway'
-import Firebase from 'lib/firebase'
 import Search from './Search'
 
 export default {
