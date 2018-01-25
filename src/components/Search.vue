@@ -24,7 +24,7 @@
         @mouseover.native="resultHover"
         @click.native="resultPress"
       >
-        <img class="v-mid" :src="series[id].landscape_image.small_url" :alt="series[id].name">
+        <img class="v-mid" :src="series[id].landscape_image.small_url | cdnRewrite" :alt="series[id].name">
         <span class="truncate dib f6 v-mid">{{series[id].name}}</span>
       </router-link>
     </div>

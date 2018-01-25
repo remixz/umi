@@ -6,6 +6,7 @@ export const LOCALE = () => localStorage.getItem('locale') || 'enUS'
 export const VERSION = '1.1.20.0'
 export const CONNECTIVITY_TYPE = 'ethernet'
 export const UMI_SERVER = process.env.NODE_ENV === 'production' ? 'https://umi-watch-api.now.sh' : 'http://localhost:3001'
+export const CRUNCHYROLL_CDN = 'http://img1.ak.crunchyroll.com/'
 
 let source = CancelToken.source()
 

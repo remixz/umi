@@ -2,7 +2,7 @@
   <div class="pv2">
     <div id="player" class="bg-black w-100 absolute left-0 z-9999 player-top-offset" :class="{'shadow-2': lights}">
       <div v-if="playerInit && showBlur && !lights" class="w-100 player-height absolute top-0 left-0 overflow-hidden o-80">
-        <img :src="poster" class="player-background" draggable="false">
+        <img :src="poster | cdnRewrite" class="player-background" draggable="false">
       </div>
     </div>
     <div v-if="!playerInit" class="bg-black absolute w-100 left-0 player-height player-top-offset">
@@ -15,11 +15,12 @@
 <script>
   import Clappr from 'clappr'
   import LevelSelector from 'lib/clappr-level-selector'
+  import Thumbnails from 'clappr-thumbnails-plugin'
   import anime from 'animejs'
   import uuid from 'uuid/v4'
   import api, {LOCALE, VERSION} from 'lib/api'
   import emoji from 'lib/emoji'
-  // import bif from 'lib/bif'
+  import bif from 'lib/bif'
   import Reactotron from './Reactotron'
 
   export default {
@@ -67,8 +68,7 @@
         source: this.streamUrl,
         poster: this.poster,
         disableVideoTagContextMenu: true,
-        // plugins: [LevelSelector, ClapprThumbnailsPlugin],
-        plugins: [LevelSelector],
+        plugins: [LevelSelector, Thumbnails],
         levelSelectorConfig: {
           title: 'Quality',
           labels: {
@@ -79,11 +79,11 @@
             0: '240p'
           }
         },
-        // scrubThumbnails: {
-        //   backdropHeight: null,
-        //   spotlightHeight: 84,
-        //   thumbs: []
-        // },
+        scrubThumbnails: {
+          backdropHeight: null,
+          spotlightHeight: 84,
+          thumbs: []
+        },
         events: {
           onReady () {
             if (self.container) {
@@ -135,7 +135,7 @@
       }
 
       if (this.bif) {
-        // this.loadBif()
+        this.loadBif()
       }
     },
     watch: {
@@ -154,7 +154,7 @@
           })
           this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.roomHandlePlay)
         }
-        // this.loadBif()
+        this.loadBif()
       },
       room (curr) {
         if (curr === '') {
@@ -277,16 +277,17 @@
           }
         })
       },
-      // async loadBif () {
-      //   const thumbnailsPlugin = this.player.getPlugin('scrub-thumbnails')
-      //   if (this.frames.length > 0) {
-      //     thumbnailsPlugin.removeThumbnail(this.frames)
-      //   }
-      //   try {
-      //     this.frames = await bif(this.bif)
-      //     thumbnailsPlugin.addThumbnail(this.frames)
-      //   } catch (err) {}
-      // },
+      async loadBif () {
+        const thumbnailsPlugin = this.player.getPlugin('scrub-thumbnails')
+        if (this.frames.length > 0) {
+          thumbnailsPlugin.removeThumbnail(this.frames)
+        }
+
+        try {
+          this.frames = await bif(this.bif)
+          thumbnailsPlugin.addThumbnail(this.frames)
+        } catch (err) {}
+      },
       wsJoinRoom () {
         const {syncedTime, playing} = this.roomData
 

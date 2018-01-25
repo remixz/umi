@@ -16,7 +16,7 @@
             <div class="child absolute bg-black-40 tc next-episode-overlay">
               <i class="fa fa-play white tc play-icon" aria-hidden="true"></i>
             </div>
-            <img :src="nextEpisodeMedia.screenshot_image.thumb_url" class="v-mid bg-dark-gray next-episode-image">
+            <img :src="nextEpisodeMedia.screenshot_image.thumb_url | cdnRewrite" class="v-mid bg-dark-gray next-episode-image">
             <div class="dib v-mid ml2">
               Watch next episode: <br /> Episode {{nextEpisodeMedia.episode_number}} &mdash; {{nextEpisodeMedia.name}}
             </div>

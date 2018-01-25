@@ -14,6 +14,7 @@
     "axios": "^0.16.0",
     "base64-js": "^1.2.0",
     "clappr": "0.2.77",
+    "clappr-thumbnails-plugin": "^3.6.0",
     "date-fns": "^1.27.2",
     "debounce": "^1.0.2",
     "firebase": "^4.6.2",

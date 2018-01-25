@@ -11,7 +11,7 @@
     <div class="relative z-9999 info-container">
       <div class="cf">
         <div class="w-20 fl pt2">
-          <img :src="series.portrait_image.full_url" class="shadow-1 bg-light-gray portrait-image">
+          <img :src="series.portrait_image.full_url | cdnRewrite" class="shadow-1 bg-light-gray portrait-image">
         </div>
         <div class="w-80 fl pl3">
           <h1 class="series-title white fw6">{{series.name || '&nbsp;'}}</h1>
@@ -53,6 +53,7 @@
   import Collection from 'components/Collection'
   import QueueButton from 'components/QueueButton'
   import { UMI_SERVER } from 'lib/api'
+  import cdnRewrite from 'lib/cdnRewrite'
 
   const openingOverrides = {
     '269071': 'konosuba',
@@ -103,7 +104,7 @@
       },
       videoBannerStyle () {
         return {
-          'background-image': `url(${this.series.landscape_image.full_url})`
+          'background-image': `url(${cdnRewrite(this.series.landscape_image.full_url)})`
         }
       }
     },

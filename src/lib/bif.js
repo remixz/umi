@@ -1,7 +1,7 @@
 // Based on https://github.com/chemoish/videojs-bif/blob/c6fdc0c2cfc9446927062995b7e8830ae45fff0d/src/parser.js
 import axios from 'axios'
 import { fromByteArray } from 'base64-js'
-import { UMI_SERVER } from './api'
+import cdnRewrite from './cdnRewrite'
 
 const BIF_INDEX_OFFSET = 64
 const FRAMEWISE_SEPARATION_OFFSET = 16
@@ -24,7 +24,7 @@ function validate (magicNumber) {
 
 export default function bif (url) {
   return new Promise(async (resolve, reject) => {
-    const {data: buf} = await axios.get(`${UMI_SERVER}/bif?bif=${url}`, {
+    const {data: buf} = await axios.get(cdnRewrite(url), {
       responseType: 'arraybuffer'
     })
 
