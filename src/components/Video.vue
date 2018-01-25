@@ -21,6 +21,7 @@
   import api, {LOCALE, VERSION} from 'lib/api'
   import emoji from 'lib/emoji'
   import bif from 'lib/bif'
+  import cdnRewrite from 'lib/cdnRewrite'
   import Reactotron from './Reactotron'
 
   export default {
@@ -66,7 +67,7 @@
         width: '1024px',
         height: '576px',
         source: this.streamUrl,
-        poster: this.poster,
+        poster: cdnRewrite(this.poster),
         disableVideoTagContextMenu: true,
         plugins: [LevelSelector, Thumbnails],
         levelSelectorConfig: {
