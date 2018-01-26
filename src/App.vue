@@ -167,10 +167,12 @@ export default {
 
   .guest-message {
     transform: translateY(-50px);
-    transition: transform 0.3s ease-in-out;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
   }
 
   .guest-message.active {
     transform: translateY(0);
+    opacity: 1;
   }
 </style>
