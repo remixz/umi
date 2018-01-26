@@ -20,9 +20,11 @@
   import uuid from 'uuid/v4'
   import api, {LOCALE, VERSION} from 'lib/api'
   import emoji from 'lib/emoji'
-  import bif from 'lib/bif'
+  import bifWorker from 'workerize-loader!lib/bif'
   import cdnRewrite from 'lib/cdnRewrite'
   import Reactotron from './Reactotron'
+
+  const bif = bifWorker()
 
   export default {
     name: 'video',
@@ -285,7 +287,7 @@
         }
 
         try {
-          this.frames = await bif(this.bif)
+          this.frames = await bif.parse(this.bif)
           thumbnailsPlugin.addThumbnail(this.frames)
         } catch (err) {}
       },
