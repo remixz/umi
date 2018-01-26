@@ -5,8 +5,8 @@
       "targets": {
         "chrome": 62,
         "firefox": 56,
-        "ios": "10.3",
-        "safari": "10.1",
+        "ios": 11,
+        "safari": 11,
         "edge": 15
       },
       "loose": true,
