@@ -1,4 +1,4 @@
-import {CRUNCHYROLL_CDN} from './api'
+const CRUNCHYROLL_CDN = 'http://img1.ak.crunchyroll.com/'
 
 export default function cdnRewrite (url) {
   if (typeof url !== 'string') return url
