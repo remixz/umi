@@ -27,7 +27,7 @@ export async function parse (url) {
 
   const magicNumber = new Uint8Array(buf).slice(0, 8)
   if (!validate(magicNumber)) {
-    return new Error('Invalid BIF file')
+    return []
   }
 
   const data = new DataView(buf)

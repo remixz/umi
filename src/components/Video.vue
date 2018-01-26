@@ -286,10 +286,10 @@
           thumbnailsPlugin.removeThumbnail(this.frames)
         }
 
-        try {
-          this.frames = await bif.parse(this.bif)
+        this.frames = await bif.parse(this.bif)
+        if (this.frames.length > 0) {
           thumbnailsPlugin.addThumbnail(this.frames)
-        } catch (err) {}
+        }
       },
       wsJoinRoom () {
         const {syncedTime, playing} = this.roomData
