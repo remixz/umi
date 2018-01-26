@@ -99,7 +99,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       },
       AppCache: false,
       cacheMaps: [{
-        match (url) {
+        match: function (url) {
           if (url.pathname.indexOf('/cdn/') > -1) {
             return
           }
