@@ -33,6 +33,7 @@
       </div>
     </main>
     <footer class="mw8 center relative">
+    <footer class="mw8 cf center relative">
       <p class="gray">
         This site is not endorsed by or affiliated with Crunchyroll. <br />
         Created by <a href="https://twitter.com/zachbruggeman" target="_blank" rel="noopener">Zach Bruggeman</a>. <a href="https://github.com/remixz/umi" target="_blank" rel="noopener">View source on GitHub</a>. <br />
