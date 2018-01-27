@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="`/series/${data.most_likely_media.series_id}/${data.most_likely_media.media_id}`" class="link black" v-if="data.most_likely_media.available">
+  <router-link :to="`/series/${data.most_likely_media.series_id}/${data.most_likely_media.media_id}`" class="link" :class="darkTheme ? 'gray' : 'black'" v-if="data.most_likely_media.available">
     <div class="w-100 mb2 pa3 cf hide-child br2 ba b--near-white box-shadow-umi">
       <div class="fl w-20 relative">
         <img :src="data.most_likely_media.screenshot_image.thumb_url" class="v-mid image-size">
@@ -17,7 +17,7 @@
       </div>
     </div>
   </router-link>
-  <router-link :to="`/series/${data.most_likely_media.series_id}`" class="link black" v-else>
+  <router-link :to="`/series/${data.most_likely_media.series_id}`" class="link" :class="darkTheme ? 'gray' : 'black'" v-else>
     <div class="bg-near-white w-100 mb2 pa3 cf bb bw2 b--light-gray hide-child">
       <div class="fl w-20 relative">
         <img :src="data.series.landscape_image.thumb_url" class="v-mid image-size">
@@ -47,6 +47,9 @@
         return {
           width: `${Math.min(100, (this.data.most_likely_media.playhead / this.data.most_likely_media.duration) * 100)}%`
         }
+      },
+      darkTheme () {
+        return this.$store.state.darkTheme
       }
     }
   }
