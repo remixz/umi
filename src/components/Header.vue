@@ -1,5 +1,5 @@
 <template>
-  <header class="fixed top-0 w-100" :class="[lights ? 'z-3' : 'z-max', {'alt-header': routeName === 'series' || routeName === 'media', 'box-shadow-umi': routeName !== 'media'}]">
+  <header class="fixed top-0 w-100" :class="[lights ? 'z-3' : 'z-max', {'alt-header': routeName === 'series' || routeName === 'media', 'box-shadow-umi': routeName !== 'media'},{'darkTheme':darkTheme}]">
     <div class="header-container center relative">
       <div class="logo-container">
         <router-link to="/" class="db no-underline" exact>
@@ -9,11 +9,11 @@
       </div>
       <div>
         <div class="absolute nav">
-          <router-link to="/queue" class="dark-gray no-underline">
+          <router-link to="/queue" class="no-underline" :class="darkTheme ? 'near-white' : 'dark-gray'">
             <i class="fa fa-th-list v-mid mr2" aria-hidden="true"></i>
             <span class="fw6">Queue</span>
           </router-link>
-          <router-link to="/history" class="dark-gray no-underline">
+          <router-link to="/history" class="no-underline" :class="darkTheme ? 'near-white' : 'dark-gray'">
             <i class="fa fa-history v-mid mr2" aria-hidden="true"></i>
             <span class="fw6">History</span>
           </router-link>
@@ -21,7 +21,7 @@
         <div class="absolute search right-0">
           <span class="fa-stack dib pointer" @click="showTogether" v-if="room !== ''" @mouseover="roomHover = true" @mouseout="roomHover = false">
             <i class="fa fa-circle fa-stack-2x transparent link menu-circle" :class="{active: roomMenu}"></i>
-            <i class="fa fa-users fa-stack-1x dark-gray pointer-events-none"></i>
+            <i class="fa fa-users fa-stack-1x pointer-events-none" :class="darkTheme ? 'near-white' : 'dark-gray'"></i>
           </span>
           <span class="relative fl bg-dark-gray white pa1 tc br2 f7 fw7 nowrap counter" v-if="room !== ''">{{connectedCount}}</span>
           <div v-if="roomMenu" v-on-clickaway="hideTogether" class="absolute bg-white shadow-1 br2 pv2 ph3 together-menu">
@@ -40,7 +40,7 @@
           <search />
           <span class="fa-stack dib pointer" @click="showMenu">
             <i class="fa fa-circle fa-stack-2x transparent link menu-circle" :class="{active: menu}"></i>
-            <i class="fa fa-ellipsis-v fa-stack-1x dark-gray pointer-events-none"></i>
+            <i class="fa fa-ellipsis-v fa-stack-1x pointer-events-none" :class="darkTheme ? 'near-white' : 'dark-gray'"></i>
           </span>
           <div v-if="menu" v-on-clickaway="hideMenu" class="absolute bg-white shadow-1 right-0 br2 pv2 menu">
             <div class="pv2 mh2 fw6 bb mb2 b--gray">
@@ -100,6 +100,9 @@ export default {
     connectedCount () {
       const count = this.$store.state.connectedCount
       return (this.roomHover || this.roomMenu) ? `${count} ${count === 1 ? 'person' : 'people'} connected` : count
+    },
+    darkTheme () {
+      return this.$store.state.darkTheme
     },
     room () {
       return this.$store.state.roomId
@@ -175,6 +178,9 @@ export default {
     transform: translateZ(0); /* hack fix for 1px jitter when a transform happens on the page */
   }
 
+  header.darkTheme {
+    background-color: rgba(60,60,60,0.95);
+  }
   .header-container {
     width: 1024px;
   }
