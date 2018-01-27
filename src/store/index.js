@@ -51,7 +51,7 @@ const store = new Vuex.Store({
     error: false,
     expiredSession: '',
     guestMessage: false,
-    darkTheme: false
+    darkTheme: localStorage.getItem('darkTheme') ? JSON.parse(localStorage.getItem('darkTheme')) : false
   },
 
   actions: {
@@ -545,6 +545,11 @@ const store = new Vuex.Store({
 
     SET_RECENT (state, arr) {
       Vue.set(state, 'recent', arr)
+    },
+
+    SET_DARK_THEME (state, bool) {
+      localStorage.setItem('darkTheme', bool)
+      Vue.set(state, 'darkTheme', bool)
     },
 
     ADD_SERIES (state, obj) {
