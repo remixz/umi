@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app"  :class="darkTheme ? 'bg-black' :'bg-white'">
     <umi-header v-if="routeName !== 'login'" />
     <div class="fixed top-0 right-0 left-0 center tc pa3 z-max fw6 bg-yellow box-shadow-umi guest-message" :class="{active: guestMessage}">
       You can't leave the player as a guest while in a room that's controlled by the host.
@@ -17,7 +17,7 @@
       </div>
     </div>
     <router-view v-if="routeName === 'login'"></router-view>
-    <main class="bg-white center pv1 ph3 mv3" v-else>
+    <main class="center pv1 ph3 mv3" :class="darkTheme ? 'bg-black' :'bg-white'" v-else>
       <router-view v-if="loaded"></router-view>
       <div v-else-if="error">
         <img src="https://my.mixtape.moe/gazrbv.gif" class="fl pr3">
@@ -32,7 +32,6 @@
         <i class="fa fa-circle-o-notch fa-spin fa-3x silver mt5"></i>
       </div>
     </main>
-    <footer class="mw8 center relative">
     <footer class="mw8 cf center relative">
       <p class="gray">
         This site is not endorsed by or affiliated with Crunchyroll. <br />
@@ -86,6 +85,9 @@ export default {
     },
     guestMessage () {
       return this.$store.state.guestMessage
+    },
+    darkTheme () {
+      return this.$store.state.darkTheme
     }
   },
   methods: {

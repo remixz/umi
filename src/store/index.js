@@ -50,7 +50,8 @@ const store = new Vuex.Store({
     lights: false,
     error: false,
     expiredSession: '',
-    guestMessage: false
+    guestMessage: false,
+    darkTheme: false
   },
 
   actions: {
