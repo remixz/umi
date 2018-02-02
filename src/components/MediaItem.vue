@@ -1,6 +1,6 @@
 <template>
-  <router-link :to="`/series/${data.series_id}/${id}`" :class="[{'pointer-events-none o-60': isRoomGuest}, darkTheme ? 'gray' : 'black']" v-if="data.available">
-    <div class="media-item dib v-top h-100 mr3 mb2 br2 " :class="[{'hide-child': !selected}, size, darkTheme ? 'bg-near-black' :'bg-white']" @click="$emit('click')">
+  <router-link :to="`/series/${data.series_id}/${id}`" class="text-primary" :class="{'pointer-events-none o-60': isRoomGuest}" v-if="data.available">
+    <div class="media-item dib v-top h-100 mr3 mb2 br2 text-offset bg-offset" :class="[{'hide-child': !selected}, size]" @click="$emit('click')">
       <div class="relative">
         <img v-if="data.screenshot_image" :src="data.screenshot_image.full_url" class="w-100 image-size br2 br--top">
         <div v-else class="w-100 image-size tc placeholder-image bg-light-gray">
@@ -44,9 +44,6 @@
       },
       isRoomGuest () {
         return this.$store.state.roomConnected && this.$store.state.roomData.hostOnly && !this.$store.getters.isRoomHost
-      },
-      darkTheme () {
-        return this.$store.state.darkTheme
       }
     }
   }

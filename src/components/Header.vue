@@ -9,11 +9,11 @@
       </div>
       <div>
         <div class="absolute nav">
-          <router-link to="/queue" class="no-underline" :class="darkTheme ? 'near-white' : 'dark-gray'">
+          <router-link to="/queue" class="no-underline text-header">
             <i class="fa fa-th-list v-mid mr2" aria-hidden="true"></i>
             <span class="fw6">Queue</span>
           </router-link>
-          <router-link to="/history" class="no-underline" :class="darkTheme ? 'near-white' : 'dark-gray'">
+          <router-link to="/history" class="no-underline text-header">
             <i class="fa fa-history v-mid mr2" aria-hidden="true"></i>
             <span class="fw6">History</span>
           </router-link>
@@ -21,7 +21,7 @@
         <div class="absolute search right-0">
           <span class="fa-stack dib pointer" @click="showTogether" v-if="room !== ''" @mouseover="roomHover = true" @mouseout="roomHover = false">
             <i class="fa fa-circle fa-stack-2x transparent link menu-circle" :class="{active: roomMenu}"></i>
-            <i class="fa fa-users fa-stack-1x pointer-events-none" :class="darkTheme ? 'near-white' : 'dark-gray'"></i>
+            <i class="fa fa-users fa-stack-1x pointer-events-none text-header"></i>
           </span>
           <span class="relative fl bg-dark-gray white pa1 tc br2 f7 fw7 nowrap counter" v-if="room !== ''">{{connectedCount}}</span>
           <div v-if="roomMenu" v-on-clickaway="hideTogether" class="absolute bg-white shadow-1 br2 pv2 ph3 together-menu">
@@ -40,7 +40,7 @@
           <search />
           <span class="fa-stack dib pointer" @click="showMenu">
             <i class="fa fa-circle fa-stack-2x transparent link menu-circle" :class="{active: menu}"></i>
-            <i class="fa fa-ellipsis-v fa-stack-1x pointer-events-none" :class="darkTheme ? 'near-white' : 'dark-gray'"></i>
+            <i class="fa fa-ellipsis-v fa-stack-1x pointer-events-none text-header"></i>
           </span>
           <div v-if="menu" v-on-clickaway="hideMenu" class="absolute bg-white shadow-1 right-0 br2 pv2 menu">
             <div class="pv2 mh2 fw6 bb mb2 b--gray">
@@ -178,9 +178,6 @@ export default {
     transform: translateZ(0); /* hack fix for 1px jitter when a transform happens on the page */
   }
 
-  header.darkTheme {
-    background-color: rgba(60,60,60,0.95);
-  }
   .header-container {
     width: 1024px;
   }

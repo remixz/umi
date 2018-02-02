@@ -1,5 +1,5 @@
 <template>
-  <div id="app"  :class="darkTheme ? ['bg-black','gray'] :'bg-white'">
+  <div id="app" class="bg-primary"  :class="darkTheme ? 'dark-theme': ''">
     <umi-header v-if="routeName !== 'login'" />
     <div class="fixed top-0 right-0 left-0 center tc pa3 z-max fw6 bg-yellow box-shadow-umi guest-message" :class="{active: guestMessage}">
       You can't leave the player as a guest while in a room that's controlled by the host.
@@ -17,7 +17,7 @@
       </div>
     </div>
     <router-view v-if="routeName === 'login'"></router-view>
-    <main class="center pv1 ph3" :class="darkTheme ? 'bg-black' :'bg-white'" v-else>
+    <main class="center pv1 ph3 text-primary" v-else>
       <div class="absolute w-100 bg-dark-gray top-0 left-0 header-bg" v-if="darkTheme"></div>
       <router-view v-if="loaded"></router-view>
       <div v-else-if="error">

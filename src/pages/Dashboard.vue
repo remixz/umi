@@ -2,11 +2,10 @@
   <div>
     <div class="dashboard-section">
       <div class="cf bb">
-        <h2 class="fw4 mv0 pb3 fl"><i class="fa fa-play mr1" aria-hidden="true"></i> Continue watching</h2>
+        <h2 class="fw4 mv0 pb3 fl text-primary"><i class="fa fa-play mr1" aria-hidden="true"></i> Continue watching</h2>
         <router-link
           to="/history"
-          class="fr link f6 mt1 fw6 ba b--black-20 bg-animate hover-bg-light-gray black br1 pointer ph2 pv1 tc br2 box-shadow-umi"
-          :class="{'bg-dark-gray': darkTheme}"
+          class="fr link f6 mt1 fw6 ba b--black-20 bg-animate hover-bg-light-gray black br1 pointer ph2 pv1 tc br2 box-shadow-umi bg-secundary"
         >
           View more
         </router-link>
@@ -18,11 +17,10 @@
     </div>
     <div class="dashboard-section">
       <div class="cf bb">
-        <h2 class="fw4 mv0 pb3 fl" ><i class="fa fa-th-list mr1" aria-hidden="true"></i> Your queue</h2>
+        <h2 class="fw4 mv0 pb3 fl text-primary" ><i class="fa fa-th-list mr1" aria-hidden="true"></i> Your queue</h2>
         <router-link
           to="/queue"
-          class="fr link f6 mt1 fw6 ba b--black-20 bg-animate hover-bg-light-gray black br1 pointer ph2 pv1 tc br2 box-shadow-umi"
-          :class="{'bg-dark-gray': darkTheme}"
+          class="fr link f6 mt1 fw6 ba b--black-20 bg-animate hover-bg-light-gray black br1 pointer ph2 pv1 tc br2 box-shadow-umi bg-secundary"
         >
           View more
         </router-link>
@@ -33,10 +31,10 @@
       <dashboard-loading-section v-else />
     </div>
     <div class="dashboard-section">
-      <h2 class="fw4 mv0 pb3 bb" ><i class="fa fa-calendar-o mr1" aria-hidden="true"></i> Latest releases</h2>
+      <h2 class="fw4 mv0 pb3 bb text-primary" ><i class="fa fa-calendar-o mr1" aria-hidden="true"></i> Latest releases</h2>
       <div v-if="Object.keys(splits).length !== 0">
         <div v-for="(media, title) in splits" :key="title">
-          <h3 class="fw4 near-black pb2 bb b--silver">{{title}}</h3>
+          <h3 class="fw4 near-black pb2 bb b--silver  text-primary">{{title}}</h3>
           <div class="center">
             <media-item v-for="d in media" :key="d.media_id" :id="d.media_id" :collectionName="d.series_name" size="dashboard" />
           </div>
@@ -94,9 +92,6 @@
         return Object.values(obj)
           .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
           .slice(0, 4)
-      },
-      darkTheme () {
-        return this.$store.state.darkTheme
       }
     },
     methods: {

@@ -2,7 +2,7 @@
   <div class="mt2">
     <div v-if="allData.length > 0" class="center container-width">
       <media-item v-for="d in allData" :key="d.media.media_id" :id="d.media.media_id" :collectionName="d.collection.name" size="medium" />
-      <div class="f5 fw6 db ba b--black-20 bg-animate br1 pointer pa3 tc more-btn box-shadow-umi" :class="paginationClassList" @click="handlePagination">
+      <div class="f5 fw6 db ba b--black-20 bg-animate br1 pointer pa3 tc more-btn box-shadow-umi" :class="{'pagination-loading': paginationLoading}" @click="handlePagination">
         {{paginationLoading ? 'Loading...' : 'Load more'}}
       </div>
     </div>
@@ -31,27 +31,7 @@
     computed: {
       allData () {
         return this.$store.state.initialHistory.concat(this.data)
-      },
-      paginationClassList () {
-        if (this.paginationLoading) {
-          if(this.darkTheme) {
-            return ['bg-near-black', 'gray', 'hover-light-gray', 'hover-bg-dark-gray']
-          }
-          else {
-            return ['bg-light-gray', 'black', 'hover-bg-near-white']
-          }
-        } else {
-          if(this.darkTheme) {
-            return ['bg-black', 'gray', 'hover-bg-near-black']
-          } else {
-            return ['bg-white', 'black', 'hover-bg-light-gray']
-          }
-        }
-      },
-      darkTheme () {
-        return this.$store.state.darkTheme
       }
-      
     },
     components: {
       MediaItem,
