@@ -549,7 +549,7 @@ const store = new Vuex.Store({
 
     SET_DARK_THEME (state, bool) {
       localStorage.setItem('darkTheme', bool)
-      Vue.set(state, 'darkTheme', bool)
+      state.darkTheme = bool
     },
 
     ADD_SERIES (state, obj) {
