@@ -18,6 +18,7 @@
     </div>
     <router-view v-if="routeName === 'login'"></router-view>
     <main class="center pv1 ph3" :class="darkTheme ? 'bg-black' :'bg-white'" v-else>
+      <div class="absolute w-100 bg-dark-gray top-0 left-0 header-bg" v-if="darkTheme"></div>
       <router-view v-if="loaded"></router-view>
       <div v-else-if="error">
         <img src="https://my.mixtape.moe/gazrbv.gif" class="fl pr3">
@@ -175,5 +176,9 @@ export default {
 
   .guest-message.active {
     transform: translateY(0);
+  }
+
+  .header-bg {
+    height: 4rem;
   }
 </style>
