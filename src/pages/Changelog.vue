@@ -2,6 +2,24 @@
   <div>
     <h1 class="fw4">Changelog</h1>
 
+    <h2 class="fw6 f4 flex items-center update-title">2018-02-03: Video player thumbnails & improvements</h2>
+    <div class="lh-copy">
+      <ul class="changelog-list">
+        <li>
+          When you hover across the timeline of a video, previews of the video at that time will appear!
+        </li>
+        <li>
+          You'll no longer get any HTTPS errors when using Umi. All communication to the Crunchyroll servers was done over HTTPS, but stuff like the posters for a series or thumbnails of an episode were over HTTP, as Crunchyroll only serves them over HTTP. (2018!) I'm now proxying their CDN, so it will be HTTPS.
+        </li>
+        <li>
+          Dropped support for some older browsers, which allows the code to be a bit smaller and hopefully a tiny bit faster.
+        </li>
+        <li>
+          Fix a bug with the message shown in host-only mode showing if you overscrolled upwards (possible with a trackpad on Mac/iOS, maybe Windows too but I only have a desktop PC).
+        </li>
+      </ul>
+    </div>
+
     <h2 class="fw6 f4 flex items-center update-title">2018-01-23: Host-only mode for rooms</h2>
     <div class="lh-copy">
       <ul class="changelog-list">
