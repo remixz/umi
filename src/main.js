@@ -6,10 +6,12 @@ import store from './store'
 import { sync } from 'vuex-router-sync'
 import Firebase from 'lib/firebase'
 import VTooltip from 'v-tooltip'
+import cdnRewrite from 'lib/cdnRewrite'
 
 Vue.use(VTooltip)
 Vue.use(Firebase)
 sync(store, router)
+Vue.filter('cdnRewrite', cdnRewrite)
 
 /* eslint-disable no-new */
 new Vue({
