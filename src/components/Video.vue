@@ -21,7 +21,6 @@
   import api, {LOCALE, VERSION} from 'lib/api'
   import emoji from 'lib/emoji'
   import bifWorker from 'workerize-loader!lib/bif'
-  import cdnRewrite from 'lib/cdnRewrite'
   import Reactotron from './Reactotron'
 
   const bif = bifWorker()
@@ -69,7 +68,7 @@
         width: '1024px',
         height: '576px',
         source: this.streamUrl,
-        poster: cdnRewrite(this.poster),
+        poster: this.poster,
         disableVideoTagContextMenu: true,
         plugins: [LevelSelector, Thumbnails],
         levelSelectorConfig: {

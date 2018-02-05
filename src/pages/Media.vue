@@ -73,6 +73,7 @@
   import uuid from 'uuid/v4'
   import api, { UMI_SERVER } from 'lib/api'
   import prettyTime from 'lib/prettyTime'
+  import cdnRewrite from 'lib/cdnRewrite'
   import Video from 'components/Video'
   import MediaItem from 'components/MediaItem'
   import EpisodeScroller from 'components/EpisodeScroller'
@@ -146,7 +147,7 @@
         return !!this.$store.state.malAuth.username
       },
       poster () {
-        return this.media && this.media.screenshot_image ? this.media.screenshot_image.full_url : ''
+        return this.media && this.media.screenshot_image ? cdnRewrite(this.media.screenshot_image.full_url) : ''
       },
       prettyTime () {
         return prettyTime(this.internalSeek)
