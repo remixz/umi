@@ -42,7 +42,7 @@
           </div>
         </div>
         <div class="fw6">
-          <router-link class="dark-gray no-underline bb pb1 b--dark-gray hover-blue link" :to="`/series/${media.series_id}`">
+          <router-link class="no-underline bb pb1 b--dark-gray hover-blue link text-secundary" :to="`/series/${media.series_id}`">
             {{media.collection_name}}
           </router-link>
           &bull; Episode {{media.episode_number}}
@@ -50,7 +50,7 @@
         </div>
         <a v-if="isMalAuthed && malItem.id" :href="malItem.url" target="_blank" rel="noopener"><span class="mal-icon ml1" :class="{watched: malSynced}"></span></a>
         <p class="lh-copy">{{media.description}}</p>
-        <h3 class="fw5">Episodes</h3>
+        <h3 class="fw5 text-primary">Episodes</h3>
         <episode-scroller v-if="collectionMedia && collectionMedia.length > 0" :ids="collectionMedia" :selected="$route.params.id" />
       </div>
     </div>

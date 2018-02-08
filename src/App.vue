@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="bg-primary"  :class="darkTheme ? 'dark-theme': ''">
     <umi-header v-if="routeName !== 'login'" />
     <div class="fixed top-0 right-0 left-0 center tc pa3 z-max fw6 bg-yellow box-shadow-umi guest-message" :class="{active: guestMessage}">
       You can't leave the player as a guest while in a room that's controlled by the host.
@@ -17,7 +17,8 @@
       </div>
     </div>
     <router-view v-if="routeName === 'login'"></router-view>
-    <main class="bg-white center pv1 ph3 mv3" v-else>
+    <main class="center pv1 ph3 text-primary" v-else>
+      <div class="absolute w-100 bg-dark-gray top-0 left-0 header-bg" v-if="darkTheme"></div>
       <router-view v-if="loaded"></router-view>
       <div v-else-if="error">
         <img src="https://my.mixtape.moe/gazrbv.gif" class="fl pr3">
@@ -32,7 +33,7 @@
         <i class="fa fa-circle-o-notch fa-spin fa-3x silver mt5"></i>
       </div>
     </main>
-    <footer class="mw8 center relative">
+    <footer class="mw8 cf center relative">
       <p class="gray">
         This site is not endorsed by or affiliated with Crunchyroll. <br />
         Created by <a href="https://twitter.com/zachbruggeman" target="_blank" rel="noopener">Zach Bruggeman</a>. <a href="https://github.com/remixz/umi" target="_blank" rel="noopener">View source on GitHub</a>. <br />
@@ -85,6 +86,9 @@ export default {
     },
     guestMessage () {
       return this.$store.state.guestMessage
+    },
+    darkTheme () {
+      return this.$store.state.darkTheme
     }
   },
   methods: {
@@ -149,7 +153,7 @@ export default {
   main {
     width: 64rem;
     min-height: calc(100vh - 5rem);
-    margin-top: 77px;
+    padding-top: 77px;
   }
 
   .notification {
@@ -174,5 +178,9 @@ export default {
   .guest-message.active {
     transform: translateY(0);
     opacity: 1;
+  }
+
+  .header-bg {
+    height: 4rem;
   }
 </style>

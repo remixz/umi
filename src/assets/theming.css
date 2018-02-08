@@ -1,0 +1,65 @@
+/* default theme */
+
+.bg-primary, .bg-offset{
+  background-color: #fff;
+}
+.bg-secundary {
+  background-color: #fff;
+}
+
+.text-primary {
+  color : #000;
+}
+
+.text-secundary {
+  color : #777;
+}
+
+.text-header {
+  color : #333;
+}
+
+.more-btn {
+  background-color:#fff;
+}
+.more-btn:hover, .more-btn.pagination-loading{
+  background-color: #ccc;
+}
+
+
+/* dark-theme adjustments */
+.dark-theme .bg-primary, .dark-theme.bg-primary{
+  background-color: #000;
+}
+
+.dark-theme .bg-offset, .dark-theme.bg-offset{
+  background-color: #222;
+}
+
+.dark-theme .bg-secundary {
+  background-color: #777;
+}
+
+.dark-theme .text-header{
+  color: #ccc;
+}
+
+.dark-theme .text-primary {
+  color : #ccc;
+}
+
+.dark-theme .text-secundary {
+  color : #777;
+}
+
+.dark-theme .text-header {
+  color : #ccc;
+}
+
+
+.dark-theme .more-btn {
+  background-color:#000;
+}
+.dark-theme .more-btn:hover, .more-btn.pagination-loading{
+  background-color:#222;
+}

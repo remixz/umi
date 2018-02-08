@@ -12,6 +12,14 @@
         <div class="green mt1 absolute save-message" :class="[savedLocale ? 'o-100' : 'o-0']">Saved!</div>
       </div>
     </div>
+    <div class="cf">
+      <div class="fl mt2">
+        <span class="fw5">Dark theme</span>
+      </div>
+      <div class="fr">
+        <input type="checkbox" v-model="darkTheme" /> {{darkTheme ? 'On' : 'Off'}}
+      </div>
+    </div>
     <h2 class="fw5 bb pb2 b--dark-gray"><i class="fa fa-link mr1"></i> Connections</h2>
     <div class="cf">
       <div class="fl pv2">
@@ -56,6 +64,14 @@
       },
       locales () {
         return this.$store.state.locales
+      },
+      darkTheme: {
+        get () {
+          return this.$store.state.darkTheme
+        },
+        set (val) {
+          this.$store.commit('SET_DARK_THEME', val)
+        }
       }
     },
     watch: {
