@@ -16,7 +16,7 @@
             <div class="child absolute bg-black-40 tc next-episode-overlay">
               <i class="fa fa-play white tc play-icon" aria-hidden="true"></i>
             </div>
-            <img :src="nextEpisodeMedia.screenshot_image.thumb_url" class="v-mid bg-dark-gray next-episode-image">
+            <img :src="nextEpisodeMedia.screenshot_image.thumb_url | cdnRewrite" class="v-mid bg-dark-gray next-episode-image">
             <div class="dib v-mid ml2">
               Watch next episode: <br /> Episode {{nextEpisodeMedia.episode_number}} &mdash; {{nextEpisodeMedia.name}}
             </div>
@@ -45,7 +45,7 @@
           <router-link class="dark-gray no-underline bb pb1 b--dark-gray hover-blue link" :to="`/series/${media.series_id}`">
             {{media.collection_name}}
           </router-link>
-          &bull; Epsiode {{media.episode_number}}
+          &bull; Episode {{media.episode_number}}
           &bull; <i class="fa fa-clock-o" aria-hidden="true"></i> {{duration}}
         </div>
         <a v-if="isMalAuthed && malItem.id" :href="malItem.url" target="_blank" rel="noopener"><span class="mal-icon ml1" :class="{watched: malSynced}"></span></a>
@@ -73,6 +73,7 @@
   import uuid from 'uuid/v4'
   import api, { UMI_SERVER } from 'lib/api'
   import prettyTime from 'lib/prettyTime'
+  import cdnRewrite from 'lib/cdnRewrite'
   import Video from 'components/Video'
   import MediaItem from 'components/MediaItem'
   import EpisodeScroller from 'components/EpisodeScroller'
@@ -146,13 +147,17 @@
         return !!this.$store.state.malAuth.username
       },
       poster () {
-        return this.media && this.media.screenshot_image ? this.media.screenshot_image.full_url : ''
+        return this.media && this.media.screenshot_image ? cdnRewrite(this.media.screenshot_image.full_url) : ''
       },
       prettyTime () {
         return prettyTime(this.internalSeek)
       },
       shouldContinueWatching () {
-        return this.internalSeek !== 0 && (this.media.duration - this.internalSeek >= 30)
+        if (this.$store.state.roomConnected && this.$store.state.roomData.hostOnly) {
+          return this.internalSeek !== 0 && (this.media.duration - this.internalSeek >= 30) && this.$store.getters.isRoomHost
+        } else {
+          return this.internalSeek !== 0 && (this.media.duration - this.internalSeek >= 30)
+        }
       },
       shouldNextEpisode () {
         return this.nextEpisode && this.nextEpisodeId !== ''

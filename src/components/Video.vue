@@ -2,7 +2,7 @@
   <div class="pv2">
     <div id="player" class="bg-black w-100 absolute left-0 z-9999 player-top-offset" :class="{'shadow-2': lights}">
       <div v-if="playerInit && showBlur && !lights" class="w-100 player-height absolute top-0 left-0 overflow-hidden o-80">
-        <img :src="poster" class="player-background" draggable="false">
+        <img :src="poster | cdnRewrite" class="player-background" draggable="false">
       </div>
     </div>
     <div v-if="!playerInit" class="bg-black absolute w-100 left-0 player-height player-top-offset">
@@ -15,12 +15,15 @@
 <script>
   import Clappr from 'clappr'
   import LevelSelector from 'lib/clappr-level-selector'
+  import Thumbnails from 'clappr-thumbnails-plugin'
   import anime from 'animejs'
   import uuid from 'uuid/v4'
   import api, {LOCALE, VERSION} from 'lib/api'
   import emoji from 'lib/emoji'
-  // import bif from 'lib/bif'
+  import bifWorker from 'workerize-loader!lib/bif'
   import Reactotron from './Reactotron'
+
+  const bif = bifWorker()
 
   export default {
     name: 'video',
@@ -52,6 +55,9 @@
       },
       roomConnected () {
         return this.$store.state.roomConnected
+      },
+      roomHostOnly () {
+        return this.roomData.hostOnly
       }
     },
     mounted () {
@@ -64,8 +70,7 @@
         source: this.streamUrl,
         poster: this.poster,
         disableVideoTagContextMenu: true,
-        // plugins: [LevelSelector, ClapprThumbnailsPlugin],
-        plugins: [LevelSelector],
+        plugins: [LevelSelector, Thumbnails],
         levelSelectorConfig: {
           title: 'Quality',
           labels: {
@@ -76,11 +81,11 @@
             0: '240p'
           }
         },
-        // scrubThumbnails: {
-        //   backdropHeight: null,
-        //   spotlightHeight: 84,
-        //   thumbs: []
-        // },
+        scrubThumbnails: {
+          backdropHeight: null,
+          spotlightHeight: 84,
+          thumbs: []
+        },
         events: {
           onReady () {
             if (self.container) {
@@ -108,6 +113,15 @@
       this.player.on(Clappr.Events.PLAYER_PLAY, () => {
         this.showBlur = false
         this.$emit('play')
+
+        if (this.$store.state.roomConnected && !this.$store.getters.isRoomHost) {
+          this.player.configure({
+            chromeless: this.roomHostOnly,
+            allowUserInteraction: !this.roomHostOnly
+          })
+
+          this.updatePlayerElements()
+        }
       })
       this.player.on(Clappr.Events.PLAYER_PAUSE, () => {
         this.logTime()
@@ -123,7 +137,7 @@
       }
 
       if (this.bif) {
-        // this.loadBif()
+        this.loadBif()
       }
     },
     watch: {
@@ -142,7 +156,7 @@
           })
           this.playback.on(Clappr.Events.PLAYBACK_PLAY_INTENT, this.roomHandlePlay)
         }
-        // this.loadBif()
+        this.loadBif()
       },
       room (curr) {
         if (curr === '') {
@@ -176,6 +190,16 @@
             playing: this.player.isPlaying()
           })
         }
+      },
+      roomHostOnly (curr) {
+        if (this.$store.getters.isRoomHost) return
+
+        this.player.configure({
+          chromeless: curr,
+          allowUserInteraction: !curr
+        })
+
+        this.updatePlayerElements()
       }
     },
     methods: {
@@ -255,18 +279,26 @@
           }
         })
       },
-      // async loadBif () {
-      //   const thumbnailsPlugin = this.player.getPlugin('scrub-thumbnails')
-      //   if (this.frames.length > 0) {
-      //     thumbnailsPlugin.removeThumbnail(this.frames)
-      //   }
-      //   try {
-      //     this.frames = await bif(this.bif)
-      //     thumbnailsPlugin.addThumbnail(this.frames)
-      //   } catch (err) {}
-      // },
+      async loadBif () {
+        const thumbnailsPlugin = this.player.getPlugin('scrub-thumbnails')
+        if (this.frames.length > 0) {
+          thumbnailsPlugin.removeThumbnail(this.frames)
+        }
+
+        this.frames = await bif.parse(this.bif)
+        if (this.frames.length > 0) {
+          thumbnailsPlugin.addThumbnail(this.frames)
+        }
+      },
       wsJoinRoom () {
         const {syncedTime, playing} = this.roomData
+
+        if (!this.$store.getters.isRoomHost) {
+          this.player.configure({
+            chromeless: this.roomHostOnly,
+            allowUserInteraction: !this.roomHostOnly
+          })
+        }
 
         if (syncedTime > 0) {
           this.player.seek(syncedTime)
@@ -317,6 +349,14 @@
         this.player.off(Clappr.Events.PLAYER_FULLSCREEN, this.handleFullscreen)
         this.player.core.mediaControl.off(Clappr.Events.MEDIACONTROL_SHOW, this.handleShowControls)
         this.player.core.mediaControl.off(Clappr.Events.MEDIACONTROL_HIDE, this.handleHideControls)
+      },
+      updatePlayerElements () {
+        if (this.showBlur) return
+        const method = this.roomHostOnly ? 'hide' : 'show'
+
+        this.player.core.mediaControl.enable()
+        this.player.core.mediaControl.$playPauseToggle[method]()
+        this.player.core.mediaControl.$seekBarContainer[method]()
       }
     },
     beforeDestroy () {

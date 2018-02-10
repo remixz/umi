@@ -97,7 +97,17 @@ const webpackConfig = merge(baseWebpackConfig, {
         events: true,
         navigateFallbackURL: '/'
       },
-      AppCache: false
+      AppCache: false,
+      cacheMaps: [{
+        match: function (url) {
+          if (url.pathname.indexOf('/cdn/') > -1) {
+            return
+          }
+
+          return new URL('/', location)
+        },
+        requestTypes: ['navigate']
+      }]
     })
   ]
 })

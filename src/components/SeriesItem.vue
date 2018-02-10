@@ -1,7 +1,7 @@
 <template>
   <router-link :to="`/series/${id}`" class="link" v-if="data">
     <div class="dib mb2 hide-child relative bg-near-white series-item" :class="{mr3: noMargin}">
-      <img :src="data.portrait_image.thumb_url">
+      <img :src="data.portrait_image.thumb_url | cdnRewrite">
       <div class="child absolute absolute--fill bg-black-60 pa2">
         <p class="b white tc f5">{{data.name}}</p>
       </div>

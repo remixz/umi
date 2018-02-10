@@ -25,8 +25,12 @@
           </span>
           <span class="relative fl bg-dark-gray white pa1 tc br2 f7 fw7 nowrap counter" v-if="room !== ''">{{connectedCount}}</span>
           <div v-if="roomMenu" v-on-clickaway="hideTogether" class="absolute bg-white shadow-1 br2 pv2 ph3 together-menu">
-            <div class="mb2">
-              <div class="fw6">{{roomText}}</div>
+            <div class="mb2 cf">
+              <div class="fw6 fl">{{roomText}}</div>
+              <div class="fr" v-if="isRoomHost">
+                <input type="checkbox" id="hostOnly" v-model="roomHostOnly">
+                <label for="hostOnly" v-tooltip.bottom-center="'Enabling this makes it so only you (the host) can control the player. '">Host-only mode <i class="fa fa-question-circle-o black-60" aria-hidden="true"></i></label>
+              </div>
             </div>
             <input type="text" class="pa2 w-100 pointer" v-model="roomUrl" @click="handleRoomClick" readonly v-if="connected">
             <input type="text" class="pa2 w-100 i" value="Connecting..." readonly v-else>
@@ -103,6 +107,17 @@ export default {
     roomUrl () {
       return `${window.location.origin}/room/${this.room.replace('umi//', '')}`
     },
+    isRoomHost () {
+      return this.$store.getters.isRoomHost
+    },
+    roomHostOnly: {
+      get () {
+        return this.$store.state.roomData.hostOnly
+      },
+      set (val) {
+        this.$store.dispatch('updateRoomData', {hostOnly: val})
+      }
+    },
     roomMenu: {
       get () {
         return this.$store.state.roomMenu
@@ -158,10 +173,6 @@ export default {
     height: 4rem;
     border-top: 2px solid #357edd;
     transform: translateZ(0); /* hack fix for 1px jitter when a transform happens on the page */
-  }
-
-  .pointer-events-none {
-    pointer-events: none;
   }
 
   .header-container {

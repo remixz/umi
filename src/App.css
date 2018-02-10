@@ -33,7 +33,7 @@
   transition: opacity .15s;
   pointer-events: none;
   padding: 4px;
-  z-index: 10000;
+  z-index: 2147483647;
 }
 
 .tooltip .tooltip-content {
@@ -90,4 +90,9 @@
 
 .container-width {
   width: 948px;
+}
+
+
+.pointer-events-none {
+  pointer-events: none;
 }

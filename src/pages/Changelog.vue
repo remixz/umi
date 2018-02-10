@@ -2,6 +2,33 @@
   <div>
     <h1 class="fw4">Changelog</h1>
 
+    <h2 class="fw6 f4 flex items-center update-title">2018-02-03: Video player thumbnails & improvements</h2>
+    <div class="lh-copy">
+      <ul class="changelog-list">
+        <li>
+          When you hover across the timeline of a video, previews of the video at that time will appear!
+        </li>
+        <li>
+          You'll no longer get any HTTPS errors when using Umi. All communication to the Crunchyroll servers was done over HTTPS, but stuff like the posters for a series or thumbnails of an episode were over HTTP, as Crunchyroll only serves them over HTTP. (2018!) I'm now proxying their CDN, so it will be HTTPS.
+        </li>
+        <li>
+          Dropped support for some older browsers, which allows the code to be a bit smaller and hopefully a tiny bit faster.
+        </li>
+        <li>
+          Fix a bug with the message shown in host-only mode showing if you overscrolled upwards (possible with a trackpad on Mac/iOS, maybe Windows too but I only have a desktop PC).
+        </li>
+      </ul>
+    </div>
+
+    <h2 class="fw6 f4 flex items-center update-title">2018-01-23: Host-only mode for rooms</h2>
+    <div class="lh-copy">
+      <ul class="changelog-list">
+        <li>
+          As the title implies, rooms now have a new feature: <strong>Host-only mode.</strong> If you create a room, you'll now see a checkbox for this mode in the room popup. When toggled on, only you (the host) will be able to play/pause/change episode/etc. This is useful if you're doing a large group watch, and don't want people accidentally (or purposely 😈) messing with the video. It might still be a little rough around the edges, so if you find any bugs, please let me know <a href="https://github.com/remixz/umi/issues" target="_blank">on GitHub</a>. Happy watching!
+        </li>
+      </ul>
+    </div>
+
     <h2 class="fw6 f4 flex items-center update-title">2017-12-08: Minor updates</h2>
     <div class="lh-copy">
       <ul class="changelog-list">

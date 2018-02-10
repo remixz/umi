@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Meta from 'vue-meta'
 import Analytics from 'vue-analytics'
+import store from '../store'
 import {authGuard, loginGuard} from 'lib/auth'
 import {cancelCurrentRequests} from 'lib/api'
 
@@ -99,6 +100,12 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+  // cancel navigation when in host-only mode and client is not the host
+  if (store.state.roomConnected && store.state.roomData.hostOnly && !store.getters.isRoomHost && to.name !== from.name) {
+    store.dispatch('flashGuestMessage')
+    return next(false)
+  }
+
   // on all page changes aside from the initial load, we cancel in progress requests
   if (from.name && from.name !== to.name) {
     cancelCurrentRequests()
