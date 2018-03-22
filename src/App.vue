@@ -10,14 +10,14 @@
         <router-link to="/changelog" class="db f6 fw5 ml1 bg-white ba b--black-20 box-shadow-umi bg-animate hover-bg-light-gray br1 pointer ph2 pv1 tc mb2 black no-underline" @click.native="dismissUpdated">View changelog</router-link>
         <div class="db f6 fw5 ml1 bg-white ba b--black-20 box-shadow-umi bg-animate hover-bg-light-gray br1 pointer ph2 pv1 tc" @click="dismissUpdated">Dismiss</div>
       </div>
-      <div v-if="error" class="bg-white pa3 shadow-1 br2 notification error">
+      <div v-if="stateError" class="bg-white pa3 shadow-1 br2 notification error">
         <div class="tc mb3 fw6"><span class="normal">❌</span> Something went wrong when contacting Crunchyroll.</div>
         <div class="f6 fw5 ml1 bg-white ba b--black-20 box-shadow-umi bg-animate hover-bg-light-gray br1 pointer ph2 pv1 tc mb2" @click="refresh">Refresh</div>
         <div class="f6 fw5 ml1 bg-white ba b--black-20 box-shadow-umi bg-animate hover-bg-light-gray br1 pointer ph2 pv1 tc" @click="dismissError">Dismiss</div>
       </div>
     </div>
     <router-view v-if="routeName === 'login'"></router-view>
-    <main class="bg-white center pv1 ph3 mv3" v-else>
+    <main class="bg-white center pv1 ph3 mv3" :class="{'tall-offset': !readFuture}" v-else>
       <router-view v-if="loaded"></router-view>
       <div v-else-if="error">
         <img src="https://my.mixtape.moe/gazrbv.gif" class="fl pr3">
@@ -85,6 +85,9 @@ export default {
     },
     guestMessage () {
       return this.$store.state.guestMessage
+    },
+    readFuture () {
+      return this.$store.state.readFuture
     }
   },
   methods: {
@@ -128,6 +131,7 @@ export default {
 
       if (
         this.$route.name !== 'login' &&
+        this.$route.name !== 'future-of-umi' &&
         Object.keys(this.$store.state.auth).length > 0 &&
         (!this.$store.state.auth.token || !this.$store.state.auth.expires || new Date() > new Date(this.$store.state.auth.expires))
       ) {
@@ -150,6 +154,10 @@ export default {
     width: 64rem;
     min-height: calc(100vh - 5rem);
     margin-top: 77px;
+  }
+
+  .tall-offset {
+    margin-top: 100px;
   }
 
   .notification {

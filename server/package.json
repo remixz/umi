@@ -13,17 +13,15 @@
     "cors": "^2.8.3",
     "express": "^4.15.2",
     "iron": "^4.0.4",
-    "popura": "^1.2.5",
-    "socket.io": "^2.0.1"
+    "popura": "^1.2.5"
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "cross-env UPDATE_TOKEN=example IRON_TOKEN=EXAMPLE_TOKEN_PLEASE_DONT_USE_IN_PRODUCTION nodemon index.js"
+    "dev": "cross-env IRON_TOKEN=EXAMPLE_TOKEN_PLEASE_DONT_USE_IN_PRODUCTION nodemon index.js"
   },
   "now": {
     "alias": "umi-watch-api",
     "env": {
-      "UPDATE_TOKEN": "@update-token",
       "IRON_TOKEN": "@iron-token",
       "NODE_ENV": "production"
     }

@@ -17,6 +17,7 @@ import Series from 'pages/Series'
 import Media from 'pages/Media'
 import Room from 'pages/Room'
 import Changelog from 'pages/Changelog'
+import Notice from 'pages/Notice'
 
 Vue.use(Router)
 Vue.use(Meta)
@@ -95,6 +96,11 @@ const router = new Router({
       name: 'changelog',
       component: Changelog,
       beforeEnter: authGuard
+    },
+    {
+      path: '/future-of-umi',
+      name: 'future-of-umi',
+      component: Notice
     }
   ]
 })

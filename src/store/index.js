@@ -50,7 +50,8 @@ const store = new Vuex.Store({
     lights: false,
     error: false,
     expiredSession: '',
-    guestMessage: false
+    guestMessage: false,
+    readFuture: localStorage.getItem('readFuture') ? true : false
   },
 
   actions: {
@@ -604,6 +605,11 @@ const store = new Vuex.Store({
 
     UPDATE_GUEST_MESSAGE (state, bool) {
       state.guestMessage = bool
+    },
+
+    SET_READ_FUTURE (state) {
+      localStorage.setItem('readFuture', 'true')
+      state.readFuture = true
     }
   },
 
