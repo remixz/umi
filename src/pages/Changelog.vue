@@ -2,6 +2,18 @@
   <div>
     <h1 class="fw4">Changelog</h1>
 
+    <h2 class="fw6 f4 flex items-center update-title">2018-03-27: All series work again!!</h2>
+    <div class="lh-copy">
+      <ul class="changelog-list">
+        <li>
+          If you've tried to use Umi for the last few weeks, you'll have noticed that new series and episodes stopped working. I initially thought this was unfixable, and published a letter wishing you all well. Well... hopefully you've come back for some reason, as I figured out a way to get it working again! It's not absolutely perfect, as it requires you to <a href="https://chrome.google.com/webstore/detail/umi-enabler/ebpgknlgpomojokdkpgphjigniicjcgc" target="_blank" class="b">install a Chrome extension</a>. However, unlike many other Chrome extensions that hook into Crunchyroll, I don't need to grab your credentials in the extension, so it satisfies my personal safety requirements. (The quick technical rundown is that it just changes the CORS headers on the incoming video responses.) I apologize to the non-Chrome users for now, but I am looking into making the extension work on Firefox as well.
+        </li>
+        <li>
+          In other news, I teased to some people that I may work on a desktop app of Umi that also works with sites like Funimation and HiDive. I'm still planning to work on this eventually! I may also be able to make it work in the browser as well, thanks to this Chrome extension, but I wouldn't hold my breath on it. I wanted to release this extension now though, so that people can continue to use Umi. Happy watching!
+        </li>
+      </ul>
+    </div>
+
     <h2 class="fw6 f4 flex items-center update-title">2018-02-03: Video player thumbnails & improvements</h2>
     <div class="lh-copy">
       <ul class="changelog-list">

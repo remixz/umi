@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+
+  "name": "Umi Enabler",
+  "description": "Allows Umi player to work on all series",
+  "version": "1.0.0",
+
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "https://umi.party/*",
+    "https://*.vrv.co/*",
+    "https://*.dlvr1.net/*"
+  ],
+
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  }
+}

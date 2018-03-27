@@ -17,7 +17,7 @@
       </div>
     </div>
     <router-view v-if="routeName === 'login'"></router-view>
-    <main class="bg-white center pv1 ph3 mv3" :class="{'tall-offset': !readFuture}" v-else>
+    <main class="bg-white center pv1 ph3 mv3" :class="{'tall-offset': !readExtension}" v-else>
       <router-view v-if="loaded"></router-view>
       <div v-else-if="error">
         <img src="https://my.mixtape.moe/gazrbv.gif" class="fl pr3">
@@ -86,8 +86,8 @@ export default {
     guestMessage () {
       return this.$store.state.guestMessage
     },
-    readFuture () {
-      return this.$store.state.readFuture
+    readExtension () {
+      return this.$store.state.readExtension
     }
   },
   methods: {

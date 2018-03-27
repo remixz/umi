@@ -1,9 +1,9 @@
 <template>
-  <header class="fixed top-0 w-100" :class="[lights ? 'z-3' : 'z-max', {'alt-header': routeName === 'series' || routeName === 'media', 'box-shadow-umi': routeName !== 'media', 'tall-header': !readFuture}]">
-    <div class="w-100 bg-washed-red fw6 pa2 umi-border" v-if="!readFuture">
+  <header class="fixed top-0 w-100" :class="[lights ? 'z-3' : 'z-max', {'alt-header': routeName === 'series' || routeName === 'media', 'box-shadow-umi': routeName !== 'media', 'tall-header': !readExtension}]">
+    <div class="w-100 bg-light-green fw6 pa2 umi-border" v-if="!readExtension">
       <div class="header-container center">
-        Wondering why new anime and some episodes aren't working? Read <router-link @click.native="$store.commit('SET_READ_FUTURE')" class="black i" to="/future-of-umi">The Future of Umi</router-link>.
-        <div class="fr" @click="$store.commit('SET_READ_FUTURE')">
+        To watch new series, you'll need to install this Chrome extension: <a target="_blank" class="black" href="https://chrome.google.com/webstore/detail/umi-enabler/ebpgknlgpomojokdkpgphjigniicjcgc">Umi Enabler <i class="fa fa-external-link" aria-hidden="true"></i></a>
+        <div class="fr" @click="$store.commit('SET_READ_EXTENSION')">
           <i class="fa fa-close pointer grow" aria-hidden="true"></i>
         </div>
       </div>
@@ -25,10 +25,10 @@
             <i class="fa fa-history v-mid mr2" aria-hidden="true"></i>
             <span class="fw6">History</span>
           </router-link>
-          <router-link to="/future-of-umi" class="dark-gray no-underline relative">
+          <!-- <router-link to="/future-of-umi" class="dark-gray no-underline relative">
             <i class="fa fa-paper-plane-o v-mid mr2" aria-hidden="true"></i>
             <span class="fw6">The Future of Umi</span>
-          </router-link>
+          </router-link> -->
         </div>
         <div class="absolute search right-0">
           <span class="fa-stack dib pointer" @click="showTogether" v-if="room !== ''" @mouseover="roomHover = true" @mouseout="roomHover = false">
@@ -65,6 +65,9 @@
                 <span>{{malUsername}}</span>
               </a>
             </div>
+            <a @click="hideMenu" href="https://chrome.google.com/webstore/detail/umi-enabler/ebpgknlgpomojokdkpgphjigniicjcgc" target="_blank" class="db bg-white bg-animate hover-bg-light-gray pa2 no-underline black">
+              <i class="fa fa-chrome mr1" aria-hidden="true"></i> Install extension
+            </a>
             <router-link @click.native="hideMenu" to="/settings" class="db bg-white bg-animate hover-bg-light-gray pa2 no-underline black">
               <i class="fa fa-cog mr1"></i> Settings
             </router-link>
@@ -141,8 +144,8 @@ export default {
     routeName () {
       return this.$store.state.route.name
     },
-    readFuture () {
-      return this.$store.state.readFuture
+    readExtension () {
+      return this.$store.state.readExtension
     }
   },
   methods: {
