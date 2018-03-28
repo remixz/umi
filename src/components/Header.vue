@@ -2,7 +2,7 @@
   <header class="fixed top-0 w-100" :class="[lights ? 'z-3' : 'z-max', {'alt-header': routeName === 'series' || routeName === 'media', 'box-shadow-umi': routeName !== 'media', 'tall-header': !readExtension}]">
     <div class="w-100 bg-light-green fw6 pa2 umi-border" v-if="!readExtension">
       <div class="header-container center">
-        To watch new series, you'll need to install this Chrome extension: <a target="_blank" class="black" href="https://chrome.google.com/webstore/detail/umi-enabler/ebpgknlgpomojokdkpgphjigniicjcgc">Umi Enabler <i class="fa fa-external-link" aria-hidden="true"></i></a>
+        Please install the helper extension for <a target="_blank" class="black" href="https://chrome.google.com/webstore/detail/umi-enabler/ebpgknlgpomojokdkpgphjigniicjcgc">Chrome</a> or <a target="_blank" class="black" href="https://addons.mozilla.org/en-US/firefox/addon/umi-enabler/">Firefox</a> if an episode fails to load. Download links are also available in the menu.
         <div class="fr" @click="$store.commit('SET_READ_EXTENSION')">
           <i class="fa fa-close pointer grow" aria-hidden="true"></i>
         </div>
@@ -66,8 +66,12 @@
               </a>
             </div>
             <a @click="hideMenu" href="https://chrome.google.com/webstore/detail/umi-enabler/ebpgknlgpomojokdkpgphjigniicjcgc" target="_blank" class="db bg-white bg-animate hover-bg-light-gray pa2 no-underline black">
-              <i class="fa fa-chrome mr1" aria-hidden="true"></i> Install extension
+              <i class="fa fa-chrome mr1" aria-hidden="true"></i> Chrome extension
             </a>
+            <a @click="hideMenu" href="https://addons.mozilla.org/en-US/firefox/addon/umi-enabler/" target="_blank" class="db bg-white bg-animate hover-bg-light-gray pa2 no-underline black">
+              <i class="fa fa-firefox mr1" aria-hidden="true"></i> Firefox extension
+            </a>
+            <div class="pb2 mh2 bb mb2 b--gray"></div>
             <router-link @click.native="hideMenu" to="/settings" class="db bg-white bg-animate hover-bg-light-gray pa2 no-underline black">
               <i class="fa fa-cog mr1"></i> Settings
             </router-link>
