@@ -2,6 +2,21 @@
   <div>
     <h1 class="fw4">Changelog</h1>
 
+    <h2 class="fw6 f4 flex items-center update-title">2018-10-09: AniList integration</h2>
+    <div class="lh-copy">
+      <ul class="changelog-list">
+        <li>
+          You've probably noticed that the MyAnimeList integration hasn't been working for a while. That's because MyAnimeList shuttered their API until further notice, due to some security issues. As it still seems like it's a ways off until MyAnimeList's API is working again, I decided to integrate AniList support into Umi. It's actually a bit nicer than the MyAnimeList integration, since you do the sign-in on AniList's site, which is a lot safer for you. I hope to add back MyAnimeList once they release their new, safer API.
+        </li>
+        <li>
+          Fixed an issue where an episode's timeline thumbnails weren't loading.
+        </li>
+        <li>
+          As an aside: Umi hasn't been updated in a bit because I haven't been using it nearly as much, as I haven't been watching that much anime. Thankfully, Umi has been in a pretty good state since the last update. It's still a lot faster than Crunchyroll's site, even with their HTML5 player, and there haven't been any major issues. I have no timeline for any more major additions, but if inspiration strikes, you may see some more updates soon. I will make a dark mode happen at some point!
+        </li>
+      </ul>
+    </div>
+
     <h2 class="fw6 f4 flex items-center update-title">2018-03-27: All series work again!!</h2>
     <div class="lh-copy">
       <ul class="changelog-list">

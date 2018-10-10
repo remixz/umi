@@ -18,7 +18,7 @@
           <p class="lh-copy mt4">{{series.description}}</p>
           <div v-if="!loading">
             <queue-button :id="series.series_id" />
-            <a class="link f6 fw6 dib ba b--black-20 bg-white bg-animate hover-bg-light-gray black br2 box-shadow-umi pointer ph2 pv1" target="_blank" :href="`https://myanimelist.net/search/all?q=${encodeURIComponent(series.name)}`">Find on MyAnimeList</a>
+            <a class="link f6 fw6 dib ba b--black-20 bg-white bg-animate hover-bg-light-gray black br2 box-shadow-umi pointer ph2 pv1" target="_blank" :href="`https://anilist.co/search/anime?sort=SEARCH_MATCH&search=${encodeURIComponent(series.name)}`">Find on AniList</a>
           </div>
           <div class="center tc" v-else>
             <i class="fa fa-circle-o-notch fa-spin fa-3x silver mt3"></i>

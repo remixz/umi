@@ -3,7 +3,7 @@
     <div class="w-100 ph5 pv3 center absolute z-2">
       <h1 class="tc white f1 mb0">UMI!</h1>
       <h2 class="tc white fw5 mt1 mb2">The improved Crunchyroll player.</h2>
-      <h3 class="tc white fw5 mt0">Watch together online, sync to MyAnimeList, and more.</h3>
+      <h3 class="tc white fw5 mt0">Watch together online, sync to AniList, and more.</h3>
       <form class="measure center bg-white shadow-2 br2 pa3" @submit.prevent="login">
         <span class="dark-red mb2 dib" v-if="formError">{{ formError }}</span>
         <legend class="f4 fw6 ph0 mt0 mb1" v-if="!expiredSession">Sign in with Crunchyroll</legend>

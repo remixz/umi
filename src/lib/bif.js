@@ -1,6 +1,5 @@
 // Based on https://github.com/chemoish/videojs-bif/blob/c6fdc0c2cfc9446927062995b7e8830ae45fff0d/src/parser.js
 import { fromByteArray } from 'base64-js'
-import cdnRewrite from './cdnRewrite'
 
 const BIF_INDEX_OFFSET = 64
 const FRAMEWISE_SEPARATION_OFFSET = 16
@@ -22,7 +21,7 @@ function validate (magicNumber) {
 }
 
 export async function parse (url) {
-  const res = await fetch(cdnRewrite(url))
+  const res = await fetch(url.replace('https://img1.ak.crunchyroll.com/', '/cdn/'))
   const buf = await res.arrayBuffer()
 
   const magicNumber = new Uint8Array(buf).slice(0, 8)

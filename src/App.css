@@ -52,7 +52,7 @@
 
 .mal-icon {
   display: inline-block;
-  width: 35px;
+  width: 24px;
   padding: 2px;
   box-sizing: border-box;
   color: #004175;
@@ -63,17 +63,17 @@
 }
 
 .mal-icon:after {
-  content: 'MAL';
+  content: 'AL';
 }
 
 .mal-icon.watched {
   color: #19a974;
   border-color: #19a974;
-  width: 55px;
+  width: 44px;
 }
 
 .mal-icon.watched:after {
-  content: 'MAL ✔'
+  content: 'AL ✔';
 }
 
 .player-top-offset {

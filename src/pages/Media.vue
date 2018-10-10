@@ -45,10 +45,10 @@
           <router-link class="dark-gray no-underline bb pb1 b--dark-gray hover-blue link" :to="`/series/${media.series_id}`">
             {{media.collection_name}}
           </router-link>
+          <a v-if="isAniListAuthed && aniListItem.id" :href="aniListItem.siteUrl" target="_blank" rel="noopener"><span class="mal-icon ml1" :class="{watched: aniListSynced}"></span></a>
           &bull; Episode {{media.episode_number}}
           &bull; <i class="fa fa-clock-o" aria-hidden="true"></i> {{duration}}
         </div>
-        <a v-if="isMalAuthed && malItem.id" :href="malItem.url" target="_blank" rel="noopener"><span class="mal-icon ml1" :class="{watched: malSynced}"></span></a>
         <p class="lh-copy">{{media.description}}</p>
         <h3 class="fw5">Episodes</h3>
         <episode-scroller v-if="collectionMedia && collectionMedia.length > 0" :ids="collectionMedia" :selected="$route.params.id" />
@@ -79,6 +79,28 @@
   import EpisodeScroller from 'components/EpisodeScroller'
   import Reactotron from 'components/Reactotron'
 
+  const ANILIST_MEDIA_QUERY = `
+    query FetchMediaInfo ($search: String!) {
+      Media (search: $search, type: ANIME) {
+        id
+        siteUrl
+        mediaListEntry {
+          id
+          progress
+        }
+      }
+    }
+  `
+
+  const ANILIST_UPDATE_LIST_MUTATION = `
+    mutation UpdateMediaList ($id: Int, $mediaId: Int, $status: MediaListStatus!, $progress: Int!) {
+      SaveMediaListEntry (id: $id, mediaId: $mediaId, status: $status, progress: $progress) {
+        id
+        progress
+      }
+    }
+  `
+
   export default {
     name: 'media',
     metaInfo () {
@@ -99,8 +121,8 @@
         seek: 0,
         nextEpisode: false,
         collectionLoaded: false,
-        malItem: {},
-        malSynced: false,
+        aniListItem: {},
+        aniListSynced: false,
         timeout: 0,
         loading: false
       }
@@ -140,11 +162,11 @@
       lights () {
         return this.$store.state.lights
       },
-      malAuth () {
-        return this.$store.state.malAuth
+      alAuth () {
+        return this.$store.state.alAuth
       },
-      isMalAuthed () {
-        return !!this.$store.state.malAuth.username
+      isAniListAuthed () {
+        return !!this.$store.state.alAuth.name
       },
       poster () {
         return this.media && this.media.screenshot_image ? cdnRewrite(this.media.screenshot_image.full_url) : ''
@@ -167,6 +189,9 @@
       },
       optionClasses () {
         return [this.lights ? 'white b--white-60 hover-bg-transparent' : 'black b--black-20 hover-bg-light-gray bg-animate']
+      },
+      relativeEpisodeNumber () {
+        return this.collectionMedia.indexOf(this.media.media_id.toString()) + 1
       }
     },
     methods: {
@@ -184,38 +209,66 @@
           })
         await $store.dispatch('getMediaForCollection', this.media.collection_id)
         this.collectionLoaded = true
-        if (this.isMalAuthed) {
-          const {data: {status, item}} = await axios.get(`${UMI_SERVER}/mal/series?name=${this.media.collection_name}`)
-          if (status === 'ok') {
-            this.malItem = item
+        if (this.isAniListAuthed) {
+          const {data: {data, errors}} = await axios({
+            method: 'POST',
+            url: 'https://graphql.anilist.co',
+            headers: {
+              Authorization: `Bearer ${this.alAuth.token}`
+            },
+            data: {
+              query: ANILIST_MEDIA_QUERY,
+              variables: {
+                search: this.media.collection_name
+              }
+            }
+          })
+
+          if (data.Media) {
+            this.aniListItem = data.Media
+            if (
+              this.aniListItem.mediaListEntry &&
+              this.aniListItem.mediaListEntry.progress >= this.relativeEpisodeNumber
+            ) {
+              this.aniListSynced = true
+            }
           }
         }
       },
       playerPlay () {
         this.internalSeek = 0
         this.nextEpisode = false
-        const shouldUpdateMal = (
-          this.isMalAuthed &&
-          this.malItem.id &&
+        const shouldUpdateAnilist = (
+          this.isAniListAuthed &&
+          this.aniListItem.id &&
           this.timeout === 0 &&
-          !this.malSynced &&
+          !this.aniListSynced &&
           process.env.NODE_ENV === 'production'
         )
-        if (shouldUpdateMal) {
+        if (shouldUpdateAnilist) {
           this.timeout = setTimeout(async () => {
             try {
-              const episode = this.collectionMedia.indexOf(this.media.media_id.toString()) + 1
-              const status = (episode === this.collectionMedia.length && this.collection.complete) ? 'completed' : 'watching'
-              await axios.post(`${UMI_SERVER}/mal/update`, {
-                username: this.malAuth.username,
-                password: this.malAuth.password,
-                id: this.malItem.id,
-                episode,
-                status
+              const status = (this.relativeEpisodeNumber === this.collectionMedia.length && this.collection.complete) ? 'COMPLETED' : 'CURRENT'
+              const {data: {data}} = await axios({
+                method: 'post',
+                url: 'https://graphql.anilist.co',
+                headers: {
+                  Authorization: `Bearer ${this.alAuth.token}`
+                },
+                data: {
+                  query: ANILIST_UPDATE_LIST_MUTATION,
+                  variables: {
+                    id: this.aniListItem.mediaListEntry ? this.aniListItem.mediaListEntry.id : null,
+                    mediaId: this.aniListItem.id,
+                    status,
+                    progress: this.relativeEpisodeNumber
+                  }
+                }
               })
-              this.malSynced = true
+              this.aniListSynced = true
+              this.aniListItem.mediaListEntry = data
             } catch (err) {
-              this.malSynced = false
+              this.aniListSynced = false
             }
           }, 1000 * 60 * 2) // 1000 * 60 * 2 = 2 minutes
         }
@@ -244,7 +297,7 @@
     watch: {
       mediaId (id) {
         this.nextEpisode = false
-        this.malSynced = false
+        this.aniListSynced = false
         clearTimeout(this.timeout)
         this.timeout = 0
         this.getMediaInfo()

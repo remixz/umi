@@ -19,6 +19,14 @@ function handleError (err, reject) {
   }
 }
 
+const ANILIST_AUTH_QUERY = `
+  query {
+    Viewer {
+      name
+    }
+  }
+`
+
 const store = new Vuex.Store({
   state: {
     auth: localStorage.getItem('auth') ? (
@@ -28,6 +36,11 @@ const store = new Vuex.Store({
     ),
     malAuth: localStorage.getItem('malAuth') ? (
       JSON.parse(localStorage.getItem('malAuth'))
+    ) : (
+      {}
+    ),
+    alAuth: localStorage.getItem('alAuth') ? (
+      JSON.parse(localStorage.getItem('alAuth'))
     ) : (
       {}
     ),
@@ -147,6 +160,35 @@ const store = new Vuex.Store({
             resolve()
           } else {
             reject(new Error(data.error))
+          }
+        } catch (err) {
+          reject(err)
+        }
+      })
+    },
+
+    authenticateAniList ({commit}, {token}) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const {data: {data, errors}} = await axios({
+            method: 'post',
+            url: 'https://graphql.anilist.co',
+            headers: {
+              Authorization: `Bearer ${token}`
+            },
+            data: {
+              query: ANILIST_AUTH_QUERY
+            }
+          })
+          if (errors && errors.length > 0) {
+            reject(new Error(errors[0]))
+          } else {
+            console.log(data)
+            commit('UPDATE_AL', {
+              token,
+              name: data.Viewer.name
+            })
+            resolve()
           }
         } catch (err) {
           reject(err)
@@ -525,6 +567,17 @@ const store = new Vuex.Store({
     REMOVE_MAL_AUTH (state) {
       localStorage.removeItem('malAuth')
       Vue.set(state, 'malAuth', {})
+    },
+
+    UPDATE_AL (state, obj) {
+      const updated = Object.assign({}, state.alAuth, obj)
+      localStorage.setItem('alAuth', JSON.stringify(updated))
+      Vue.set(state, 'alAuth', updated)
+    },
+
+    REMOVE_AL_AUTH (state) {
+      localStorage.removeItem('alAuth')
+      Vue.set(state, 'alAuth', {})
     },
 
     SET_SEARCH_IDS (state, arr) {
