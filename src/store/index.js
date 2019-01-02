@@ -64,7 +64,8 @@ const store = new Vuex.Store({
     error: false,
     expiredSession: '',
     guestMessage: false,
-    readExtension: localStorage.getItem('readExtension') ? true : false
+    readExtension: localStorage.getItem('readExtension') ? true : false,
+    seriesList: []
   },
 
   actions: {
@@ -539,6 +540,38 @@ const store = new Vuex.Store({
       setTimeout(() => {
         commit('UPDATE_GUEST_MESSAGE', false)
       }, 5000)
+    },
+
+    getSeriesList ({state, commit}, {filter = 'popular', offset = 0} = {}) {
+      const params = {
+        session_id: state.auth.session_id,
+        media_type: 'anime',
+        limit: 50,
+        offset: offset,
+        filter: filter
+      }
+
+      return new Promise(async (resolve, reject) => {
+        try {
+          const resp = await api({route: 'list_series', params})
+          if (resp.data.error) throw resp
+
+          const data = resp.data.data
+          data.forEach((series) => {
+            commit('ADD_SERIES', series)
+          })
+
+          if (offset == 0) {
+            commit('SET_SERIES_LIST', data)
+          } else {
+            commit('UPDATE_SERIES_LIST', data)
+          }
+
+          resolve(data)
+        } catch (err) {
+          handleError(err, reject)
+        }
+      })
     }
   },
 
@@ -663,6 +696,14 @@ const store = new Vuex.Store({
     SET_READ_EXTENSION (state) {
       localStorage.setItem('readExtension', 'true')
       state.readExtension = true
+    },
+
+    SET_SERIES_LIST (state, obj) {
+      state.seriesList = obj;
+    },
+
+    UPDATE_SERIES_LIST (state, obj) {
+      state.seriesList.concat(obj);
     }
   },
 
