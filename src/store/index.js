@@ -572,6 +572,10 @@ const store = new Vuex.Store({
           handleError(err, reject)
         }
       })
+    },
+
+    clearSeriesList ({state, commit}) {
+      commit('SET_SERIES_LIST', [])
     }
   },
 
