@@ -11,6 +11,7 @@ import Migrate from 'pages/Migrate'
 import Queue from 'pages/Queue'
 import Settings from 'pages/Settings'
 import History from 'pages/History'
+import Browse from 'pages/Browse'
 import Search from 'pages/Search'
 import Login from 'pages/Login'
 import Series from 'pages/Series'
@@ -59,6 +60,12 @@ const router = new Router({
       path: '/history',
       name: 'history',
       component: History,
+      beforeEnter: authGuard
+    },
+    {
+      path: '/browse',
+      name: 'browse',
+      component: Browse,
       beforeEnter: authGuard
     },
     {
