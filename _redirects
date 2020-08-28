@@ -1,3 +1,4 @@
 /cdn/* http://img1.ak.crunchyroll.com/:splat 200
+/pl-proxy/* https://pl.crunchyroll.com/:splat 200
 /appcache/* /index.html 404
 /*    /index.html   200

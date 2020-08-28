@@ -39,7 +39,12 @@
     },
     computed: {
       streamUrl () {
-        return this.data.streams[0].url
+        const url = this.data.streams[0].url
+        if (url && url.includes('pl.crunchyroll.com')) {
+          return this.data.streams[0].url.replace('https://pl.crunchyroll.com', '/pl-proxy')
+        } else {
+          return this.data.streams[0].url
+        }
       },
       room () {
         return this.$store.state.roomId
