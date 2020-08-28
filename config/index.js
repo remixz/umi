@@ -34,6 +34,13 @@ module.exports = {
         pathRewrite: {
           '^/cdn': ''
         }
+      },
+      '/pl-proxy': {
+        target: 'https://pl.crunchyroll.com',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/pl-proxy': ''
+        }
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
