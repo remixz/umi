@@ -2,6 +2,18 @@
   <div>
     <h1 class="fw4">Changelog</h1>
 
+        <h2 class="fw6 f4 flex items-center update-title">2020-08-27: This thing is still on? (Umi is working again!)</h2>
+    <div class="lh-copy">
+      <ul class="changelog-list">
+        <li>
+          No, really? Hi! It's been a while. In fact, we probably haven't met, since I stopped updating this in 2018, so you've never seen this page. However, a few of you reached out to me, and said Umi broke recently. So, I've fixed it. No extension or anything needed, it should, hopefully, just work.
+        </li>
+        <li>
+          I just took a look at the analytics, and turns out a lot of you started using this during the pandemic. Let me know on GitHub or Twitter if anything else breaks. Cheers!
+        </li>
+      </ul>
+    </div>
+
     <h2 class="fw6 f4 flex items-center update-title">2018-10-09: AniList integration</h2>
     <div class="lh-copy">
       <ul class="changelog-list">
