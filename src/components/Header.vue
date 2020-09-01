@@ -25,6 +25,10 @@
             <i class="fa fa-history v-mid mr2" aria-hidden="true"></i>
             <span class="fw6">History</span>
           </router-link>
+          <router-link to="/browse" class="dark-gray no-underline">
+            <i class="fa fa-search v-mid mr2" aria-hidden="true"></i>
+            <span class="fw6">Browse</span>
+          </router-link>
           <!-- <router-link to="/future-of-umi" class="dark-gray no-underline relative">
             <i class="fa fa-paper-plane-o v-mid mr2" aria-hidden="true"></i>
             <span class="fw6">The Future of Umi</span>
