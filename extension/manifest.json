@@ -10,7 +10,8 @@
     "webRequestBlocking",
     "https://umi.party/*",
     "https://*.vrv.co/*",
-    "https://*.dlvr1.net/*"
+    "https://*.dlvr1.net/*",
+	  "https://pl.crunchyroll.com/*"
   ],
 
   "background": {
