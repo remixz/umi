@@ -39,12 +39,7 @@
     },
     computed: {
       streamUrl () {
-        const url = this.data.streams[0].url
-        if (url && url.includes('pl.crunchyroll.com')) {
-          return this.data.streams[0].url.replace('https://pl.crunchyroll.com', '/pl-proxy')
-        } else {
-          return this.data.streams[0].url
-        }
+        return this.data.streams[0].url
       },
       room () {
         return this.$store.state.roomId
@@ -73,6 +68,13 @@
         width: '1024px',
         height: '576px',
         source: this.streamUrl,
+        hlsjsConfig: {
+          xhrSetup: (xhr, url) => {
+            // use pl proxy whenever accessing pl.crunchyroll.com from hls.js
+            url = url.replace('https://pl.crunchyroll.com', '/pl-proxy');
+            xhr.open('GET', url, true);
+          }
+        },
         poster: this.poster,
         disableVideoTagContextMenu: true,
         plugins: [LevelSelector, Thumbnails],
