@@ -6,7 +6,7 @@
   "author": "Zach Bruggeman",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.16.2",
+    "axios": "^0.21.1",
     "body-parser": "^1.17.1",
     "cheerio": "^0.22.0",
     "compression": "^1.6.2",
