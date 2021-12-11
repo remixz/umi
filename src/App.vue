@@ -133,7 +133,7 @@ export default {
         this.$route.name !== 'login' &&
         this.$route.name !== 'future-of-umi' &&
         Object.keys(this.$store.state.auth).length > 0 &&
-        (!this.$store.state.auth.token || !this.$store.state.auth.expires || new Date() > new Date(this.$store.state.auth.expires))
+        (!this.$store.state.auth.expires || new Date() > new Date(this.$store.state.auth.expires))
       ) {
         await this.$store.dispatch('logout', true)
         this.$router.replace(`/login?next=${encodeURIComponent(this.$route.fullPath)}`)
